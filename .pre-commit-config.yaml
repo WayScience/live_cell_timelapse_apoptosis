@@ -42,3 +42,9 @@ repos:
           - --autofix
           - --indent=4
           - --no-sort-keys
+
+  -   repo: https://github.com/mwouts/jupytext
+      rev: v1.14.7  # CURRENT_TAG/COMMIT_HASH
+      hooks:
+      - id: jupytext
+        args: [--sync]

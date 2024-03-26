@@ -1,7 +1,9 @@
 # Live cell timelapse apoptosis analysis
 
-The goal of this project is to develop a pipeline to analyze timelapse images of live cells undergoing apoptosis. The pipeline will be able to detect cells, track them over time, and classify them as either apoptotic or non-apoptotic.
-Each dataset contains timelapse images of HeLa cells in a 96-well plate. These cells are treated with varying concentrations of staurosporine, a drug that induces apoptosis.
+The goal of this project is to develop a pipeline to analyze timelapse images of live cells undergoing apoptosis.
+The pipeline will be able to detect cells, track them over time, and classify them as either apoptotic or non-apoptotic.
+Each dataset or acquisition condidtions of images each contains timelapse images of HeLa cells in a 96-well plate.
+These cells are treated with varying concentrations of staurosporine, a drug that induces apoptosis.
 
 ## Data information
 
