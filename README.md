@@ -21,7 +21,9 @@ Each dataset contains timelapse images of HeLa cells in a 96-well plate. These c
 | 156.25                           | 3                    |
 
 ### Image acquisition
+
 For 4 channel data we acquired at the following wavelengths:
+
 | Channel | Excitation wavelength (nm) | Emission wavelength (nm) |
 |---------|-----------------------------|--------------------------|
 | Hoecsht | 405 | 447/60 |
