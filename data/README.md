@@ -29,7 +29,7 @@ These datasets also contain endpoint data with Annexin V staining + DAPI.
 #### Raw data: [20231017ChromaLive_endpoint_w_AnnexinV_2ch](20231017ChromaLive_endpoint_w_AnnexinV_2ch)
 #### Endpoint maximal intensity projections: [20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP](20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP)
 
-# File naming convention
+## File naming convention
 Example file name: `C-02_F0001_T0001_Z0001_C01.tif`
 - `C-02`: Well C02 (96-well plate)
 - `F0001`: Field of view 1
