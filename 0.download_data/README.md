@@ -4,6 +4,7 @@
 The data are timelapse microscopy images of HeLa cells undergoing apoptosis.
 The cells are treated with varying concentrations of staurosporine, a drug that induces apoptosis.
 For more information about the data, see the [data README](../data/README.md).
+We recieved this data through a collaboration with [Saguaro Technologies](https://www.saguarobio.com/), and [Yokogawa](https://www.yokogawa.com/us/solutions/products-and-services/life-science/).
 
 ## Downloading the data
 This file is a place holder for the instructions downloading the data.
