@@ -32,6 +32,7 @@ For 4 channel data we acquired at the following wavelengths:
 | ChromaLive 561 | 561 | 617/73 |
 
 For 2 channel terminal Annexin V data we acquired at the following wavelengths:
+
 | Channel | Excitation wavelength (nm) | Emission wavelength (nm) |
 |---------|-----------------------------|--------------------------|
 | Hoecsht | 405 | 447/60 |
