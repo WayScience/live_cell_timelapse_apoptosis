@@ -4,3 +4,6 @@ data/2023*
 # IC logs
 2.cellprofiler_ic_processing/notebooks/logs/
 2.cellprofiler_ic_processing/scripts/logs/
+
+# pycache
+**/__pycache__/
