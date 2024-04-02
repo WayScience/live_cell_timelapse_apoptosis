@@ -16,5 +16,5 @@ dependencies:
   - mysqlclient==1.4.6
   - conda-forge::wxpython=4.1.0
   - pip:
-    - cellprofiler==4.2.4
+    - cellprofiler==4.2.6
     - tqdm

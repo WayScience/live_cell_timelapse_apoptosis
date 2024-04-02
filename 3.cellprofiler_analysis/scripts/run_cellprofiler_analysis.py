@@ -15,6 +15,7 @@ import sys
 sys.path.append("../../utils/")
 import cp_parallel
 
+
 # ## Set paths and variables
 
 # In[ ]:
@@ -46,24 +47,6 @@ dict_of_inputs = {
         ).resolve(),
         "path_to_pipeline": pathlib.Path("../pipelines/analysis_4ch.cppipe").resolve(),
     },
-    "run_20231004ChromaLive6hr_4ch_MaxIP": {
-        "path_to_images": pathlib.Path(
-            f"{images_dir}/20231004ChromaLive6hr_4ch_MaxIP/"
-        ).resolve(),
-        "path_to_output": pathlib.Path(
-            f"{output_dir}/20231004ChromaLive6hr_4ch_MaxIP/"
-        ).resolve(),
-        "path_to_pipeline": pathlib.Path("../pipelines/analysis_4ch.cppipe").resolve(),
-    },
-    "run_20231017ChromaLive_6hr_4ch_MaxIP": {
-        "path_to_images": pathlib.Path(
-            f"{images_dir}/20231017ChromaLive_6hr_4ch_MaxIP/"
-        ).resolve(),
-        "path_to_output": pathlib.Path(
-            f"{output_dir}/20231017ChromaLive_6hr_4ch_MaxIP/"
-        ).resolve(),
-        "path_to_pipeline": pathlib.Path("../pipelines/analysis_4ch.cppipe").resolve(),
-    },
     "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
         "path_to_images": pathlib.Path(
             f"{images_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/"
@@ -91,7 +74,7 @@ pprint.pprint(dict_of_inputs, indent=4)
 
 
 # ## Run analysis pipeline on each plate in parallel
-#
+# 
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
 # In[ ]:
@@ -100,3 +83,4 @@ pprint.pprint(dict_of_inputs, indent=4)
 cp_parallel.run_cellprofiler_parallel(
     plate_info_dictionary=dict_of_inputs, run_name=run_name
 )
+
