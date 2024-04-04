@@ -47,6 +47,15 @@ dict_of_inputs = {
         ).resolve(),
         "path_to_pipeline": pathlib.Path("../pipelines/analysis_4ch.cppipe").resolve(),
     },
+    "20231017ChromaLive_6hr_4ch_MaxIP": {
+        "path_to_images": pathlib.Path(
+            f"{images_dir}/20231017ChromaLive_6hr_4ch_MaxIP/"
+        ).resolve(),
+        "path_to_output": pathlib.Path(
+            f"{output_dir}/20231017ChromaLive_6hr_4ch_MaxIP/"
+        ).resolve(),
+        "path_to_pipeline": pathlib.Path("../pipelines/analysis_4ch.cppipe").resolve(),
+    },
     "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
         "path_to_images": pathlib.Path(
             f"{images_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/"
