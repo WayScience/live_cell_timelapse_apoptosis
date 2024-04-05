@@ -17,4 +17,6 @@ dependencies:
   - conda-forge::wxpython=4.1.0
   - pip:
     - cellprofiler==4.2.6
+    - pycytominer
+    - cytotable==0.0.6
     - tqdm

@@ -1,6 +1,9 @@
 # raw data but keep the metadata
 data/2023*
 
+# logs
+**.log
+
 # IC logs
 2.cellprofiler_ic_processing/notebooks/logs/
 2.cellprofiler_ic_processing/scripts/logs/
@@ -19,3 +22,9 @@ data/2023*
 
 # analysis results
 3.cellprofiler_analysis/analysis_output
+
+# cytomining results
+4.process_features/data/*
+
+# cytomining logs
+**runinfo
