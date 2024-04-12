@@ -78,9 +78,12 @@ platemap_df = pd.read_csv(f"{platemap_path}/platemap_24h.csv")
 
 print(single_cell_df.shape)
 single_cell_df.head()
+# find columns that have path in the name
+path_cols = [col for col in single_cell_df.columns if "Image" in col]
+path_cols
 
 
-# In[7]:
+# In[6]:
 
 
 for data_run, info in dict_of_inputs.items():

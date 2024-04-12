@@ -37,6 +37,12 @@ output_dir.mkdir(exist_ok=True, parents=True)
 # In[3]:
 
 
+# set config joins for each preset
+
+
+# In[4]:
+
+
 # preset configurations based on typical CellProfiler outputs
 preset = "cellprofiler_sqlite_pycytominer"
 # remove Image_Metadata_Plate from SELECT as this metadata was not extracted from file names
@@ -51,7 +57,10 @@ presets.config["cellprofiler_sqlite_pycytominer"][
                     Metadata_ImageNumber,
                     Image_Metadata_Well,
                     Image_Metadata_FOV,
-                    Image_Metadata_Time
+                    Image_Metadata_Time,
+                    Image_PathName_AnnexinV,
+                    Image_PathName_DNA
+
 
                 FROM
                     read_parquet('per_image.parquet')
@@ -71,7 +80,7 @@ presets.config["cellprofiler_sqlite_pycytominer"][
                 """
 
 
-# In[8]:
+# In[5]:
 
 
 dict_of_inputs = {
@@ -82,6 +91,39 @@ dict_of_inputs = {
         "dest_path": pathlib.Path(
             f"{output_dir}/20230920ChromaLiveTL_24hr4ch_MaxIP.parquet"
         ).resolve(),
+        "preset": """WITH Per_Image_Filtered AS (
+                SELECT
+                    Metadata_ImageNumber,
+                    Image_Metadata_Well,
+                    Image_Metadata_FOV,
+                    Image_Metadata_Time,
+                    Image_PathName_488_1
+                    Image_PathName_488_2,
+                    Image_PathName_561,
+                    Image_PathName_DNA,
+                    Image_FileName_488_1,
+                    Image_FileName_488_2,
+                    Image_FileName_561,
+                    Image_FileName_DNA
+
+
+
+                FROM
+                    read_parquet('per_image.parquet')
+                )
+            SELECT
+                *
+            FROM
+                Per_Image_Filtered AS per_image
+            LEFT JOIN read_parquet('per_cytoplasm.parquet') AS per_cytoplasm ON
+                per_cytoplasm.Metadata_ImageNumber = per_image.Metadata_ImageNumber
+            LEFT JOIN read_parquet('per_cells.parquet') AS per_cells ON
+                per_cells.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+                AND per_cells.Metadata_Cells_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Cells
+            LEFT JOIN read_parquet('per_nuclei.parquet') AS per_nuclei ON
+                per_nuclei.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+                AND per_nuclei.Metadata_Nuclei_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Nuclei
+                """,
     },
     "run_20231004ChromaLive_6hr_4ch_MaxIP": {
         "source_path": pathlib.Path(
@@ -90,6 +132,39 @@ dict_of_inputs = {
         "dest_path": pathlib.Path(
             f"{output_dir}/20231017ChromaLive_6hr_4ch_MaxIP.parquet"
         ).resolve(),
+        "preset": """WITH Per_Image_Filtered AS (
+                SELECT
+                    Metadata_ImageNumber,
+                    Image_Metadata_Well,
+                    Image_Metadata_FOV,
+                    Image_Metadata_Time,
+                    Image_PathName_488_1
+                    Image_PathName_488_2,
+                    Image_PathName_561,
+                    Image_PathName_DNA,
+                    Image_FileName_488_1,
+                    Image_FileName_488_2,
+                    Image_FileName_561,
+                    Image_FileName_DNA
+
+
+
+                FROM
+                    read_parquet('per_image.parquet')
+                )
+            SELECT
+                *
+            FROM
+                Per_Image_Filtered AS per_image
+            LEFT JOIN read_parquet('per_cytoplasm.parquet') AS per_cytoplasm ON
+                per_cytoplasm.Metadata_ImageNumber = per_image.Metadata_ImageNumber
+            LEFT JOIN read_parquet('per_cells.parquet') AS per_cells ON
+                per_cells.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+                AND per_cells.Metadata_Cells_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Cells
+            LEFT JOIN read_parquet('per_nuclei.parquet') AS per_nuclei ON
+                per_nuclei.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+                AND per_nuclei.Metadata_Nuclei_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Nuclei
+                """,
     },
     "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
         "source_path": pathlib.Path(
@@ -98,6 +173,34 @@ dict_of_inputs = {
         "dest_path": pathlib.Path(
             f"{output_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP.parquet"
         ).resolve(),
+        "preset": """WITH Per_Image_Filtered AS (
+                SELECT
+                    Metadata_ImageNumber,
+                    Image_Metadata_Well,
+                    Image_Metadata_FOV,
+                    Image_Metadata_Time,
+                    Image_PathName_AnnexinV,
+                    Image_PathName_DNA,
+                    Image_FileName_AnnexinV,
+                    Image_FileName_DNA
+
+
+                FROM
+                    read_parquet('per_image.parquet')
+                )
+            SELECT
+                *
+            FROM
+                Per_Image_Filtered AS per_image
+            LEFT JOIN read_parquet('per_cytoplasm.parquet') AS per_cytoplasm ON
+                per_cytoplasm.Metadata_ImageNumber = per_image.Metadata_ImageNumber
+            LEFT JOIN read_parquet('per_cells.parquet') AS per_cells ON
+                per_cells.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+                AND per_cells.Metadata_Cells_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Cells
+            LEFT JOIN read_parquet('per_nuclei.parquet') AS per_nuclei ON
+                per_nuclei.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+                AND per_nuclei.Metadata_Nuclei_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Nuclei
+                """,
     },
 }
 
@@ -109,13 +212,14 @@ pprint.pprint(dict_of_inputs, indent=4)
 #
 # This was not run to completion as we use the nbconverted python file for full run.
 
-# In[9]:
+# In[6]:
 
 
 # run through each run with each set of paths based on dictionary
 for sqlite_file, info in dict_of_inputs.items():
     source_path = info["source_path"]
     dest_path = info["dest_path"]
+    presets.config["cellprofiler_sqlite_pycytominer"]["CONFIG_JOINS"] = info["preset"]
     print(f"Performing merge single cells and conversion on {sqlite_file}!")
 
     # merge single cells and output as parquet file
