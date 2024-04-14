@@ -8,8 +8,8 @@ server <- function(input, output, session) {
     umap_df <- read.csv("CLS_features_annotated_umap.csv")
     # Create well select input
     # Create well checkbox group input
-    output$wellSelect <- renderUI({
-    checkboxGroupInput("wells", "Select Wells:", choices = unique(umap_df$Metadata_Well), selected = unique(umap_df$Metadata_Well))
+    output$doseSelect <- renderUI({
+    checkboxGroupInput("Doses", "Select Doses:", choices = unique(umap_df$Metadata_dose), selected = unique(umap_df$Metadata_dose))
     })
 
     # Create time checkbox group input
@@ -19,7 +19,7 @@ server <- function(input, output, session) {
 
     output$umapPlot <- renderPlot({
     # Filter data based on selected wells and time points
-    data <- umap_df[umap_df$Metadata_Well %in% input$wells & umap_df$Metadata_Time %in% input$times, ]
+    data <- umap_df[umap_df$Metadata_dose %in% input$Doses & umap_df$Metadata_Time %in% input$times, ]
 
     # Create plot
     ggplot(data, aes(x = UMAP1, y = UMAP2, color = as.factor(Metadata_Time))) +

@@ -18,3 +18,11 @@ dependencies:
   - conda-forge::opencv
   - conda-forge::matplotlib
   - conda-forge::umap-learn
+  - conda-forge::scikit-learn
+  - conda-forge::scikit-image
+  - conda-forge::seaborn
+  - conda-forge::datashader
+  - conda-forge::holoviews
+  - conda-forge::colorcet
+  - conda-forge::bokeh
+  - conda-forge::plotly

@@ -8,7 +8,7 @@ ui <- fluidPage(
 
   sidebarLayout(
     sidebarPanel(
-      uiOutput("wellSelect"),
+      uiOutput("doseSelect"),
       uiOutput("timeSelect")
     ),
 

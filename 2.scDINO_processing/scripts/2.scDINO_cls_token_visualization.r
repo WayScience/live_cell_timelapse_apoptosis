@@ -33,9 +33,6 @@ umap_plot <- (
 )
 umap_plot
 
-name = Sys.getenv('RSCONNECT_NAME')
-name
-
 rsconnect::setAccountInfo(
   name = Sys.getenv("RSCONNECT_NAME"),
   token = Sys.getenv("RSCONNECT_TOKEN"),
