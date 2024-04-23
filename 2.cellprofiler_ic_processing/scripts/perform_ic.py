@@ -24,7 +24,7 @@ import tqdm
 # In[ ]:
 
 
-run_name = "immunination_correction"
+run_name = "illumination_correction"
 # path to folder for IC functions
 illum_directory = pathlib.Path("../illum_directory").resolve()
 # make sure the directory exists
