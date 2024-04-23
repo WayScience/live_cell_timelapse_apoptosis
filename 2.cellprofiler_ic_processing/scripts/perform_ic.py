@@ -3,7 +3,7 @@
 
 # # Run CellProfiler `illum.cppipe` (IC) pipeline
 # 
-# In this notebook, we run the CellProfiler IC pipeline to calculate the illumination (illum) correction functions for all images per channel (4).
+# In this notebook, we run the CellProfiler IC pipeline to calculate the illumination (illum) correction functions for all images per channel (4), apply the functions, and save images into a new directory.
 
 # ## Import libraries
 
