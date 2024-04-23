@@ -10,7 +10,7 @@ Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_windo
     Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
 
-Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Extract well and site metadata to use and assess which images have been flagged']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Extract from file names (e.g., well, timepoint, etc.).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Extract metadata?:Yes
     Metadata data type:Text
     Metadata types:{}
