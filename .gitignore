@@ -1,2 +1,30 @@
 # raw data but keep the metadata
 data/2023*
+
+# logs
+**.log
+
+# IC logs
+2.cellprofiler_ic_processing/notebooks/logs/
+2.cellprofiler_ic_processing/scripts/logs/
+
+# pycache
+**/__pycache__/
+
+# illumination corrected images
+2.cellprofiler_ic_processing/illum_directory
+
+# cellprofiler logs
+3.cellprofiler_analysis/scripts/logs
+3.cellprofiler_analysis/scripts/*.log
+3.cellprofiler_analysis/notebooks/logs
+3.cellprofiler_analysis/notebooks/*.logs
+
+# analysis results
+3.cellprofiler_analysis/analysis_output
+
+# cytomining results
+4.process_features/data/*
+
+# cytomining logs
+**runinfo

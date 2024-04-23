@@ -1,16 +1,21 @@
-name: timelapse_env
+name: cellprofiler_timelapse_env
 
 channels:
-- conda-forge
-
+  - conda-forge
+  - defaults
 dependencies:
-- conda-forge::python=3.12
-- conda-forge::ipykernel
-- conda-forge::jupyter
-- conda-forge::nbconvert
-- conda-forge::nb_conda_kernels
-- conda-forge::pip
-- conda-forge::numpy
-- conda-forge::matplotlib
-- conda-forge::pandas
-- conda-forge::scikit-learn
+  - python==3.8
+  - pip
+  - conda-forge::pandas
+  - conda-forge::numpy
+  - conda-forge::scikit-learn
+  - conda-forge::jupyterlab
+  - conda-forge::scikit-image==0.19.3
+  - conda-forge::tqdm
+  - conda-forge::conda-forge::gtk2
+  - conda-forge::mysqlclient==1.4.6
+  - conda-forge::wxpython=4.1.0
+  - pip:
+    - cellprofiler==4.2.6
+    - pycytominer
+    - cytotable==0.0.6
