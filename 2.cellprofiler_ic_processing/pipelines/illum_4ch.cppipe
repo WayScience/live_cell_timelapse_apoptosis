@@ -200,7 +200,7 @@ CorrectIlluminationApply:[module_num:10|svn_version:'Unknown'|variable_revision_
     Select the illumination function:Illum488_2
     Select how the illumination function is applied:Subtract
     Select the input image:488_2
-    Name the output image:Corr388_2
+    Name the output image:Corr488_2
     Select the illumination function:Illum488_2
     Select how the illumination function is applied:Subtract
     Select the input image:561
