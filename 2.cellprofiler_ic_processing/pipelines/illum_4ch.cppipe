@@ -96,7 +96,7 @@ CorrectIlluminationCalculate:[module_num:6|svn_version:'Unknown'|variable_revisi
     Select how the illumination function is calculated:Background
     Dilate objects in the final averaged image?:No
     Dilation radius:1
-    Block size:50
+    Block size:30
     Rescale the illumination function?:No
     Calculate function for each image individually, or based on all images?:Each
     Smoothing method:Fit Polynomial
@@ -197,7 +197,7 @@ CorrectIlluminationApply:[module_num:10|svn_version:'Unknown'|variable_revision_
     Select how the illumination function is applied:Subtract
     Select the input image:488_1
     Name the output image:Corr488_1
-    Select the illumination function:Illum488_2
+    Select the illumination function:Illum488_1
     Select how the illumination function is applied:Subtract
     Select the input image:488_2
     Name the output image:Corr488_2
@@ -252,7 +252,7 @@ SaveImages:[module_num:12|svn_version:'Unknown'|variable_revision_number:16|show
 
 SaveImages:[module_num:13|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the type of image to save:Image
-    Select the image to save:Corr388_2
+    Select the image to save:Corr488_2
     Select method for constructing file names:From image filename
     Select image name for file prefix:488_2
     Enter single file name:OrigBlue
