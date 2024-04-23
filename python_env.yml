@@ -6,17 +6,16 @@ channels:
 dependencies:
   - python==3.8
   - pip
-  - pandas
-  - numpy
-  - scikit-learn
-  - jupyterlab
-  - scikit-image==0.19.3
-  - tqdm
-  - conda-forge::gtk2
-  - mysqlclient==1.4.6
+  - conda-forge::pandas
+  - conda-forge::numpy
+  - conda-forge::scikit-learn
+  - conda-forge::jupyterlab
+  - conda-forge::scikit-image==0.19.3
+  - conda-forge::tqdm
+  - conda-forge::conda-forge::gtk2
+  - conda-forge::mysqlclient==1.4.6
   - conda-forge::wxpython=4.1.0
   - pip:
     - cellprofiler==4.2.6
     - pycytominer
     - cytotable==0.0.6
-    - tqdm
