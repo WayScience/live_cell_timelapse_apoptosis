@@ -1,16 +1,16 @@
 CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
-DateRevision:424
+DateRevision:426
 GitHash:
 ModuleCount:19
 HasImagePlaneDetails:False
 
-Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Images module is left blank since we are giving the path to the images in the CLI command']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Module notes are provided by Jenna Tomkinson.', '', 'Images module is left blank since we are giving the path to the images in the CLI command.', '', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     :
     Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (directory doesnot containregexp "[\\\\/]\\.")
 
-Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Metadata is extracted from the file and folder names using regular expressions.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Metadata is extracted from the file names using regular expressions. Metadata included are well, FOV, time, and z-slice, and channel.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Extract metadata?:Yes
     Metadata data type:Text
     Metadata types:{"Channel": "integer", "FileLocation": "text", "Frame": "text", "Plate": "text", "Series": "text", "Site": "integer", "Stain": "float", "Well": "text"}
@@ -27,7 +27,7 @@ Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_win
     Metadata file name:None
     Does cached metadata exist?:No
 
-NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['This pipeline assigns names to 4 channels specifically:', '', 'DAPI', 'GFP', 'CY5', 'RFP']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|show_window:False|notes:['This pipeline assigns names to 2 channels specifically:', '', '01 = DNA/Hoechst staining', '05 = AnnexinV staining']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Assign a name to:Images matching rules
     Select the image type:Grayscale image
     Name to assign these images:DNA
@@ -54,19 +54,19 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Set intensity range from:Image metadata
     Maximum intensity:255.0
 
-Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['We do not use the Groups module.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Given this timelapse data, we group by Well and FOV.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Do you want to group your images?:Yes
     grouping metadata count:2
     Metadata category:Well
     Metadata category:FOV
 
-IdentifyPrimaryObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['The parameters are the same as the analysis pipeline for 3 channels.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+IdentifyPrimaryObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Segment nuclei from the DNA channel. These are the same parameters for nuclei segmentation as the 4ch pipeline. ']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:DNA
     Name the primary objects to be identified:Nuclei
-    Typical diameter of objects, in pixel units (Min,Max):30,90
+    Typical diameter of objects, in pixel units (Min,Max):35,90
     Discard objects outside the diameter range?:Yes
     Discard objects touching the border of the image?:Yes
-    Method to distinguish clumped objects:None
+    Method to distinguish clumped objects:Shape
     Method to draw dividing lines between clumped objects:Shape
     Size of smoothing filter:10
     Suppress local maxima that are closer than this minimum allowed distance:7.0
@@ -78,17 +78,17 @@ IdentifyPrimaryObjects:[module_num:5|svn_version:'Unknown'|variable_revision_num
     Maximum number of objects:500
     Use advanced settings?:Yes
     Threshold setting version:12
-    Threshold strategy:Global
-    Thresholding method:Otsu
-    Threshold smoothing scale:1.3488
+    Threshold strategy:Adaptive
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:4.0464
     Threshold correction factor:1.0
     Lower and upper bounds on threshold:0.0,1.0
     Manual threshold:0.0
     Select the measurement to threshold with:None
-    Two-class or three-class thresholding?:Three classes
+    Two-class or three-class thresholding?:Two classes
     Log transform before thresholding?:No
     Assign pixels in the middle intensity class to the foreground or the background?:Foreground
-    Size of adaptive window:50
+    Size of adaptive window:80
     Lower outlier fraction:0.05
     Upper outlier fraction:0.05
     Averaging method:Mean
@@ -96,43 +96,48 @@ IdentifyPrimaryObjects:[module_num:5|svn_version:'Unknown'|variable_revision_num
     # of deviations:2.0
     Thresholding method:Minimum Cross-Entropy
 
-IdentifySecondaryObjects:[module_num:6|svn_version:'Unknown'|variable_revision_number:10|show_window:False|notes:['The parameters are the same as the analysis pipeline for 3 channels.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select the input objects:Nuclei
-    Name the objects to be identified:Cells
-    Select the method to identify the secondary objects:Propagation
+RunCellpose:[module_num:6|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Use Cellpose to segment the AnnexinV staining and use the DNA image as a base to identify the segmentations. The cyto model is best at identifying the regions of AnnexinV staining around nuclei. I was unable to get the IdentifySecondaryObjects module to work to segment this stain.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:AnnexinV
-    Number of pixels by which to expand the primary objects:10
-    Regularization factor:0.05
-    Discard secondary objects touching the border of the image?:Yes
-    Discard the associated primary objects?:No
-    Name the new primary objects:Nuclei
-    Fill holes in identified objects?:Yes
-    Threshold setting version:12
-    Threshold strategy:Global
-    Thresholding method:Otsu
-    Threshold smoothing scale:1.3488
-    Threshold correction factor:1.0
-    Lower and upper bounds on threshold:0.0,1.0
-    Manual threshold:0.0
-    Select the measurement to threshold with:None
-    Two-class or three-class thresholding?:Three classes
-    Log transform before thresholding?:No
-    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
-    Size of adaptive window:50
-    Lower outlier fraction:0.05
-    Upper outlier fraction:0.05
-    Averaging method:Mean
-    Variance method:Standard deviation
-    # of deviations:2.0
-    Thresholding method:Otsu
+    Run CellPose in docker or local python environment:Python
+    Select Cellpose docker image:cellprofiler/runcellpose_with_pretrained:0.1
+    Expected object diameter:150
+    Detection mode:cyto
+    Name the output object:Cells
+    Use GPU:Yes
+    Use averaging:No
+    Supply nuclei image as well?:Yes
+    Select the nuclei image:DNA
+    Save probability image?:No
+    Name the probability image:Probabilities
+    Location of the pre-trained model file:Elsewhere...|
+    Pre-trained model file name:cyto_0
+    Flow threshold:0.4
+    Cell probability threshold:0.0
+    GPU memory share for each worker:0.1
+    Stitch Threshold:0.0
+    Use 3D:No
+    Minimum size:-1
+    Use Omnipose for mask reconstruction:No
+    Invert images:No
+    Remove objects that are touching the edge?:Yes
 
-IdentifyTertiaryObjects:[module_num:7|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['The parameters are the same as the analysis pipeline for 3 channels.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+RelateObjects:[module_num:7|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Cellpose does not automatically associate objects together. Since we are using both CellProfiler and Cellpose for segmentation, we need to use this module to associate the objects. CellProfiler traditionally relates the parent as the Nuclei assigned to the Cells as the secondary or child object. We will keep this same practice in this module.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Parent objects:Nuclei
+    Child objects:Cells
+    Calculate child-parent distances?:None
+    Calculate per-parent means for all child measurements?:No
+    Calculate distances to other parents?:No
+    Do you want to save the children with parents as a new object set?:No
+    Name the output object:RelateObjects
+    Parent name:None
+
+IdentifyTertiaryObjects:[module_num:8|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['The parameters are the same as the analysis pipeline for 3 channels.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the larger identified objects:Cells
     Select the smaller identified objects:Nuclei
     Name the tertiary objects to be identified:Cytoplasm
     Shrink smaller object prior to subtraction?:Yes
 
-MeasureColocalization:[module_num:8|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Measure whole image and within objects ']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureColocalization:[module_num:9|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Measure correlation metrics within whole image and within objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:AnnexinV, DNA
     Set threshold as percentage of maximum intensity for the images:15.0
     Select where to measure correlation:Both
@@ -145,7 +150,7 @@ MeasureColocalization:[module_num:8|svn_version:'Unknown'|variable_revision_numb
     Calculate the Manders coefficients using Costes auto threshold?:Yes
     Method for Costes thresholding:Faster
 
-MeasureGranularity:[module_num:9|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures within images and objects (when parameter is turned on).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureGranularity:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures granularity metrics within images (default) and objects (when parameter is turned on).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:AnnexinV, DNA
     Measure within objects?:Yes
     Select objects to measure:Cells, Cytoplasm, Nuclei
@@ -154,18 +159,18 @@ MeasureGranularity:[module_num:9|svn_version:'Unknown'|variable_revision_number:
     Radius of structuring element:10
     Range of the granular spectrum:16
 
-MeasureObjectIntensity:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures intensity within objects']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensity:[module_num:11|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures intensity metrics within objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:AnnexinV, DNA
     Select objects to measure:Cells, Cytoplasm, Nuclei
 
-MeasureImageIntensity:[module_num:11|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures whole image intensity not aggregated within objects']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureImageIntensity:[module_num:12|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures whole image intensity not aggregated within objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:AnnexinV, DNA
     Measure the intensity only from areas enclosed by objects?:No
     Select input object sets:Cells, Cytoplasm, Nuclei
     Calculate custom percentiles:No
     Specify percentiles to measure:10,90
 
-MeasureObjectNeighbors:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure nuclei neighbors that are adjacent to each other.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectNeighbors:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure nuclei neighbors that are adjacent to each other.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:Nuclei
     Select neighboring objects to measure:Nuclei
     Method to determine neighbors:Adjacent
@@ -178,7 +183,7 @@ MeasureObjectNeighbors:[module_num:12|svn_version:'Unknown'|variable_revision_nu
     Name the output image:PercentTouching
     Select colormap:Oranges
 
-MeasureObjectNeighbors:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure cell neighbors that are adjacent to each other.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectNeighbors:[module_num:14|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure cell neighbors that are adjacent to each other.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:Cells
     Select neighboring objects to measure:Cells
     Method to determine neighbors:Adjacent
@@ -191,7 +196,7 @@ MeasureObjectNeighbors:[module_num:13|svn_version:'Unknown'|variable_revision_nu
     Name the output image:PercentTouching
     Select colormap:Oranges
 
-MeasureObjectIntensityDistribution:[module_num:14|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Measure object intensity distributions witin objects using center x,y coords for each single object.', '', "We calculate Zernikes for magnitudes and phases as we are interested in seeing phase even if it doesn't help with classifying phenotypes."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityDistribution:[module_num:15|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Measure object intensity distributions witin objects using center x,y coords for each single object.', '', "We calculate Zernikes for magnitudes and phases as we are interested in seeing phase even if it doesn't help with classifying phenotypes."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:AnnexinV, DNA
     Hidden:3
     Hidden:1
@@ -211,12 +216,12 @@ MeasureObjectIntensityDistribution:[module_num:14|svn_version:'Unknown'|variable
     Number of bins:4
     Maximum radius:100
 
-MeasureObjectSizeShape:[module_num:15|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure object size and shape.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectSizeShape:[module_num:16|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure object size and shape metrics (not related to any channels).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select object sets to measure:Cells, Cytoplasm, Nuclei
     Calculate the Zernike features?:Yes
     Calculate the advanced features?:No
 
-MeasureTexture:[module_num:16|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:['Measure texture within objects and the whole images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureTexture:[module_num:17|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:['Measure texture within objects and the whole images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:AnnexinV, DNA
     Select objects to measure:Cells, Cytoplasm, Nuclei
     Enter how many gray levels to measure the texture at:256
@@ -224,17 +229,10 @@ MeasureTexture:[module_num:16|svn_version:'Unknown'|variable_revision_number:7|s
     Measure whole images or objects?:Both
     Texture scale to measure:3
 
-MeasureImageAreaOccupied:[module_num:17|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureImageAreaOccupied:[module_num:18|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Measure the area occupied in each image by each object.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Measure the area occupied by:Objects
     Select binary images to measure:AnnexinV, DNA
     Select object sets to measure:Cells, Cytoplasm, Nuclei
-
-MeasureImageIntensity:[module_num:18|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:AnnexinV, DNA
-    Measure the intensity only from areas enclosed by objects?:No
-    Select input object sets:
-    Calculate custom percentiles:No
-    Specify percentiles to measure:10,90
 
 ExportToDatabase:[module_num:19|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:['Output the morphology features into an SQLite database.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Database type:SQLite
