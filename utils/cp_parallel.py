@@ -110,9 +110,14 @@ def run_cellprofiler_parallel(
             path_to_images,
         ]
 
-        # if plugins_dir is provided, add the flag to find the plugins directory with given path
+        # if plugins_dir is provided, check to confirm dir exists and add the flag to find the plugins directory with given path
         if plugins_dir:
-            command.extend(["--plugins-directory", plugins_dir])
+            if not pathlib.Path(plugins_dir).is_dir():
+                raise FileNotFoundError(
+                    f"Plugins directory '{pathlib.Path(plugins_dir).name}' does not exist or is not a directory"
+                    )
+            else:
+                command.extend(["--plugins-directory", plugins_dir])
 
         # creates a list of commands
         commands.append(command)
