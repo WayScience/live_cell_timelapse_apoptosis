@@ -32,11 +32,3 @@ umap_plot <- (
     + theme(legend.position = "right")
 )
 umap_plot
-
-rsconnect::setAccountInfo(
-  name = Sys.getenv("RSCONNECT_NAME"),
-  token = Sys.getenv("RSCONNECT_TOKEN"),
-  secret = Sys.getenv("RSCONNECT_SECRET")
-)
-
-rsconnect::deployApp(appDir = "../temporal_shiny_app", appName = "temporal_shiny_app")

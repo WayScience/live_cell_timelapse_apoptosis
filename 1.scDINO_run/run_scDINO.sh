@@ -1,7 +1,7 @@
 #!/bin/bash
 # this script runs the pre-processing and scDINO pipeline
 
-cd ../0.pre-process_images/
+conda activate scDINO_env
 
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 

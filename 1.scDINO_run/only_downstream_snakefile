@@ -1,3 +1,5 @@
+# This file was downloaded from the scDINO repository
+# https://github.com/JacobHanimann/scDINO
 #Snakefile for downstream analysis
 import os
 import re

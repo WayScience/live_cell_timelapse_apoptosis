@@ -25,25 +25,36 @@ output_path = pathlib.Path("../figures/gifs/").resolve()
 output_path.mkdir(parents=True, exist_ok=True)
 
 # load in the data
-data = pd.read_csv(data_path, index_col=0)
-data.head()
+CLS_features_umap = pd.read_csv(data_path, index_col=0)
+CLS_features_umap.head()
 
 
 # In[3]:
 
 
 # set the unique wells
-unique_doeses = data["Metadata_dose"].unique()
+unique_doeses = CLS_features_umap["Metadata_dose"].unique()
 unique_doeses
 
 
-# In[4]:
+# In[5]:
+
+
+# define an interval for the animation
+# I want it to match 7 frames per second (fps)
+# so I will set the interval to 1000/7
+fps = 7
+interval = 1000 / fps
+print(f"Interval: {interval}")
+
+
+# In[6]:
 
 
 for dose in unique_doeses:
     fig, ax = plt.subplots(figsize=(6, 6))
 
-    tmp_df = data[data["Metadata_dose"] == dose]
+    tmp_df = CLS_features_umap[CLS_features_umap["Metadata_dose"] == dose]
     classes = tmp_df["Metadata_Time"].unique()
     # split the data into n different dfs based on the classes
     dfs = [tmp_df[tmp_df["Metadata_Time"] == c] for c in classes]
@@ -61,7 +72,7 @@ for dose in unique_doeses:
     scat = ax.scatter([], [], c="b", s=1)
     text = ax.text(-4, -4, "", ha="left", va="top")
     # add title
-    ax.set_title(f"Dose {dose}")
+    ax.set_title(f"Staurosporine {dose}nM")
 
     def animate(i):
         df = dfs[i]
@@ -70,17 +81,17 @@ for dose in unique_doeses:
         return (scat,)
 
     anim = animation.FuncAnimation(
-        fig, init_func=None, func=animate, frames=len(dfs), interval=150
+        fig, init_func=None, func=animate, frames=len(dfs), interval=interval
     )
-    anim.save(f"{output_path}/Dose_{dose}.gif", writer="imagemagick")
+    anim.save(f"{output_path}/Staurosporine_{dose}nM.gif", writer="imagemagick")
 
     plt.close(fig)
 
 
-# In[5]:
+# In[8]:
 
 
 # Display the animations
 for dose in unique_doeses:
-    with open(f"Dose_{dose}.gif", "rb") as f:
+    with open(f"{output_path}/Staurosporine_{dose}nM.gif", "rb") as f:
         display(Image(f.read()))

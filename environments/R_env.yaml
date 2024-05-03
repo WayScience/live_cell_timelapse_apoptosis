@@ -1,0 +1,17 @@
+# env file for running scDINO
+name: R_timelapse_env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8
+  - pip
+  - ipykernel
+  - jupyter
+  - r=4.2.0
+  - r-essentials
+  - r-irkernel
+  - r-ggplot2
+  - r-rsconnect
+  - r-dplyr
+  - r-tidyr

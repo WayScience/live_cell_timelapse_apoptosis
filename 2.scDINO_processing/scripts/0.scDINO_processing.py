@@ -62,28 +62,30 @@ cls_df["Metadata_image_path"] = image_paths_df["image_paths"]
 cls_df.head(1)
 
 
-# In[7]:
+# In[16]:
 
 
 # split column into multiple columns
+# Well, FOV, Time, Channel, Cell_id
 cls_df["Metadata_Well"] = cls_df["Metadata_image_path"].apply(
     lambda x: pathlib.Path(x).name.split("_")[0]
 )
+
 cls_df["Metadata_FOV"] = cls_df["Metadata_image_path"].apply(
     lambda x: pathlib.Path(x).name.split("_")[1]
 )
+
 cls_df["Metadata_Time"] = cls_df["Metadata_image_path"].apply(
     lambda x: pathlib.Path(x).name.split("_")[2]
 )
+
 cls_df["Metadata_Channel"] = cls_df["Metadata_image_path"].apply(
     lambda x: pathlib.Path(x).name.split("_")[4]
 )
+
 cls_df["Metadata_Cell_id"] = cls_df["Metadata_image_path"].apply(
     lambda x: pathlib.Path(x).name.split("_")[6]
 )
-# move Metadata columns to the front
-# pop out the Metadata columns
-
 
 cls_df.head()
 

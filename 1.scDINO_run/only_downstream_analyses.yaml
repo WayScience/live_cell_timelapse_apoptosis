@@ -1,3 +1,5 @@
+# this file was downloaded and modified from
+# https://github.com/JacobHanimann/scDINO
 meta:
   name_of_run: "test_run"
   output_dir: "outputdir"

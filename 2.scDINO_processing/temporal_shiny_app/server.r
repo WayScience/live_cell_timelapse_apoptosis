@@ -1,6 +1,7 @@
 # Load necessary libraries
 library(shiny)
 library(ggplot2)
+library(dplyr)
 
 
 # Define server logic
@@ -19,7 +20,7 @@ server <- function(input, output, session) {
 
     output$umapPlot <- renderPlot({
     # Filter data based on selected wells and time points
-    data <- umap_df[umap_df$Metadata_dose %in% input$Doses & umap_df$Metadata_Time %in% input$times, ]
+    data <- dplyr::filter(umap_df, Metadata_dose %in% input$Doses & Metadata_Time %in% input$times)
 
     # Create plot
     ggplot(data, aes(x = UMAP1, y = UMAP2, color = as.factor(Metadata_Time))) +
