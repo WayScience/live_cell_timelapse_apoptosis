@@ -7,7 +7,7 @@ HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Module notes are provided by Jenna Tomkinson.', '', 'Images module is left blank since we are giving the path to the images in the CLI command']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     :
-    Filter images?:Custom
+    Filter images?:Images only
     Select the rule criteria:and (extension does isimage) (file does startwith "C-07")
 
 Metadata:[module_num:2|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Metadata is extracted from the file names using regular expressions. Metadata includes well, FOV, time, z-slice, and channel.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]

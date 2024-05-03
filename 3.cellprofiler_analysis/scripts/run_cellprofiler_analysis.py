@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import pathlib
@@ -18,7 +18,7 @@ import cp_parallel
 
 # ## Set paths and variables
 
-# In[ ]:
+# In[2]:
 
 
 # set the run type for the parallelization
@@ -29,12 +29,17 @@ output_dir = pathlib.Path("../analysis_output")
 output_dir.mkdir(exist_ok=True, parents=True)
 
 # directory where images are located within folders
-images_dir = pathlib.Path("../../2.cellprofiler_ic_processing/illum_directory")
+images_dir = pathlib.Path(
+    "../../0.download_data"
+)
+
+# path to plugins directory as one of the pipelines uses the RunCellpose plugin
+plugins_dir = pathlib.Path("/home/jenna/Desktop/Github/CellProfiler/cellprofiler/modules/plugins")
 
 
 # ## Create dictionary with all info for each plate
 
-# In[ ]:
+# In[3]:
 
 
 dict_of_inputs = {
@@ -59,7 +64,7 @@ dict_of_inputs = {
     "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
         "path_to_images": pathlib.Path(
             f"{images_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/"
-        ).resolve(),
+        ).resolve(strict=True),
         "path_to_output": pathlib.Path(
             f"{output_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/"
         ).resolve(),
@@ -90,6 +95,8 @@ pprint.pprint(dict_of_inputs, indent=4)
 
 
 cp_parallel.run_cellprofiler_parallel(
-    plate_info_dictionary=dict_of_inputs, run_name=run_name
+    plate_info_dictionary=dict_of_inputs,
+    run_name=run_name,
+    plugins_dir=plugins_dir,
 )
 

@@ -1,6 +1,8 @@
 """
 This collection of functions runs CellProfiler in parallel and can convert the results into log files
 for each process.
+
+Developed from NF1 repository script made by Jenna Tomkinson.
 """
 
 import logging
@@ -9,7 +11,7 @@ import os
 import pathlib
 import subprocess
 from concurrent.futures import Future, ProcessPoolExecutor
-from typing import List
+from typing import List, Optional, Union
 
 from exceptions import MaxWorkerError
 
@@ -22,9 +24,12 @@ def results_to_log(
     convert into a log file for each process.
 
     Args:
-        results (List[subprocess.CompletedProcess]): the outputs from a subprocess.run
-        log_dir (pathlib.Path): directory for log files
-        run_name (str): a given name for the type of CellProfiler run being done on the plates (example: whole image features)
+        results (List[subprocess.CompletedProcess]): 
+            the outputs from a subprocess.run.
+        log_dir (pathlib.Path): 
+            directory for log files.
+        run_name (str): 
+            a given name for the type of CellProfiler run being done on the plates (example: whole image features).
     """
     # Access the command (args) and stderr (output) for each CompletedProcess object
     for result in results:
@@ -49,13 +54,19 @@ def results_to_log(
 def run_cellprofiler_parallel(
     plate_info_dictionary: dict,
     run_name: str,
+    plugins_dir: Optional[Union[pathlib.Path, None]] = None,
 ) -> None:
     """
     This function utilizes multi-processing to run CellProfiler pipelines in parallel.
 
     Args:
-        plate_info_dictionary (dict): dictionary with all paths for CellProfiler to run a pipeline
-        run_name (str): a given name for the type of CellProfiler run being done on the plates (example: whole image features)
+        plate_info_dictionary (dict): 
+            dictionary with all paths for CellProfiler to run a pipeline.
+        run_name (str): 
+            a given name for the type of CellProfiler run being done on the plates (example: whole image features).
+        plugins_dir (pathlib.Path, optional): 
+            if you are using a CellProfiler plugin module in your pipeline, you must specify a path to the directory. 
+            This is an optional parameter and defaults to None (no plugin dir provided).
 
     Raises:
         FileNotFoundError: if paths to pipeline and images do not exist
@@ -98,6 +109,11 @@ def run_cellprofiler_parallel(
             "-i",
             path_to_images,
         ]
+
+        # if plugins_dir is provided, add the flag to find the plugins directory with given path
+        if plugins_dir:
+            command.extend(["--plugins-directory", plugins_dir])
+
         # creates a list of commands
         commands.append(command)
 
