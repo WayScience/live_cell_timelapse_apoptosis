@@ -37,7 +37,7 @@ unique_doeses = CLS_features_umap["Metadata_dose"].unique()
 unique_doeses
 
 
-# In[5]:
+# In[4]:
 
 
 # define an interval for the animation
@@ -48,7 +48,7 @@ interval = 1000 / fps
 print(f"Interval: {interval}")
 
 
-# In[6]:
+# In[5]:
 
 
 for dose in unique_doeses:
@@ -73,6 +73,9 @@ for dose in unique_doeses:
     text = ax.text(-4, -4, "", ha="left", va="top")
     # add title
     ax.set_title(f"Staurosporine {dose}nM")
+    # axis titles
+    ax.set_xlabel("UMAP0")
+    ax.set_ylabel("UMAP1")
 
     def animate(i):
         df = dfs[i]
@@ -88,7 +91,7 @@ for dose in unique_doeses:
     plt.close(fig)
 
 
-# In[8]:
+# In[6]:
 
 
 # Display the animations

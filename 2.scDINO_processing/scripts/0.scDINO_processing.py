@@ -62,7 +62,7 @@ cls_df["Metadata_image_path"] = image_paths_df["image_paths"]
 cls_df.head(1)
 
 
-# In[16]:
+# In[7]:
 
 
 # split column into multiple columns

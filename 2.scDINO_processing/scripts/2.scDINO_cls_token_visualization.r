@@ -2,7 +2,6 @@ suppressPackageStartupMessages(suppressWarnings(library(ggplot2)))
 suppressPackageStartupMessages(suppressWarnings(library(dplyr)))
 suppressPackageStartupMessages(suppressWarnings(library(tidyr)))
 suppressPackageStartupMessages(suppressWarnings(library(shiny)))
-suppressPackageStartupMessages(suppressWarnings(library(rsconnect)))
 
 # set UMAP df path
 umap_df_path <- file.path("..","..","1.scDINO_run/outputdir/test_run/CLS_features/CLS_features_annotated_umap.csv")
