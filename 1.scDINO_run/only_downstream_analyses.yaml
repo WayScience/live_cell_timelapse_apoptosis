@@ -3,10 +3,11 @@
 meta:
   name_of_run: "test_run"
   output_dir: "outputdir"
+  # dataset dir needs to be changed to the location of the dataset
   dataset_dir: "/home/lippincm/Documents/4TB/data/live_cell_timelapse_apoptosis_analysis/data/processed_images/crops"
   folder_depth_for_labels: 0 # 0 is the folder where the images are, 1 is the folder above, etc.
   test_datasetsplit_fraction: 1.0
-  seed: 40 #should match scDINO seed if you want to use the same train/test split
+  seed: 0 #should match scDINO seed if you want to use the same train/test split
   images_are_RGB: False
   channel_dict: { 0: "DNA", 1: "channel488-1", 2: "channel488-2", 3: "channel561", 4: "blank" } #do not use underscore or slash in channel name
   selected_channel_combination_per_run: ["01234"] #01234 is all 5 channels, 0 is only APC, 1 is only BF, etc.
@@ -18,11 +19,12 @@ compute_cls_features:
   normalize: True
   parse_mean_std_from_file: False
   mean_std_file_location: none #"dir/mean_and_std_of_dataset.txt"
-  norm_per_channel: "[(0.1, 0.1, 0.1, 0.1, 0.1),(0.1, 0.1, 0.1, 0.1, 0.1)]" #"[(0.2981, 0.5047, 0.1918, 0.2809, 0.3800),(0.2232, 0.1659, 0.2403, 0.1938, 0.1956)]" #only used if parse_mean_std_from_file is False
+  norm_per_channel: "[(0.1, 0.1, 0.1, 0.1, 0.1),(0.1, 0.1, 0.1, 0.1, 0.1)]" #only used if parse_mean_std_from_file is False
   use_cuda: True
   num_gpus: 1
   batch_size_per_gpu: 24
   num_workers: 8
+  # change the path to the location of the model
   pretrained_weights: "/home/lippincm/Documents/4TB/data/live_cell_timelapse_apoptosis_analysis/data/models" #dir_to_pretrained_weights
   read_model_arch_dynamically: False
   arch: "vit_small" #only used if read_model_arch_dynamically is False
