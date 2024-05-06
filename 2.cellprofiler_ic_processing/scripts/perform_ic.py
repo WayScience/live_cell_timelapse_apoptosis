@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # # Run CellProfiler `illum.cppipe` (IC) pipeline
-# 
+#
 # In this notebook, we run the CellProfiler IC pipeline to calculate the illumination (illum) correction functions for all images per channel (4), apply the functions, and save images into a new directory.
 
 # ## Import libraries
@@ -18,14 +18,13 @@ import cp_parallel
 import cp_utils as cp_utils
 import tqdm
 
-
 # ## Set paths
 
 # In[ ]:
 
 
 run_name = "illumination_correction"
-# path to folder for IC functions
+# path to folder for IC images
 illum_directory = pathlib.Path("../illum_directory").resolve()
 # make sure the directory exists
 illum_directory.mkdir(exist_ok=True, parents=True)
@@ -67,7 +66,8 @@ dict_of_inputs = {
 }
 
 
-# ## Run `illum.cppipe` pipeline and calculate + save IC functions
+# ## Run `illum.cppipe` pipeline and calculate + save IC images
+# This last cell does not get run as we run this pipeline in the command line.
 
 # In[ ]:
 
@@ -75,4 +75,3 @@ dict_of_inputs = {
 cp_parallel.run_cellprofiler_parallel(
     plate_info_dictionary=dict_of_inputs, run_name=run_name
 )
-
