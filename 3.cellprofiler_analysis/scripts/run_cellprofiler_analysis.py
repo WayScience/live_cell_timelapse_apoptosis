@@ -15,7 +15,6 @@ import sys
 sys.path.append("../../utils/")
 import cp_parallel
 
-
 # ## Set paths and variables
 
 # In[2]:
@@ -29,12 +28,12 @@ output_dir = pathlib.Path("../analysis_output")
 output_dir.mkdir(exist_ok=True, parents=True)
 
 # directory where images are located within folders
-images_dir = pathlib.Path(
-    "../../0.download_data"
-)
+images_dir = pathlib.Path("../../2.cellprofiler_ic_processing/illum_directory")
 
 # path to plugins directory as one of the pipelines uses the RunCellpose plugin
-plugins_dir = pathlib.Path("/home/jenna/Desktop/Github/CellProfiler/cellprofiler/modules/plugins")
+plugins_dir = pathlib.Path(
+    "/home/lippincm/Documents/CellProfiler/src/frontend/cellprofiler/modules/plugins"
+)
 
 
 # ## Create dictionary with all info for each plate
@@ -88,7 +87,7 @@ pprint.pprint(dict_of_inputs, indent=4)
 
 
 # ## Run analysis pipeline on each plate in parallel
-# 
+#
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
 # In[ ]:
@@ -99,4 +98,3 @@ cp_parallel.run_cellprofiler_parallel(
     run_name=run_name,
     plugins_dir=plugins_dir,
 )
-
