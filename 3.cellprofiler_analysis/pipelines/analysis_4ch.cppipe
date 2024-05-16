@@ -72,7 +72,7 @@ Groups:[module_num:4|svn_version:'Unknown'|variable_revision_number:2|show_windo
     Metadata category:Well
     Metadata category:FOV
 
-ImageMath:[module_num:5|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['This module was suggested by Saguaro Bio and approved by Jenna Tomkinson and added by Mike Lippincott. ', '', 'We want a more robust segmentation of the cytoplasm. To do so we (the computer(s)) do some quick image maths to add the cytoplasmic channel pixel values together. This ensures the best segementaion across cell states where the zwitterionic dyes are drastically cahnging.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ImageMath:[module_num:5|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['This module was suggested by Saguaro Bio and approved by Jenna Tomkinson and added by Mike Lippincott. ', '', 'We want a more robust segmentation of the cytoplasm. To do so, we utilize the ImageMath module to add all the cytoplasmic channel pixel values together to merge into one channel for segmenting whole cells. This ensures the best segmentation across cell states where the zwitterionic dyes are drastically changing.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Operation:Add
     Raise the power of the result by:1.0
     Multiply the result by:1.0
