@@ -95,7 +95,7 @@ ImageMath:[module_num:5|svn_version:'Unknown'|variable_revision_number:5|show_wi
     Multiply the third image by:1.0
     Measurement:
 
-IdentifyPrimaryObjects:[module_num:6|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Segment nuclei from the DNA channel. Currently the most optimal parameters to identify both dying and normal nuclei and attmepting to declump clustered nuclei. Note: It is not awlays successful at segmenting between two nuclei.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+IdentifyPrimaryObjects:[module_num:6|svn_version:'Unknown'|variable_revision_number:15|show_window:False|notes:['Segment nuclei from the DNA channel. Currently, the most optimal parameters are to identify both dying and normal nuclei and attempt to de-clump clustered nuclei. Note: It is not always successful at segmenting between two nuclei or one individual nuclei, which can be expected of segmentation. Our current parameters minimize the mis-segmentations.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:DNA
     Name the primary objects to be identified:Nuclei
     Typical diameter of objects, in pixel units (Min,Max):20,90
