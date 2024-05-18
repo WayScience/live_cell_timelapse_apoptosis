@@ -24,7 +24,9 @@ data/2023*
 3.cellprofiler_analysis/analysis_output
 
 # cytomining results
-4.process_features/data/*
+4.process_features/data/normalized_data/*
+4.process_features/data/annotated_data/*
+4.process_features/data/converted_data/*
 
 # cytomining logs
 **runinfo
