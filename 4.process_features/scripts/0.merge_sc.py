@@ -34,13 +34,9 @@ output_dir = pathlib.Path("../data/converted_data")
 output_dir.mkdir(exist_ok=True, parents=True)
 
 
+# ## set config joins for each preset
+
 # In[3]:
-
-
-# set config joins for each preset
-
-
-# In[4]:
 
 
 # preset configurations based on typical CellProfiler outputs
@@ -80,7 +76,7 @@ presets.config["cellprofiler_sqlite_pycytominer"][
                 """
 
 
-# In[5]:
+# In[4]:
 
 
 dict_of_inputs = {
@@ -212,7 +208,7 @@ pprint.pprint(dict_of_inputs, indent=4)
 #
 # This was not run to completion as we use the nbconverted python file for full run.
 
-# In[6]:
+# In[5]:
 
 
 # run through each run with each set of paths based on dictionary

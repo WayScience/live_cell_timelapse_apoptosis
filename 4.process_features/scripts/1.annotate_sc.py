@@ -64,31 +64,28 @@ dict_of_inputs = {
 
 # ## Annotate merged single cells
 
+# In[ ]:
+
+
+# In[ ]:
+
+
+# In[ ]:
+
+
 # In[4]:
-
-
-single_cell_df = pd.read_parquet(
-    f"{data_dir}/20230920ChromaLiveTL_24hr4ch_MaxIP.parquet"
-)
-platemap_df = pd.read_csv(f"{platemap_path}/platemap_24h.csv")
-
-
-# In[5]:
-
-
-print(single_cell_df.shape)
-single_cell_df.head()
-# find columns that have path in the name
-path_cols = [col for col in single_cell_df.columns if "Image" in col]
-path_cols
-
-
-# In[6]:
 
 
 for data_run, info in dict_of_inputs.items():
     # load in converted parquet file as df to use in annotate function
     single_cell_df = pd.read_parquet(info["source_path"])
+    single_cell_df.rename(
+        columns={
+            "Image_Metadata_FOV": "Metadata_FOV",
+            "Image_Metadata_Time": "Metadata_Time",
+        },
+        inplace=True,
+    )
     platemap_df = pd.read_csv(info["platemap_path"])
     output_file = str(pathlib.Path(f"{output_dir}/{data_run}_sc.parquet"))
     print(f"Adding annotations to merged single cells for {data_run}!")
@@ -106,6 +103,20 @@ for data_run, info in dict_of_inputs.items():
     # insert the column as the second index column in the dataframe
     annotated_df.insert(1, "Metadata_Well", well_column)
     annotated_df.insert(2, "Metadata_number_of_singlecells", singlecell_column)
+
+    # rename metadata columns to match the expected column names
+    columns_to_rename = {
+        "Nuclei_Location_Center_Y": "Metadata_Nuclei_Location_Center_Y",
+        "Nuclei_Location_Center_X": "Metadata_Nuclei_Location_Center_X",
+    }
+    # Image_FileName cols
+    for col in annotated_df.columns:
+        if "Image_FileName" in col:
+            columns_to_rename[col] = f"Metadata_{col}"
+        elif "Image_PathName" in col:
+            columns_to_rename[col] = f"Metadata_{col}"
+    # rename metadata columns
+    annotated_df.rename(columns=columns_to_rename, inplace=True)
 
     # save annotated df as parquet file
     output(
