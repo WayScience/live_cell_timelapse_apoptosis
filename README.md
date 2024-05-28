@@ -1,14 +1,41 @@
-# Live Cell Timelapse Apoptosis Analysis
+# Live cell timelapse apoptosis analysis
 
-This repository contains the code to analyze live cell timelapse microscopy data of apoptosis in HeLa cells.
-The goal of this analysis repository is to build a pipeline and framework to analyze live cell timelapse microscopy data modes.
-Specifically, multi-channel fluorescence microscopy data.
-We will do use by extracting morphology features from images using [CellProfiler](https://cellprofiler.org/) and using the coordinate information to extract single cell representation using a self supervised learning approach.
-The self supervised learning approach is implemented by using [scDINO](https://github.com/JacobHanimann/scDINO).
+The goal of this project is to develop a pipeline to analyze timelapse images of live cells undergoing apoptosis.
+The pipeline will be able to detect cells, track them over time, and classify them as either apoptotic or non-apoptotic.
+Each dataset or acquisition condidtions of images each contains timelapse images of HeLa cells in a 96-well plate.
+These cells are treated with varying concentrations of staurosporine, a drug that induces apoptosis.
 
-The sample data and upstream analysis of such data, including image analysis with CellProfiler and image-profiling with CytoTable and pycytominer, can be found in the sibling repository [live_cell_timelapse_apoptosis](https://github.com/WayScience/live_cell_timelapse_apoptosis).
+## Data information
 
-## Use
-For each of the modules there are specific conda environments that are used to run the code.
-The conda environments can be found in the [environments](environments) directory.
-For instructions on how to create the conda environments, please refer to the [README](environments/README.md) in the environments(environments) directory.
+### Doses of staurosporine and replicates
+
+| Staurosporine concentration (nM) | Number of replicates |
+|----------------------------------|----------------------|
+| 0                                | 3                    |
+| 0.61                             | 3                    |
+| 1.22                             | 3                    |
+| 2.44                             | 3                    |
+| 4.88                             | 3                    |
+| 9.77                             | 3                    |
+| 19.53                            | 3                    |
+| 39.06                            | 3                    |
+| 78.13                            | 3                    |
+| 156.25                           | 3                    |
+
+### Image acquisition
+
+For 4 channel data we acquired at the following wavelengths:
+
+| Channel | Excitation wavelength (nm) | Emission wavelength (nm) |
+|---------|-----------------------------|--------------------------|
+| Hoecsht | 405 | 447/60 |
+| ChromaLive 488 | 488 | 617/73 |
+| ChromaLive 488-2 | 488 | 685/40 |
+| ChromaLive 561 | 561 | 617/73 |
+
+For 2 channel terminal Annexin V data we acquired at the following wavelengths:
+
+| Channel | Excitation wavelength (nm) | Emission wavelength (nm) |
+|---------|-----------------------------|--------------------------|
+| Hoecsht | 405 | 447/60 |
+| Annexin V | 640 | 685/40 |

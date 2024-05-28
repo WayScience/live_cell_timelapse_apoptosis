@@ -1,0 +1,53 @@
+# this file was downloaded and modified from
+# https://github.com/JacobHanimann/scDINO
+meta:
+  name_of_run: "apoptosis_timelapse"
+  output_dir: "outputdir"
+  # dataset dir needs to be changed to the location of the dataset
+  dataset_dir: "../../data/processed_images/crops"
+  folder_depth_for_labels: 0 # 0 is the folder where the images are, 1 is the folder above, etc.
+  test_datasetsplit_fraction: 1.0
+  seed: 0 #should match scDINO seed if you want to use the same train/test split
+  images_are_RGB: False
+  channel_dict: { 0: "DNA", 1: "channel488-1", 2: "channel488-2", 3: "channel561" } #do not use underscore or slash in channel name
+  # selected channel combination is which channels get analyzed, 01234 is all 5 channels, 0 is only APC, 1 is only BF, etc.
+  # selected_channel_combination_per_run: ["01234", "0", "1", "2", "3", "4"]
+  selected_channel_combination_per_run: ["0", "1", "2", "3"]
+  center_crop: 0 #0 is no center crop
+compute_cls_features:
+  use_weighted_sampler: False # if False, valdataset is used defined in meta
+  class_weights: "[0.1, 0.1, 0.1, 0.1, 0.1]" # only used if use_weighted_sampler is True, length of list must be equal to number of classes
+  num_samples: 5000 # only used if use_weighted_sampler is True
+  normalize: True
+  parse_mean_std_from_file: True
+  mean_std_file_location: "../../data/processed_images/mean_std_normalization/mean_std.txt" #"dir/mean_and_std_of_dataset.txt"
+  norm_per_channel: "[(0.1, 0.1, 0.1, 0.1, 0.1),(0.1, 0.1, 0.1, 0.1, 0.1)]" #only used if parse_mean_std_from_file is False
+  use_cuda: True
+  num_gpus: 1
+  batch_size_per_gpu: 24
+  num_workers: 20
+  # change the path to the location of the model
+  pretrained_weights: "../../data/models" #dir_to_pretrained_weights
+  read_model_arch_dynamically: False
+  arch: "vit_small" #only used if read_model_arch_dynamically is False
+  patch_size: 16 #only used if read_model_arch_dynamically is False
+  use_mean_patch_embedding: True
+  use_custom_embedding_map: True # if True, the embedding map is defined by the user below
+  custom_embedding_map: "{0:0, 1:1, 2:2, 3:3}" #first is the channel of the input image and the second is the channel of the embedding
+  images_are_RGB: False
+  resize: False
+  resize_length: 224 #only used if resize is True
+attention_visualisation:
+  num_images_per_class: 1
+kNN:
+  global:
+    n_neighbors: [5, 10, 50, 100, 200, 500]
+    temperature: 0.1
+umap_eval:
+  n_neighbors: 30
+  min_dist: 0.4
+  n_components: 2
+  metric: euclidean
+  spread: 1.1
+  epochs: 100
+  topometry_plots: False
