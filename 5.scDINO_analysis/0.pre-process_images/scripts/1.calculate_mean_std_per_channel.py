@@ -38,9 +38,6 @@ image_list = [f for f in files if f.is_file()]
 print(f"Found {len(files)} files")
 
 
-# In[ ]:
-
-
 # In[3]:
 
 

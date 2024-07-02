@@ -15,12 +15,12 @@ from pycytominer.cyto_utils import output
 
 # set path to normalized data
 normalized_data_path = pathlib.Path(
-    "../data/20231017ChromaLive_6hr_4ch_MaxIP_normalized_data.parquet"
+    "../data/20231017ChromaLive_6hr_4ch_MaxIP_normalized_combined_data.parquet"
 ).resolve(strict=True)
 
 # set the outout file path
 feature_selected_output_file_path = pathlib.Path(
-    "../data/20231017ChromaLive_6hr_4ch_MaxIP_normalized_data_feature_selected.parquet"
+    "../data/20231017ChromaLive_6hr_4ch_MaxIP_normalized_combined_data_feature_selected.parquet"
 ).resolve()
 
 # read in the normalized data
@@ -53,11 +53,32 @@ feature_columns = normalized_data.columns.difference(metadata_features).to_list(
 # In[4]:
 
 
+manual_block_list = [
+    "Nuclei_TrackObjects_Displacement_50",
+    "Nuclei_TrackObjects_DistanceTraveled_50",
+    "Nuclei_TrackObjects_IntegratedDistance_50",
+    "Nuclei_TrackObjects_Label_50",
+    "Nuclei_TrackObjects_Linearity_50",
+    "Nuclei_TrackObjects_ParentObjectNumber_50",
+    "Nuclei_AreaShape_BoundingBoxArea",
+    "Nuclei_AreaShape_BoundingBoxMinimum_X",
+    "Cells_AreaShape_BoundingBoxArea",
+]
+
+
+# In[5]:
+
+
 feature_select_df = feature_select(
     normalized_data,
     operation=feature_select_ops,
     features=feature_columns,
 )
+# add "Metadata_" to the beginning of each column name in the list
+feature_select_df.columns = [
+    "Metadata_" + column if column in manual_block_list else column
+    for column in feature_select_df.columns
+]
 print("Feature selection complete, saving to parquet file!")
 # save features selected df as parquet file
 output(

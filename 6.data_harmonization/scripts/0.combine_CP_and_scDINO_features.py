@@ -16,7 +16,7 @@ import pandas as pd
 
 # define data paths for import
 cellprofiller_annotated_features_path = pathlib.Path(
-    "../../4.process_features/data/annotated_data/run_20231017ChromaLive_6hr_4ch_MaxIP_sc.parquet"
+    "../../4.process_CP_features/data/annotated_data/run_20231017ChromaLive_6hr_4ch_MaxIP_sc.parquet"
 ).resolve(strict=True)
 
 scdino_features = pathlib.Path(

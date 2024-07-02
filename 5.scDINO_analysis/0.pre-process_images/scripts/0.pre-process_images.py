@@ -30,7 +30,7 @@ import tqdm
 
 # set the path to the data directory
 data_file_dir = pathlib.Path(
-    "../../../4.process_features/data/annotated_data/run_20231017ChromaLive_6hr_4ch_MaxIP_sc.parquet"
+    "../../../4.process_CP_features/data/annotated_data/run_20231017ChromaLive_6hr_4ch_MaxIP_sc.parquet"
 ).resolve(strict=True)
 
 # read in the data
@@ -166,7 +166,9 @@ image_path = pathlib.Path(
 radius = 50
 
 
-# In[6]:
+# ### notebook is stopped here to run the following cell as a script
+
+# In[ ]:
 
 
 # set the number of processes to use

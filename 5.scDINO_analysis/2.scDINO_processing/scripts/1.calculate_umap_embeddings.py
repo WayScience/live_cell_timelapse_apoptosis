@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# <span style="color:red; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; font-size:2em;">An Exception was encountered at '<a href="#papermill-error-cell">In [6]</a>'.</span>
+
 # In[1]:
 
 
@@ -62,6 +64,8 @@ umap_embedding_df = pd.DataFrame(umap_embedding, columns=["UMAP1", "UMAP2"])
 umap_embedding_df = pd.concat([metadata_df, umap_embedding_df], axis=1)
 umap_embedding_df.head()
 
+
+# <span id="papermill-error-cell" style="color:red; font-family:Helvetica Neue, Helvetica, Arial, sans-serif; font-size:2em;">Execution using papermill encountered an exception here and stopped:</span>
 
 # In[6]:
 

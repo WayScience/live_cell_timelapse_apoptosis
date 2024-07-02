@@ -5,24 +5,6 @@ __pycache__/
 # raw data
 data/
 
-# snakemake output
-1.scDINO_run/.snakemake/
-
-# scDINO output
-1.scDINO_run/outputdir/
-1.scDINO_run/logs/
-
-# attention images
-1.scDINO_run/outputdir/test_run/attention_images/
-
-# env vars
-2.scDINO_processing/set_up_env_vars.sh
-2.scDINO_processing/set_up_env_vars.r
-2.scDINO_processing/notebooks/4.deploy_shiny_app.ipynb
-2.scDINO_processing/scripts/4.deploy_shiny_app.r
-
-# shiny files:
-2.scDINO_processing/temporal_shiny_app/rsconnect/
 # raw data but keep the metadata
 data/2023*
 
@@ -51,19 +33,21 @@ data/2023*
 # cytomining results
 4.process_features/data/
 
-5.scDINO_analysis/1.scDINO_run/outputdir/*
-5.scDINO_analysis/1.scDINO_run/logs/*
-5.scDINO_analysis/1.scDINO_run/.snakemake/*
+# scDINO outputs
+5.scDINO_analysis/1.scDINO_run/outputdir
+# scDINO logs
+5.scDINO_analysis/1.scDINO_run/.snakemake
+5.scDINO_analysis/1.scDINO_run/logs
 
-5.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
+# temporal shiny app
+5.scDINO_analysis/2.scDINO_processing/temporal_shiny_app
 5.scDINO_analysis/2.scDINO_processing/notebooks/4.deploy_shiny_app.ipynb
+5.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
+5.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
 
-6.data_harmonization/data/*
-
-
+# data
 data/models/dino_deitsmall16_pretrain_full_checkpoint.pth
-data/processed_images/crops/*
-
+data/processed_images/**
 
 # cytomining logs
 **runinfo
