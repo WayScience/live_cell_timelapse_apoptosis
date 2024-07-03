@@ -115,6 +115,8 @@ for data_run, info in dict_of_inputs.items():
             columns_to_rename[col] = f"Metadata_{col}"
         elif "Image_PathName" in col:
             columns_to_rename[col] = f"Metadata_{col}"
+        elif "TrackObjects" in col:
+            columns_to_rename[col] = f"Metadata_{col}"
     # rename metadata columns
     annotated_df.rename(columns=columns_to_rename, inplace=True)
 
