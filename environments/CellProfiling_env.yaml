@@ -10,7 +10,7 @@ dependencies:
 - conda-forge::jupyterlab
 - conda-forge::nbconvert=6.4.4
 - conda-forge::pip
-- conda-forge::numpyd
+- conda-forge::numpy
 - conda-forge::pyyaml
 - conda-forge::matplotlib
 - conda-forge::seaborn
@@ -38,6 +38,6 @@ dependencies:
     - cellpose>=2.1.0,<3.0
     - cellpose_omni
     - omnipose
-    - CytoTable==0.0.6
+    - CytoTable==0.0.9
     - pycytominer==1.1.0
     - javabridge

@@ -28,6 +28,9 @@ sys.path.append("../CellProfiler_optuna_utils/")
 from optuna_profiling_utils import (
     adjust_cpipe_file_LAP,
     adjust_cpipe_file_overlap,
+    calculate_entropy,
+    extract_single_time_cell_tracking_entropy,
+    extract_temporal_cell_tracking_entropy,
     loss_function_from_CP_features,
     loss_function_MSE,
     remove_trial_intermediate_files,
@@ -84,6 +87,11 @@ remove_trial_intermediate_files(
     output_dir=pathlib.Path("../analysis_output/"),
 )
 
+# remove cpipe files
+remove_trial_intermediate_files(
+    output_dir=pathlib.Path("../pipelines/generated_pipelines").resolve(),
+)
+
 
 # In[4]:
 
@@ -113,7 +121,7 @@ dict_of_inputs_for_cellprofiler = {
         ).resolve(),
         "path_to_output": pathlib.Path("../analysis_output/trial1/").resolve(),
         "path_to_pipeline": pathlib.Path(
-            "../pipelines/cell_tracking_optimization.cppipe"
+            "../pipelines/cell_tracking_optimization_LAP.cppipe"
         ).resolve(),
     },
 }
@@ -184,22 +192,31 @@ dict_of_inputs_for_pycytominer = {
 # define the search space in a dictionary format
 # defined as [min, max] for each parameter
 search_space_parameters_LAP = {
-    "std_search_radius": [1, 100],
-    "search_radius_min": [1, 10],
-    "search_radius_max": [15, 100],
-    "gap_closing_cost": [10, 100],
-    "split_alternative_cost": [10, 100],
-    "merge_alternative_cost": [10, 100],
+    "std_search_radius": [1, 5],  # standard deviation of the search radius
+    "search_radius_min": [1, 15],  # minimum search radius in pixels
+    "search_radius_max": [16, 100],  # maximum search radius in pixels
+    "gap_closing_cost": [1, 100],
+    "split_alternative_cost": [1, 100],
+    "merge_alternative_cost": [1, 100],
     "Maximum_gap_displacement": [1, 15],
-    "Maximum_split_score": [10, 100],
-    "Maximum_merge_score": [10, 100],
+    "Maximum_split_score": [1, 100],
+    "Maximum_merge_score": [1, 100],
     "Maximum_temporal_gap": [1, 5],
-    "Mitosis_alternative_cost": [10, 150],
-    "Maximum_mitosis_distance": [10, 150],
+    "Mitosis_alternative_cost": [1, 50],
+    "Maximum_mitosis_distance": [1, 100],  # in pixels
 }
 
+# calculate the combination of parameters
+combinations = 1
+for key in search_space_parameters_LAP.keys():
+    combinations *= (
+        search_space_parameters_LAP[key][1] - search_space_parameters_LAP[key][0]
+    )
+print(combinations)
+
+
 search_space_parameters_overlap = {
-    "Maximum pixel distance to consider matches": [1, 101],
+    "Maximum pixel distance to consider matches": [1, 201],
 }
 
 
@@ -218,6 +235,7 @@ cpipe_template_file_overlap = pathlib.Path(
 # parameters for the optimization
 
 
+# this function must be defined in the order of the parameters in the search space
 def objective(
     trial: optuna.Trial,
     search_space_parameters_LAP: dict,
@@ -229,8 +247,41 @@ def objective(
     cpipe_template_file_overlap: pathlib.Path,
     plugins_dir: pathlib.Path,
     tracking_type: str = "LAP",
-):
+) -> float:
+    """
+    This is the objective function that will be optimized by Optuna.
+    Here we return the loss function that we want to minimize.
 
+    Parameters
+    ----------
+    trial : optuna.Trial
+        The trial object that will be used to sample the hyperparameters.
+    search_space_parameters_LAP : dict
+        The dictionary of the search space parameters for the LAP tracking type.
+    search_space_parameters_overlap : dict
+        The dictionary of the search space parameters for the overlap tracking type.
+    dict_of_inputs_for_cellprofiler : dict
+        The dictionary of inputs for cellprofiler.
+    dict_of_inputs_for_cytotable : dict
+        The dictionary of inputs for CytoTable.
+    dict_of_inputs_for_pycytominer : dict
+        The dictionary of inputs for pycytominer.
+    cpipe_template_file_LAP : pathlib.Path
+        The path to the LAP pipeline template file.
+    cpipe_template_file_overlap : pathlib.Path
+        The path to the overlap pipeline template file.
+    plugins_dir : pathlib.Path
+        The path to the CellProfiler plugins directory.
+    tracking_type : str
+        The type of tracking to use. Options are 'LAP' or 'overlap'.
+
+    Returns
+    -------
+    float
+        The loss value to minimize.
+    """
+
+    # assert that the tracking type is valid
     assert tracking_type in ["LAP", "overlap"], "Invalid tracking type"
     if tracking_type == "LAP":
         dictionary_of_selected_parameters = {
@@ -295,6 +346,7 @@ def objective(
                 search_space_parameters_LAP["Maximum_mitosis_distance"][1],
             ),
         }
+
         # run the pipeline adjustment function
         adjusted_cpipe_file = adjust_cpipe_file_LAP(
             trial_number=trial.number,
@@ -349,7 +401,6 @@ def objective(
     dict_of_inputs_for_cytotable["run_20231004ChromaLive_6hr_4ch_MaxIP"][
         "dest_path"
     ] = pathlib.Path(f"{output_dir}/Track_Objects.parquet").resolve()
-
     # pycytominer
     dict_of_inputs_for_pycytominer["run_20231017ChromaLive_6hr_4ch_MaxIP"][
         "source_path"
@@ -408,18 +459,82 @@ def objective(
         _actual_column_to_sum=_actual_column_to_sum,
     )
 
-    # calculate the loss function
-    # loss = loss_function_MSE(actual_cell_counts, target_cell_counts)
-    loss = loss_function_from_CP_features(
-        profile_path=output_file_path,
-        loss_method="harmonic_mean",
-        feature_s_to_use=[
-            f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei_{max_pixels}",
-            f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei_{max_pixels}",
-            f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei_{max_pixels}",
-            f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei_{max_pixels}",
-        ],
-    )
+    if tracking_type == "overlap":
+        loss = extract_single_time_cell_tracking_entropy(
+            df_sc_path=output_file_path,
+            columns_to_use=[
+                "Metadata_number_of_singlecells",
+                "Metadata_dose",
+                "Metadata_Time",
+                "Metadata_Well",
+                "Metadata_FOV",
+                f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei_{max_pixels}",
+                f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei_{max_pixels}",
+                f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei_{max_pixels}",
+                f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei_{max_pixels}",
+                f"Metadata_Nuclei_TrackObjects_Label_{max_pixels}",
+                "Image_Count_Nuclei",
+            ],
+            columns_to_groupby=["Metadata_Time", "Metadata_Well", "Metadata_FOV"],
+            columns_aggregate_function={
+                "Metadata_number_of_singlecells": "mean",
+                "Metadata_dose": "first",
+                f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei_{max_pixels}": "mean",
+                f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei_{max_pixels}": "mean",
+                f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei_{max_pixels}": "mean",
+                f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei_{max_pixels}": "mean",
+                f"Metadata_Nuclei_TrackObjects_Label_{max_pixels}": "max",
+                "Image_Count_Nuclei": "mean",
+            },
+            Max_Cell_Label_col=f"Metadata_Nuclei_TrackObjects_Label_{max_pixels}",
+            Lost_Object_Count_col=f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei_{max_pixels}",
+            Merged_Object_Count_col=f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei_{max_pixels}",
+            New_Object_Count_col=f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei_{max_pixels}",
+            Split_Object_Count_col=f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei_{max_pixels}",
+            Image_Count_Nuclei_col="Image_Count_Nuclei",
+            time_col="Metadata_Time",
+            well_col="Metadata_Well",
+            fov_col="Metadata_FOV",
+            sliding_window_size=2,
+        )
+    elif tracking_type == "LAP":
+        loss = extract_single_time_cell_tracking_entropy(
+            df_sc_path=output_file_path,
+            columns_to_use=[
+                "Metadata_number_of_singlecells",
+                "Metadata_dose",
+                "Metadata_Time",
+                "Metadata_Well",
+                "Metadata_FOV",
+                "Metadata_Image_TrackObjects_LostObjectCount_Nuclei",
+                "Metadata_Image_TrackObjects_MergedObjectCount_Nuclei",
+                "Metadata_Image_TrackObjects_NewObjectCount_Nuclei",
+                "Metadata_Image_TrackObjects_SplitObjectCount_Nuclei",
+                "Metadata_Nuclei_TrackObjects_Label",
+                "Image_Count_Nuclei",
+            ],
+            columns_to_groupby=["Metadata_Time", "Metadata_Well", "Metadata_FOV"],
+            columns_aggregate_function={
+                "Metadata_number_of_singlecells": "mean",
+                "Metadata_dose": "first",
+                "Metadata_Image_TrackObjects_LostObjectCount_Nuclei": "mean",
+                "Metadata_Image_TrackObjects_MergedObjectCount_Nuclei": "mean",
+                "Metadata_Image_TrackObjects_NewObjectCount_Nuclei": "mean",
+                "Metadata_Image_TrackObjects_SplitObjectCount_Nuclei": "mean",
+                "Metadata_Nuclei_TrackObjects_Label": "max",
+                "Image_Count_Nuclei": "mean",
+            },
+            Max_Cell_Label_col="Metadata_Nuclei_TrackObjects_Label",
+            Lost_Object_Count_col="Metadata_Image_TrackObjects_LostObjectCount_Nuclei",
+            Merged_Object_Count_col="Metadata_Image_TrackObjects_MergedObjectCount_Nuclei",
+            New_Object_Count_col="Metadata_Image_TrackObjects_NewObjectCount_Nuclei",
+            Split_Object_Count_col="Metadata_Image_TrackObjects_SplitObjectCount_Nuclei",
+            Image_Count_Nuclei_col="Image_Count_Nuclei",
+            time_col="Metadata_Time",
+            well_col="Metadata_Well",
+            fov_col="Metadata_FOV",
+            sliding_window_size=2,
+        )
     print(f"Trial number: {trial.number}, Loss: {loss}")
     if trial.should_prune():
         raise optuna.exceptions.TrialPruned()
@@ -456,7 +571,7 @@ objective_wrapper = lambda trial: objective(
 # make study directory
 study_dir = pathlib.Path("../analysis_output/study_dir").resolve()
 study_dir.mkdir(exist_ok=True, parents=True)
-# create a study
+# create a study object
 if tracking_type == "overlap":
     study = optuna.create_study(
         study_name="cellprofiler_optimization_overlap",
@@ -466,7 +581,7 @@ if tracking_type == "overlap":
         sampler=optuna.samplers.RandomSampler(seed=0),
     )
     # define study.optimize with the objective function
-    study.optimize(objective_wrapper, n_trials=n_trials)
+    study.optimize(objective_wrapper, n_trials=5)
 
 elif tracking_type == "LAP":
     study = optuna.create_study(

@@ -102,7 +102,7 @@ TrackObjects:[module_num:6|svn_version:'Unknown'|variable_revision_number:7|show
     Choose a tracking method:Overlap
     Select the objects to track:Nuclei
     Select object measurement to use for tracking:None
-    Maximum pixel distance to consider matches:56
+    Maximum pixel distance to consider matches:111
     Select display option:Color and Number
     Save color-coded image?:Yes
     Name the output image:TrackedCells
@@ -206,7 +206,7 @@ ExportToDatabase:[module_num:9|svn_version:'Unknown'|variable_revision_number:28
     Select the Y-axis measurement:None
     Select the Y-axis index:ImageNumber
 
-SaveImages:[module_num:10|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+SaveImages:[module_num:10|svn_version:'Unknown'|variable_revision_number:16|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:False|wants_pause:False]
     Select the type of image to save:Image
     Select the image to save:TrackedCells
     Select method for constructing file names:From image filename

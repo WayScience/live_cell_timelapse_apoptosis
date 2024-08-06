@@ -213,8 +213,8 @@ def extract_pixel_number_for_overlap_tracking(
     for line in lines:
         if string in line:
             pixel_number = int(line.split(string)[-1])
-            break
-    return pixel_number
+            return pixel_number
+    return None
 
 
 def run_CytoTable(cytotable_dict: dict, dest_datatype: str = "parquet") -> None:
@@ -490,6 +490,29 @@ def loss_function_MSE(cell_count: list, target_cell_count: list) -> float:
     return loss
 
 
+def harmonic_mean(array: np.array) -> int:
+    """This function calculates the harmonic mean of an array of values.
+
+    Returns
+    -------
+    Float
+        The harmonic mean of the array of values.
+    """
+    array_len = len(array)
+    sum_of_reciprocals = 0
+    for value in array:
+        if value == 0:
+            pass
+        else:
+            sum_of_reciprocals += 1 / value
+    if sum_of_reciprocals == 0:
+        harmonic_mean = 1000
+    else:
+        harmonic_mean = array_len / sum_of_reciprocals
+
+    return harmonic_mean
+
+
 def loss_function_from_CP_features(
     profile_path: pathlib.Path,
     feature_s_to_use: list,
@@ -626,3 +649,509 @@ def remove_trial_intermediate_files(
             print(directory)
             path = pathlib.Path(directory)
             remove_files(path)
+
+
+def calculate_entropy(
+    t1_count: float,
+    t2_count: float,
+) -> float:
+    """This function calculates the entropy of two timepoints
+
+    Parameters
+    ----------
+    t1_count : int | float
+        The timepoint one cell count or measurement of choice
+    t2_count : int | float
+        The timepoint two cell count or measurement of choice
+
+    Returns
+    -------
+    float
+        The calculated entropy of the two timepoints
+    """
+    total_cells = t1_count + t2_count
+    cell_num_change = abs(t1_count - t2_count)
+    if cell_num_change != 0 and total_cells != 0:
+        return float(
+            -(cell_num_change / total_cells) * np.log2(cell_num_change / total_cells)
+        )
+    else:
+        return 0.0
+
+
+def extract_single_time_cell_tracking_entropy(
+    df_sc_path: pathlib.Path,
+    columns_to_use: list = [
+        "Metadata_number_of_singlecells",
+        "Metadata_dose",
+        "Metadata_Time",
+        "Metadata_Well",
+        "Metadata_FOV",
+        f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei",
+        f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei",
+        f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei",
+        f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei",
+        f"Metadata_Nuclei_TrackObjects_Label",
+        "Image_Count_Nuclei",
+    ],
+    columns_to_groupby: list = ["Metadata_Time", "Metadata_Well", "Metadata_FOV"],
+    columns_aggregate_function: dict = {
+        "Metadata_number_of_singlecells": "mean",
+        "Metadata_dose": "first",
+        f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei": "mean",
+        f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei": "mean",
+        f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei": "mean",
+        f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei": "mean",
+        f"Metadata_Nuclei_TrackObjects_Label": "max",
+        "Image_Count_Nuclei": "mean",
+    },
+    Max_Cell_Label_col: str = f"Metadata_Nuclei_TrackObjects_Label",
+    Lost_Object_Count_col: str = f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei",
+    Merged_Object_Count_col: str = f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei",
+    New_Object_Count_col: str = f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei",
+    Split_Object_Count_col: str = f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei",
+    Image_Count_Nuclei_col: str = "Image_Count_Nuclei",
+    max_pixels: int = 50,
+    time_col: str = "Metadata_Time",
+    well_col: str = "Metadata_Well",
+    fov_col: str = "Metadata_FOV",
+    sliding_window_size: int = 2,
+) -> float:
+    """This function calculates the entropy of the cell tracking over time for each well and FOV
+    The entropy is calculated as the normalized harmonic mean of the entropy other features
+    A single mean entropy value is returned
+
+    Parameters
+    ----------
+    df_sc : pd.DataFrame
+        df_sc is a pandas dataframe that contains the single cell data
+    columns_to_use : list, optional
+        Columns to use to load from the CP pipeline output, by default [
+            "Metadata_number_of_singlecells",
+            "Metadata_dose",
+            "Metadata_Time",
+            "Metadata_Well",
+            "Metadata_FOV",
+            f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei",
+            f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei",
+            f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei",
+            f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei",
+            f"Metadata_Nuclei_TrackObjects_Label",
+            "Image_Count_Nuclei",
+        ]
+    columns_to_groupby : list, optional
+        Columns to group by, by default ["Metadata_Time", "Metadata_Well", "Metadata_FOV"]
+    columns_aggregate_function : _type_, optional
+        A dictionary that identifies which aggregation function to use for each feature, by default {"Metadata_number_of_singlecells": "mean", "Metadata_dose": "first", f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei": "mean", f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei": "mean", f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei": "mean", f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei": "mean", f"Metadata_Nuclei_TrackObjects_Label": "max", "Image_Count_Nuclei": "mean", }
+    Max_Cell_Label_col : str, optional
+        The name of the exact column that should be used for the Max_Cell_Label_col, by default f"Metadata_Nuclei_TrackObjects_Label"
+    Lost_Object_Count_col : str, optional
+        The name of the exact column that should be used for the Lost_Object_Count_col, by default f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei"
+    Merged_Object_Count_col : str, optional
+        The name of the exact column that should be used for the Merged_Object_Count_col, by default f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei"
+    New_Object_Count_col : str, optional
+        The name of the exact column that should be used for the New_Object_Count_col, by default f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei"
+    Split_Object_Count_col : str, optional
+        The name of the exact column that should be used for the Split_Object_Count_col, by default f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei"
+    Image_Count_Nuclei_col : str, optional
+        The name of the exact column that should be used for the Image_Count_Nuclei_col, by default "Image_Count_Nuclei"
+    max_pixels : int, optional
+        The name of the exact column that should be used for the max_pixels, by default 50
+    time_col : str, optional
+        The name of the exact column that should be used for the time_col, by default "Metadata_Time"
+    well_col : str, optional
+        The name of the exact column that should be used for the well_col, by default "Metadata_Well"
+    fov_col : str, optional
+        The name of the exact column that should be used for the fov_col, by default "Metadata_FOV"
+    sliding_window_size : int, optional
+        The size of the number of timepoints to include in the sliding window, by default 2
+
+    Returns
+    -------
+    float
+        Return a single float value that represents the mean entropy of the cell tracking over time
+    """
+    # keep only the columns that are needed
+    df_sc = pd.read_parquet(df_sc_path, columns=columns_to_use)
+
+    # aggregate by time, Well, and ImageNumber
+    df_sc = (
+        df_sc.groupby(columns_to_groupby).agg(columns_aggregate_function).reset_index()
+    )
+    # sort the values by image number
+    # merge the well, time, and image number
+    df_sc["Metadata_Well_FOV"] = df_sc[well_col] + "_" + df_sc[fov_col].astype(str)
+    df_sc.sort_values(["Metadata_Well_FOV", time_col], inplace=True)
+    df_sc
+
+    unique_well_fovs = df_sc["Metadata_Well_FOV"].unique()
+    # sliding window entropy calculation for each well and FOV over time
+    # get the unique time points
+    unique_time_points = df_sc[time_col].unique()
+
+    # aggregate by time, Well, and ImageNumber
+    df_sc = (
+        df_sc.groupby(["Metadata_Time", "Metadata_Well", "Metadata_FOV"])
+        .agg(
+            {
+                "Metadata_number_of_singlecells": "mean",
+                "Metadata_dose": "first",
+                Max_Cell_Label_col: "max",
+                "Image_Count_Nuclei": "mean",
+            }
+        )
+        .reset_index()
+    )
+    df_sc.rename(
+        columns={
+            Max_Cell_Label_col: "Max_Cell_Label",
+            Lost_Object_Count_col: "Lost_Object_Count",
+            Merged_Object_Count_col: "Merged_Object_Count",
+            New_Object_Count_col: "New_Object_Count",
+            Split_Object_Count_col: "Split_Object_Count",
+        },
+        inplace=True,
+    )
+    # sort the values by image number
+    # merge the well, time, and image number
+    df_sc["Metadata_Well_FOV"] = (
+        df_sc["Metadata_Well"] + "_" + df_sc["Metadata_FOV"].astype(str)
+    )
+    df_sc.sort_values(["Metadata_Well_FOV", "Metadata_Time"], inplace=True)
+    df_sc
+    # iterate over each time point by the sliding window size
+    entropy_dict = {
+        "time_points": [],
+        "well_fov": [],
+        "Image_Count_Nuclei": [],
+        "Image_Count_Nuclei_entropy": [],
+        "Max_Cell_Label": [],
+        "difference_in_cell_count": [],
+    }
+    for timepoint in unique_time_points:
+        # get the time points for the sliding window
+        # get the data for the time points
+        df_sc_timepoint = df_sc.loc[df_sc[time_col] == timepoint]
+        for well_fov in unique_well_fovs:
+            _df_sc_timepoint = df_sc_timepoint.loc[
+                df_sc_timepoint["Metadata_Well_FOV"] == well_fov
+            ]
+
+            # input metadata for the entropy calculation
+            entropy_dict["time_points"].append(timepoint)
+            entropy_dict["well_fov"].append(well_fov)
+
+            ##################################################################
+            # Labeled cells vs Image count cells
+            ##################################################################
+            # print(df_sc_timepoint_1["Image_Count_Nuclei"], df_sc_timepoint_2["Image_Count_Nuclei"])
+            entropy_dict["Image_Count_Nuclei"].append(
+                _df_sc_timepoint["Image_Count_Nuclei"].values[0]
+            )
+            entropy_dict["Max_Cell_Label"].append(
+                _df_sc_timepoint["Max_Cell_Label"].values[0]
+            )
+            # calculate the entropy
+            entropy_dict["Image_Count_Nuclei_entropy"].append(
+                calculate_entropy(
+                    _df_sc_timepoint["Image_Count_Nuclei"].values[0],
+                    _df_sc_timepoint["Max_Cell_Label"].values[0],
+                )
+            )
+
+            ##################################################################
+            # Differnce in cell count
+            ##################################################################
+            # get the cell count for the time points
+            entropy_dict["difference_in_cell_count"].append(
+                abs(
+                    _df_sc_timepoint["Image_Count_Nuclei"].values[0]
+                    - _df_sc_timepoint["Max_Cell_Label"].values[0]
+                )
+            )
+
+    entropy_df = pd.DataFrame.from_dict(entropy_dict)
+    entropy_df.head()
+    # get the mean of the max cell label entropy
+    Image_Count_Nuclei_entropy = entropy_df["Image_Count_Nuclei_entropy"].max()
+    difference_in_cell_count = entropy_df["difference_in_cell_count"].max()
+    # get the harmonic mean of the entropy
+    return difference_in_cell_count
+
+
+def extract_temporal_cell_tracking_entropy(
+    df_sc_path: pd.DataFrame,
+    columns_to_use: list = [
+        "Metadata_number_of_singlecells",
+        "Metadata_dose",
+        "Metadata_Time",
+        "Metadata_Well",
+        "Metadata_FOV",
+        "Metadata_Image_TrackObjects_LostObjectCount_Nuclei",
+        "Metadata_Image_TrackObjects_MergedObjectCount_Nuclei",
+        "Metadata_Image_TrackObjects_NewObjectCount_Nuclei",
+        "Metadata_Image_TrackObjects_SplitObjectCount_Nuclei",
+        "Metadata_Nuclei_TrackObjects_Label",
+        "Image_Count_Nuclei",
+    ],
+    columns_to_groupby: list = ["Metadata_Time", "Metadata_Well", "Metadata_FOV"],
+    columns_aggregate_function: dict = {
+        "Metadata_number_of_singlecells": "mean",
+        "Metadata_dose": "first",
+        "Metadata_Image_TrackObjects_LostObjectCount_Nuclei": "mean",
+        "Metadata_Image_TrackObjects_MergedObjectCount_Nuclei": "mean",
+        "Metadata_Image_TrackObjects_NewObjectCount_Nuclei": "mean",
+        "Metadata_Image_TrackObjects_SplitObjectCount_Nuclei": "mean",
+        "Metadata_Nuclei_TrackObjects_Label": "max",
+        "Image_Count_Nuclei": "mean",
+    },
+    Max_Cell_Label_col: str = "Metadata_Nuclei_TrackObjects_Label",
+    Lost_Object_Count_col: str = "Metadata_Image_TrackObjects_LostObjectCount_Nuclei",
+    Merged_Object_Count_col: str = "Metadata_Image_TrackObjects_MergedObjectCount_Nuclei",
+    New_Object_Count_col: str = "Metadata_Image_TrackObjects_NewObjectCount_Nuclei",
+    Split_Object_Count_col: str = "Metadata_Image_TrackObjects_SplitObjectCount_Nuclei",
+    Image_Count_Nuclei_col: str = "Image_Count_Nuclei",
+    time_col: str = "Metadata_Time",
+    well_col: str = "Metadata_Well",
+    fov_col: str = "Metadata_FOV",
+    sliding_window_size: int = 2,
+) -> float:
+    """This function calculates the entropy of the cell tracking over time for each well and FOV
+    The entropy is calculated as the normalized harmonic mean of the entropy other features
+    A single mean entropy value is returned
+
+    Parameters
+    ----------
+    df_sc : pd.DataFrame
+        df_sc is a pandas dataframe that contains the single cell data
+    columns_to_use : list, optional
+        Columns to use to load from the CP pipeline output, by default [
+            "Metadata_number_of_singlecells",
+            "Metadata_dose",
+            "Metadata_Time",
+            "Metadata_Well",
+            "Metadata_FOV",
+            f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei",
+            f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei",
+            f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei",
+            f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei",
+            f"Metadata_Nuclei_TrackObjects_Label",
+            "Image_Count_Nuclei",
+        ]
+    columns_to_groupby : list, optional
+        Columns to group by, by default ["Metadata_Time", "Metadata_Well", "Metadata_FOV"]
+    columns_aggregate_function : _type_, optional
+        A dictionary that identifies which aggregation function to use for each feature, by default {"Metadata_number_of_singlecells": "mean", "Metadata_dose": "first", f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei": "mean", f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei": "mean", f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei": "mean", f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei": "mean", f"Metadata_Nuclei_TrackObjects_Label": "max", "Image_Count_Nuclei": "mean", }
+    Max_Cell_Label_col : str, optional
+        The name of the exact column that should be used for the Max_Cell_Label_col, by default f"Metadata_Nuclei_TrackObjects_Label"
+    Lost_Object_Count_col : str, optional
+        The name of the exact column that should be used for the Lost_Object_Count_col, by default f"Metadata_Image_TrackObjects_LostObjectCount_Nuclei"
+    Merged_Object_Count_col : str, optional
+        The name of the exact column that should be used for the Merged_Object_Count_col, by default f"Metadata_Image_TrackObjects_MergedObjectCount_Nuclei"
+    New_Object_Count_col : str, optional
+        The name of the exact column that should be used for the New_Object_Count_col, by default f"Metadata_Image_TrackObjects_NewObjectCount_Nuclei"
+    Split_Object_Count_col : str, optional
+        The name of the exact column that should be used for the Split_Object_Count_col, by default f"Metadata_Image_TrackObjects_SplitObjectCount_Nuclei"
+    Image_Count_Nuclei_col : str, optional
+        The name of the exact column that should be used for the Image_Count_Nuclei_col, by default "Image_Count_Nuclei"
+    max_pixels : int, optional
+        The name of the exact column that should be used for the max_pixels, by default 50
+    time_col : str, optional
+        The name of the exact column that should be used for the time_col, by default "Metadata_Time"
+    well_col : str, optional
+        The name of the exact column that should be used for the well_col, by default "Metadata_Well"
+    fov_col : str, optional
+        The name of the exact column that should be used for the fov_col, by default "Metadata_FOV"
+    sliding_window_size : int, optional
+        The size of the number of timepoints to include in the sliding window, by default 2
+
+    Returns
+    -------
+    float
+        Return a single float value that represents the mean entropy of the cell tracking over time
+    """
+    df_sc = pd.read_parquet(df_sc_path, columns=columns_to_use)
+    # keep only the columns that are needed
+    # df_sc = df_sc[
+    #     columns_to_use
+    # ]
+
+    # aggregate by time, Well, and ImageNumber
+    df_sc = (
+        df_sc.groupby(columns_to_groupby).agg(columns_aggregate_function).reset_index()
+    )
+    df_sc.rename(
+        columns={
+            Max_Cell_Label_col: "Max_Cell_Label",
+            Lost_Object_Count_col: "Lost_Object_Count",
+            Merged_Object_Count_col: "Merged_Object_Count",
+            New_Object_Count_col: "New_Object_Count",
+            Split_Object_Count_col: "Split_Object_Count",
+        },
+        inplace=True,
+    )
+    # sort the values by image number
+    # merge the well, time, and image number
+    df_sc["Metadata_Well_FOV"] = df_sc[well_col] + "_" + df_sc[fov_col].astype(str)
+    df_sc.sort_values(["Metadata_Well_FOV", time_col], inplace=True)
+    df_sc
+
+    unique_well_fovs = df_sc["Metadata_Well_FOV"].unique()
+    # sliding window entropy calculation for each well and FOV over time
+    # get the unique time points
+    unique_time_points = df_sc[time_col].unique()
+    # iterate over each time point by the sliding window size
+    entropy_dict = {
+        "time_points": [],
+        "well_fov": [],
+        "Image_Count_Nuclei_1": [],
+        "Image_Count_Nuclei_2": [],
+        "Image_Count_Nuclei_entropy": [],
+        "Max_Cell_Label_1": [],
+        "Max_Cell_Label_2": [],
+        "Max_Cell_Label_entropy": [],
+        "Lost_Object_Count_1": [],
+        "Lost_Object_Count_2": [],
+        "Lost_Object_Count_entropy": [],
+        "New_Object_Count_1": [],
+        "New_Object_Count_2": [],
+        "New_Object_Count_entropy": [],
+    }
+    for timepoint_window in range(0, len(unique_time_points) - sliding_window_size + 1):
+        # get the time points for the sliding window
+        time_points = unique_time_points[
+            timepoint_window : timepoint_window + sliding_window_size
+        ]
+        # get the data for the time points
+        df_sc_timepoint_1 = df_sc.loc[df_sc[time_col] == time_points[0]]
+        df_sc_timepoint_2 = df_sc.loc[df_sc[time_col] == time_points[1]]
+        for well_fov in unique_well_fovs:
+            _df_sc_timepoint_1 = df_sc_timepoint_1.loc[
+                df_sc_timepoint_1["Metadata_Well_FOV"] == well_fov
+            ]
+            _df_sc_timepoint_2 = df_sc_timepoint_2.loc[
+                df_sc_timepoint_2["Metadata_Well_FOV"] == well_fov
+            ]
+
+            # input metadata for the entropy calculation
+            entropy_dict["time_points"].append(np.mean([int(i) for i in time_points]))
+            entropy_dict["well_fov"].append(well_fov)
+
+            ##################################################################
+            # Image count nuclei
+            ##################################################################
+            # print(df_sc_timepoint_1["Image_Count_Nuclei"], df_sc_timepoint_2["Image_Count_Nuclei"])
+            entropy_dict["Image_Count_Nuclei_1"].append(
+                _df_sc_timepoint_1["Image_Count_Nuclei"].values[0]
+            )
+            entropy_dict["Image_Count_Nuclei_2"].append(
+                _df_sc_timepoint_2["Image_Count_Nuclei"].values[0]
+            )
+            # calculate the entropy
+            entropy_dict["Image_Count_Nuclei_entropy"].append(
+                calculate_entropy(
+                    _df_sc_timepoint_1["Image_Count_Nuclei"].values[0],
+                    _df_sc_timepoint_2["Image_Count_Nuclei"].values[0],
+                )
+            )
+
+            ##################################################################
+            # Max cell label
+            ##################################################################
+            entropy_dict["Max_Cell_Label_1"].append(
+                _df_sc_timepoint_1["Max_Cell_Label"].values[0]
+            )
+            entropy_dict["Max_Cell_Label_2"].append(
+                _df_sc_timepoint_2["Max_Cell_Label"].values[0]
+            )
+            # calculate the entropy
+            entropy_dict["Max_Cell_Label_entropy"].append(
+                calculate_entropy(
+                    _df_sc_timepoint_1["Max_Cell_Label"].values[0],
+                    _df_sc_timepoint_2["Max_Cell_Label"].values[0],
+                )
+            )
+
+            ##################################################################
+            # Max cell label - image count nuclei
+            ##################################################################
+            entropy_dict["Max_Cell_Label_1-_Image_Count_Nuclei_1"].append(
+                _df_sc_timepoint_1["Max_Cell_Label"].values[0]
+                - _df_sc_timepoint_1["Image_Count_Nuclei"].values[0]
+            )
+            entropy_dict["Max_Cell_Label_2-_Image_Count_Nuclei_2"].append(
+                _df_sc_timepoint_2["Max_Cell_Label"].values[0]
+                - _df_sc_timepoint_2["Image_Count_Nuclei"].values[0]
+            )
+            # calculate the entropy
+            entropy_dict["Max_Cell_Label-_Image_Count_Nuclei_entropy"].append(
+                calculate_entropy(
+                    _df_sc_timepoint_1["Max_Cell_Label"].values[0]
+                    - _df_sc_timepoint_1["Image_Count_Nuclei"].values[0],
+                    _df_sc_timepoint_2["Max_Cell_Label"].values[0]
+                    - _df_sc_timepoint_2["Image_Count_Nuclei"].values[0],
+                )
+            )
+
+            ##################################################################
+            # Lost object count
+            ##################################################################
+            entropy_dict["Lost_Object_Count_1"].append(
+                _df_sc_timepoint_1["Lost_Object_Count"].values[0]
+            )
+            entropy_dict["Lost_Object_Count_2"].append(
+                _df_sc_timepoint_2["Lost_Object_Count"].values[0]
+            )
+            # calculate the entropy
+            entropy_dict["Lost_Object_Count_entropy"].append(
+                calculate_entropy(
+                    _df_sc_timepoint_1["Lost_Object_Count"].values[0],
+                    _df_sc_timepoint_2["Lost_Object_Count"].values[0],
+                )
+            )
+
+            ##################################################################
+            # New object count
+            ##################################################################
+            entropy_dict["New_Object_Count_1"].append(
+                _df_sc_timepoint_1["New_Object_Count"].values[0]
+            )
+            entropy_dict["New_Object_Count_2"].append(
+                _df_sc_timepoint_2["New_Object_Count"].values[0]
+            )
+            # calculate the entropy
+            entropy_dict["New_Object_Count_entropy"].append(
+                calculate_entropy(
+                    _df_sc_timepoint_1["New_Object_Count"].values[0],
+                    _df_sc_timepoint_2["New_Object_Count"].values[0],
+                )
+            )
+
+    entropy_df = pd.DataFrame.from_dict(entropy_dict)
+    entropy_df.head()
+    # get the harmonic mean of the entropy
+    entropy_df["harmonic_mean_entropy"] = entropy_df[
+        [
+            # "Image_Count_Nuclei_entropy",
+            "Max_Cell_Label_entropy",
+            "Lost_Object_Count_entropy",
+            "New_Object_Count_entropy",
+        ]
+    ].apply(lambda x: harmonic_mean(x), axis=1)
+    # calculate the adjusted entropy for each time point pair
+    # the adjusted entropy is the
+    # absolute difference of the entropy values of each time point pair
+    # for each feature
+    # compared to that of the Max Cell Label feature
+    # this grounds the entropy values in realtion to the entropy of segmentation
+    Max_Cell_Label = entropy_df["Max_Cell_Label"].max()
+    # normalized entropy values
+    entropy_df["noramlized_Max_Cell_Label_entropy__to__Image_Count_Nuclei_entropy"] = (
+        entropy_df["Max_Cell_Label_entropy"] / entropy_df["Image_Count_Nuclei_entropy"]
+    )
+    entropy_df["noramlized_harmonic_mean_entropy__to__Image_Count_Nuclei_entropy"] = (
+        entropy_df["harmonic_mean_entropy"] / entropy_df["Image_Count_Nuclei_entropy"]
+    )
+    entropy = entropy_df["Max_Cell_Label-_Image_Count_Nuclei_entropy"].max()
+
+    return Max_Cell_Label

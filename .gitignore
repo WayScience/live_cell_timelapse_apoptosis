@@ -66,3 +66,9 @@ data/processed_images/**
 3.optimizing_CP/pipelines/generated_pipelines
 # cytomining logs
 **runinfo
+
+environments/SAM2_install/segment-anything-2
+3.optimizing_CP/run_sam/notebooks/videos
+3.optimizing_CP/analysis_output/
+3.optimizing_CP/run_sam/notebooks/masks/masks.csv
+3.optimizing_CP/run_sam/masks/

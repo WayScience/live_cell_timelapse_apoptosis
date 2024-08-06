@@ -107,23 +107,23 @@ TrackObjects:[module_num:6|svn_version:'Unknown'|variable_revision_number:7|show
     Save color-coded image?:Yes
     Name the output image:TrackedCells
     Select the movement model:Both
-    Number of standard deviations for search radius:55
-    Search radius limit, in pixel units (Min,Max):8,66
+    Number of standard deviations for search radius:3
+    Search radius limit, in pixel units (Min,Max):14,75
     Run the second phase of the LAP algorithm?:Yes
-    Gap closing cost:59
-    Split alternative cost:48
-    Merge alternative cost:68
-    Maximum gap displacement, in pixel units:7
-    Maximum split score:91
-    Maximum merge score:97
-    Maximum temporal gap in frames:2
+    Gap closing cost:28
+    Split alternative cost:39
+    Merge alternative cost:84
+    Maximum gap displacement, in pixel units:13
+    Maximum split score:25
+    Maximum merge score:84
+    Maximum temporal gap in frames:5
     Filter objects by lifetime?:Yes
     Filter using a minimum lifetime?:Yes
     Minimum lifetime:1
     Filter using a maximum lifetime?:No
     Maximum lifetime:100
-    Mitosis alternative cost:121
-    Maximum mitosis distance, in pixel units:84
+    Mitosis alternative cost:44
+    Maximum mitosis distance, in pixel units:39
     Average cell diameter in pixels:35.0
     Use advanced configuration parameters:No
     Cost of cell to empty matching:15.0

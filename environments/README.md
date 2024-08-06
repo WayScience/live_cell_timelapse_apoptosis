@@ -13,3 +13,14 @@ To create the environments, execute the following command:
 source set_up_envs.sh
 ```
 The environments will be activated when each shell script is run.
+
+
+## SAM-2 environment
+This environment is a bit tricky to create. The following steps are necessary:
+
+```bash
+source make_cuda_modules.sh
+cd SAM2_install
+source make_sam_env.sh
+cd ../
+```
