@@ -1,0 +1,27 @@
+# env file for downstream analysis after scDINO runs
+name: timelapse_env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11
+  - conda-forge::pandas>=2.0.0
+  - conda-forge::jupyter
+  - conda-forge::ipykernel
+  - conda-forge::pyarrow
+  - conda-forge::pytorch
+  - conda-forge::torchvision
+  - conda-forge::pyarrow
+  - conda-forge::fastparquet
+  - conda-forge::tifffile
+  - conda-forge::opencv
+  - conda-forge::matplotlib
+  - conda-forge::umap-learn
+  - conda-forge::scikit-learn
+  - conda-forge::scikit-image
+  - conda-forge::seaborn
+  - conda-forge::datashader
+  - conda-forge::holoviews
+  - conda-forge::colorcet
+  - conda-forge::bokeh
+  - conda-forge::plotly

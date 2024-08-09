@@ -1,3 +1,10 @@
+# pycache
+__pycache__/
+**.pyc
+
+# raw data
+data/
+
 # raw data but keep the metadata
 data/2023*
 
@@ -24,7 +31,24 @@ data/2023*
 3.cellprofiler_analysis/analysis_output
 
 # cytomining results
-4.process_features/data/*
+4.process_features/data/
+
+# scDINO outputs
+5.scDINO_analysis/1.scDINO_run/outputdir
+# scDINO logs
+5.scDINO_analysis/1.scDINO_run/.snakemake
+5.scDINO_analysis/1.scDINO_run/logs
+
+# temporal shiny app
+5.scDINO_analysis/2.scDINO_processing/temporal_shiny_app
+5.scDINO_analysis/2.scDINO_processing/notebooks/4.deploy_shiny_app.ipynb
+5.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
+5.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
+
+# data
+data/models/dino_deitsmall16_pretrain_full_checkpoint.pth
+data/processed_images/**
 
 # cytomining logs
 **runinfo
+environments/SAM2_install/segment-anything-2

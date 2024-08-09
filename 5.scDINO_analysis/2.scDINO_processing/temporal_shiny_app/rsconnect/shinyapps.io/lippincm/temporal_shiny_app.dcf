@@ -1,0 +1,10 @@
+name: temporal_shiny_app
+title:
+username: lippincm
+account: lippincm
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11753333
+bundleId: 8811924
+url: https://lippincm.shinyapps.io/temporal_shiny_app/
+version: 1
