@@ -64,15 +64,6 @@ dict_of_inputs = {
 
 # ## Annotate merged single cells
 
-# In[ ]:
-
-
-# In[ ]:
-
-
-# In[ ]:
-
-
 # In[4]:
 
 

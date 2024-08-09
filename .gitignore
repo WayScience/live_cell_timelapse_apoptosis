@@ -51,3 +51,4 @@ data/processed_images/**
 
 # cytomining logs
 **runinfo
+environments/SAM2_install/segment-anything-2

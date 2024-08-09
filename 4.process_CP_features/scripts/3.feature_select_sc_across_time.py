@@ -39,7 +39,7 @@ dict_of_inputs = {
         "normalized_df_path": pathlib.Path(
             f"{data_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_norm.parquet"
         ).resolve(),
-        "outoput_file_path": pathlib.Path(
+        "output_file_path": pathlib.Path(
             f"{output_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_norm_fs.parquet"
         ).resolve(),
     },
@@ -47,7 +47,7 @@ dict_of_inputs = {
         "normalized_df_path": pathlib.Path(
             f"{data_dir}/run_20231017ChromaLive_6hr_4ch_MaxIP_norm_pan_time_norm.parquet"
         ).resolve(),
-        "outoput_file_path": pathlib.Path(
+        "output_file_path": pathlib.Path(
             f"{output_dir}/run_20231017ChromaLive_6hr_4ch_MaxIP_norm_pan_time_fs.parquet"
         ).resolve(),
     },
@@ -55,7 +55,7 @@ dict_of_inputs = {
         "normalized_df_path": pathlib.Path(
             f"{data_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_norm.parquet"
         ).resolve(),
-        "outoput_file_path": pathlib.Path(
+        "output_file_path": pathlib.Path(
             f"{output_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_norm_fs.parquet"
         ).resolve(),
     },
@@ -81,12 +81,6 @@ feature_select_ops = [
 
 
 manual_block_list = [
-    "Nuclei_TrackObjects_Displacement_50",
-    "Nuclei_TrackObjects_DistanceTraveled_50",
-    "Nuclei_TrackObjects_IntegratedDistance_50",
-    "Nuclei_TrackObjects_Label_50",
-    "Nuclei_TrackObjects_Linearity_50",
-    "Nuclei_TrackObjects_ParentObjectNumber_50",
     "Nuclei_AreaShape_BoundingBoxArea",
     "Nuclei_AreaShape_BoundingBoxMinimum_X",
     "Cells_AreaShape_BoundingBoxArea",
@@ -116,7 +110,7 @@ for info, input_path in dict_of_inputs.items():
     # save features selected df as parquet file
     output(
         df=feature_select_df,
-        output_filename=input_path["outoput_file_path"],
+        output_filename=input_path["output_file_path"],
         output_type="parquet",
     )
     print(

@@ -5,17 +5,11 @@
 # change directory to the scripts folder
 cd scripts/
 
-# activate the conda environment
-conda activate timelapse_env
-
 # run the pre-processing scripts
-python 0.fix_pathing.py
-python 1.generate_platemap.py
+conda run -n timelapse_env python 0.fix_pathing.py
+conda run -n timelapse_env python 1.generate_platemap.py
 
 # revert back to the main directory
 cd ../
-
-# deactivate the conda environment
-conda deactivate
 
 echo "Pre-processing complete"
