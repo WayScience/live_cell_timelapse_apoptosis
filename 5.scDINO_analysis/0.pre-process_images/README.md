@@ -11,7 +11,7 @@ run_image_preprocess.sh
 ```
 
 ## Run time
-The module takes approximately hours to run for 210,217 grayscale microscopy images.
+The module takes approximately ___ hours to run for 210,217 grayscale microscopy images.
 
 This was run on a system with the following specifications:
 - Processor: AMD Ryzen 9 5900X (24) @ 3.700GHz
