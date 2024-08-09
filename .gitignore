@@ -67,6 +67,7 @@ data/processed_images/**
 # cytomining logs
 **runinfo
 
+# ignore irrelevant SAM 2 outputs
 environments/SAM2_install/segment-anything-2
 3.optimizing_CP/run_sam/notebooks/videos
 3.optimizing_CP/analysis_output/
