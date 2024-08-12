@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# # Tune the object tracking for cell type
+
 # The goals of this notebook is to run optuna to find the best hyperparameters for object tracking in CellProfiler.
 # I will do this by keeping segmentation the same and only changing the tracking parameters.
 # I will calculate a loss of the number of cells in a well over time compared to the ground truth of the number of cells in a well over time.
@@ -14,7 +16,6 @@
 # In[1]:
 
 
-import argparse
 import pathlib
 import pprint
 import sys
@@ -25,18 +26,22 @@ import pandas as pd
 import torch
 
 sys.path.append("../CellProfiler_optuna_utils/")
-from optuna_profiling_utils import (
-    adjust_cpipe_file_LAP,
-    adjust_cpipe_file_overlap,
+from cytomining_utils import run_CytoTable, run_pyctominer_annotation
+from loss_function_utils import (
     calculate_entropy,
     extract_single_time_cell_tracking_entropy,
     extract_temporal_cell_tracking_entropy,
+    harmonic_mean,
     loss_function_from_CP_features,
     loss_function_MSE,
     remove_trial_intermediate_files,
     retrieve_cell_count,
-    run_CytoTable,
-    run_pyctominer_annotation,
+)
+from setup_pipeline_utils import (
+    adjust_cpipe_file_LAP,
+    adjust_cpipe_file_overlap,
+    adjust_cpipe_file_save_tracked_object_images,
+    extract_pixel_number_for_overlap_tracking,
 )
 
 sys.path.append("../../utils/")
@@ -53,30 +58,33 @@ from parsl.executors import HighThroughputExecutor
 # In[2]:
 
 
-# set up an argument parser
-parser = argparse.ArgumentParser(description="Run CellProfiler pipelines with Optuna.")
-parser.add_argument(
-    "--tracking_type",
-    "-t",
-    type=str,
-    default="overlap",
-    help="The type of tracking to use. Options are 'overlap' or 'LAP'.",
-)
+# # set up an argument parser
+# parser = argparse.ArgumentParser(description="Run CellProfiler pipelines with Optuna.")
+# parser.add_argument(
+#     "--tracking_type",
+#     "-t",
+#     type=str,
+#     default="overlap",
+#     help="The type of tracking to use. Options are 'overlap' or 'LAP'.",
+# )
 
-parser.add_argument(
-    "--n_trials",
-    "-n",
-    type=int,
-    default=10,
-    help="The number of trials to run.",
-)
+# parser.add_argument(
+#     "--n_trials",
+#     "-n",
+#     type=int,
+#     default=10,
+#     help="The number of trials to run.",
+# )
 
-# get the arguments
-args = parser.parse_args()
+# # get the arguments
+# args = parser.parse_args()
 
-# set the tracking type
-tracking_type = args.tracking_type
-n_trials = args.n_trials
+# # set the tracking type
+# tracking_type = args.tracking_type
+# n_trials = args.n_trials
+
+tracking_type = "overlap"
+n_trials = 1
 
 
 # In[3]:
@@ -188,7 +196,7 @@ dict_of_inputs_for_pycytominer = {
 # In[8]:
 
 
-# create an otuna parameter search space
+# create an optuna parameter search space
 # define the search space in a dictionary format
 # defined as [min, max] for each parameter
 search_space_parameters_LAP = {

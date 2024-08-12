@@ -16,7 +16,7 @@ if [ ! -d "../logs" ]; then
 fi
 
 python 0.tune_object_tracking_for_cell_type.py -t "overlap" -n 5  > ../logs/0.tune_object_tracking_for_cell_type.log
-# python 0.tune_object_tracking_for_cell_type.py -t "LAP" -n 1000 > ../logs/0.tune_object_tracking_for_cell_type.log
+python 0.tune_object_tracking_for_cell_type.py -t "LAP" -n 1000 > ../logs/0.tune_object_tracking_for_cell_type.log
 
 
 python 1.assess_best_pipeline.py -t "LAP" > ../logs/1.assess_best_pipeline.log

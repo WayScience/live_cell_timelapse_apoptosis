@@ -2,11 +2,16 @@
 # coding: utf-8
 
 # This notebook solves the tracking issue by using [SAM2](https://github.com/facebookresearch/segment-anything-2/tree/main).
-# Here I use the pretrained model to segment the objects in the video.
+# Here I use the pretrained model to segment the Nuclei in the video.
 # The output is a mask for each object in each frame and the x,y coordinates centers of each object in each frame.
 
 # # Table of Contents for this Notebook
-#
+# #### 1. Imports
+# #### 2. Import data
+# #### 3. get the masks and centers
+# #### 4. Track multiple objects in the video
+# #### 5. Track the objects through frames
+# #### 6. Visualize the tracking and output the data
 
 # ## 1. Imports
 
@@ -18,8 +23,7 @@ import gc
 import logging
 import os
 import pathlib
-import socket
-from datetime import datetime
+import sys
 
 import imageio
 import matplotlib.pyplot as plt
@@ -39,251 +43,20 @@ from stardist.models import StarDist2D
 from stardist.plot import render_label
 from torchvision import models
 
-# ## 2. Functions
+sys.path.append("../../../utils/")
+from SAM2_utils import (
+    delete_recorded_memory_history,
+    export_memory_snapshot,
+    generate_random_coords,
+    show_mask,
+    show_points,
+    start_record_memory_history,
+    stop_record_memory_history,
+)
 
-# ### Visualizing the output masks and points
+# ## 2. Import data
 
 # In[2]:
-
-
-def show_mask(
-    mask: np.ndarray,
-    ax: plt.Axes,
-    obj_id: int | None = None,
-    random_color: bool = False,
-) -> None:
-    """
-    Show the mask on the ax.
-    Modified from: https://github.com/facebookresearch/segment-anything-2/blob/main/notebooks/video_predictor_example.ipynb
-
-    Parameters
-    ----------
-    mask : np.ndarray
-        The mask to be shown.
-    ax : plt.Axes
-        The ax to show the mask.
-    obj_id : int | None, optional
-        The object id. If None, the color will be randomly generated.
-    random_color : bool, optional
-        If True, the color will be randomly generated. If False, the color will be generated based on the object id.
-
-    Returns
-    -------
-    None
-    """
-
-    if random_color:
-        color = np.concatenate([np.random.random(3), np.array([0.6])], axis=0)
-    else:
-        cmap = plt.get_cmap("tab10")
-        cmap_idx = 0 if obj_id is None else obj_id
-        color = np.array([*cmap(cmap_idx)[:3], 0.6])
-    h, w = mask.shape[-2:]
-    mask_image = mask.reshape(h, w, 1) * color.reshape(1, 1, -1)
-    ax.imshow(mask_image)
-
-
-def show_points(
-    coords: np.ndarray,
-    labels: np.ndarray,
-    ax: plt.Axes,
-    marker_size: int = 100,
-) -> None:
-    """
-    Show the points on the ax.
-    Modified from: https://github.com/facebookresearch/segment-anything-2/blob/main/notebooks/video_predictor_example.ipynb
-
-    Parameters
-    ----------
-    coords : np.ndarray
-        The coordinates of the points.
-    labels : np.ndarray
-        The labels of the points.
-    ax : plt.Axes
-        The ax to show the points.
-    marker_size : int, optional
-        The size of the marker.
-
-    Returns
-    -------
-    None
-    """
-    pos_points = coords[labels == 1]
-    neg_points = coords[labels == 0]
-    ax.scatter(
-        pos_points[:, 0],
-        pos_points[:, 1],
-        color="blue",
-        marker="*",
-        s=marker_size,
-        edgecolor="white",
-        linewidth=1.25,
-    )  #
-    ax.scatter(
-        neg_points[:, 0],
-        neg_points[:, 1],
-        color="red",
-        marker="*",
-        s=marker_size,
-        edgecolor="white",
-        linewidth=1.25,
-    )
-
-
-# ### Generating random true negative coordinates
-
-# In[3]:
-
-
-from typing import Tuple
-
-
-def generate_random_coords(
-    img: np.array,
-    coords: np.array,
-    samples: int,
-    show_masks: bool = False,
-    search_space_pixels: int = 25,
-) -> Tuple[np.array, np.array]:
-    """
-    Generate random coordinates that are not in the mask for negative samples
-
-    Parameters
-    ----------
-    img : np.array
-        The image to generate the random coordinates
-    coords : np.array
-        Position coordinates of the masks
-    samples : int
-        The number of samples to generate
-    show_masks : bool
-        Whether to show the masks or not
-    search_space_pixels : int
-        The number of pixels to search for the negative samples away from the mask
-
-    Returns
-    -------
-    Tuple[np.array, np.array]
-        Random coordinates that are not in the mask and the labels for the coordinates
-    """
-    seed = 0
-    # get the height and width of the image
-    h, w = img.shape
-    # generate random coords
-    rand_coords = np.column_stack(
-        [np.random.randint(0, h, samples), np.random.randint(0, w, samples)]
-    )
-
-    valid_coords = []
-    # check if the coords are within 15 pixels of the existing coords
-    for coord in rand_coords:
-        # calculate the distance to the existing coords
-        # check if the distance is less than 15 pixels
-        if not np.any(np.linalg.norm(coord - coords, axis=1) < 20):
-            try:
-                if not np.any(
-                    np.linalg.norm(coord - np.array(valid_coords), axis=1) < 20
-                ):
-                    valid_coords.append(coord)
-            except:
-                valid_coords.append(coord)
-
-    valid_coords = np.array(valid_coords)
-    valid_labels = np.zeros(valid_coords.shape[0])
-
-    if show_masks:
-        # plot the points
-        # plot size
-        plt.figure(figsize=(20, 20))
-        fig, ax = plt.subplots()
-        # ax.imshow(img, cmap="gray")
-        # plot a square where each point is
-        for coord in coords:
-            ax.plot(coord[1], coord[0], "o", color="red")
-        for coord in valid_coords:
-            ax.plot(coord[1], coord[0], "o", color="cyan")
-        plt.show()
-
-    # must return at least 1 valid coord
-    if valid_coords.shape[0] == 0:
-        valid_coords, valid_labels = generate_random_coords(
-            img=img, coords=coords, samples=samples
-        )
-
-    return valid_coords, valid_labels
-
-
-# ### Memory profiling for GPU
-
-# In[4]:
-
-
-def start_record_memory_history() -> None:
-    """
-    Start recording memory history.
-    """
-    if not torch.cuda.is_available():
-        logger.info("CUDA unavailable. Not recording memory history")
-        return
-
-    logger.info("Starting snapshot record_memory_history")
-    torch.cuda.memory._record_memory_history(
-        max_entries=MAX_NUM_OF_MEM_EVENTS_PER_SNAPSHOT
-    )
-
-
-def stop_record_memory_history() -> None:
-    """
-    Stop recording memory history.
-    """
-    if not torch.cuda.is_available():
-        logger.info("CUDA unavailable. Not recording memory history")
-        return
-
-    logger.info("Stopping snapshot record_memory_history")
-    torch.cuda.memory._record_memory_history(enabled=None)
-
-
-def export_memory_snapshot(save_dir: pathlib.Path) -> None:
-    """
-    Export memory snapshot.
-    """
-    if not torch.cuda.is_available():
-        logger.info("CUDA unavailable. Not exporting memory snapshot")
-        return
-
-    # Prefix for file names.
-    host_name = socket.gethostname()
-    timestamp = datetime.now().strftime(TIME_FORMAT_STR)
-    file_prefix = f"{host_name}_{timestamp}"
-    full_file_path = pathlib.Path(save_dir / f"{file_prefix}.pickle").resolve()
-    save_dir.mkdir(parents=True, exist_ok=True)
-
-    try:
-        logger.info(f"Saving snapshot to local file: {full_file_path}")
-        torch.cuda.memory._dump_snapshot(full_file_path)
-    except Exception as e:
-        logger.error(f"Failed to capture memory snapshot {e}")
-        return
-
-
-def delete_recorded_memory_history(save_dir: pathlib.Path) -> None:
-    """
-    Delete recorded memory history.
-    """
-    file_path = pathlib.Path(save_dir).resolve()
-    files = list(file_path.glob("*.pickle"))
-    try:
-        [file.unlink() for file in files]
-        logger.info(f"Deleted memory snapshot file: {file_path}")
-    except Exception as e:
-        logger.error(f"Failed to delete memory snapshot file: {file_path} {e}")
-        return
-
-
-# ## 3. Import data
-
-# In[5]:
 
 
 # load in the model and the predictor
@@ -317,7 +90,7 @@ jpeg_files = sorted(video_dir.glob("*.jpeg"))
 len(jpeg_files)
 
 
-# In[6]:
+# In[3]:
 
 
 # for each file, extract the Well, FOV, Channel and make a nested dir for file, well, fov, channel and keep all timepoints in that dir
@@ -344,7 +117,7 @@ elif not pathlib.Path("./videos/jpeg_C-02_F0001_C01").exists():
     shutil.copytree(well_to_cp, pathlib.Path("./videos/jpeg_C-02_F0001_C01").resolve())
 
 
-# In[7]:
+# In[4]:
 
 
 video_dir = pathlib.Path("./videos/jpeg_C-02_F0001_C01/").resolve(strict=True)
@@ -354,9 +127,9 @@ for i, jpeg_file in enumerate(jpeg_files):
     jpeg_file.rename(video_dir / f"{i}.jpeg")
 
 
-# ## 4. Get initial masks and centers via StarDist
+# ## 3. Get initial masks and centers via StarDist
 
-# In[8]:
+# In[5]:
 
 
 # load the star dist model
@@ -364,7 +137,7 @@ StarDist2D.from_pretrained()
 model = StarDist2D.from_pretrained("2D_versatile_fluo")
 
 
-# In[9]:
+# In[6]:
 
 
 # get files in the directory
@@ -406,7 +179,7 @@ frame_names
 # - the x,y centers of the segmentation
 # - the extracted masks
 
-# In[10]:
+# In[7]:
 
 
 img = io.imread(frame_names[0])
@@ -442,9 +215,9 @@ ax[3].set_aspect("equal")
 show_points(coords, np.ones(len(coords)), ax[3])
 
 
-# ## 5. Track multiple objects in the video
+# ## 4. Track multiple objects in the video
 
-# In[11]:
+# In[8]:
 
 
 # initialize the state
@@ -454,7 +227,7 @@ inference_state = predictor.init_state(
 predictor.reset_state(inference_state)
 
 
-# In[12]:
+# In[9]:
 
 
 # get the first frame coords
@@ -463,7 +236,7 @@ labels = np.ones(coords.shape[0], dtype=np.int32)
 print(points.shape, labels.shape)
 
 
-# In[13]:
+# In[10]:
 
 
 prompts = {}
@@ -500,7 +273,7 @@ for point, _label in zip(points, labels):
     ann_obj_idx += 1
 
 
-# In[14]:
+# In[11]:
 
 
 # show the results on the current (interacted) frame
@@ -520,9 +293,9 @@ for i, out_obj_id in enumerate(range(1, ann_obj_idx)):
 plt.show()
 
 
-# ## 6. Track the objects through frames
+# ## 5. Track the objects through frames
 
-# In[15]:
+# In[12]:
 
 
 print(ann_obj_idx)
@@ -540,7 +313,9 @@ TIME_FORMAT_STR: str = "%b_%d_%H_%M_%S"
 # Keep a max of 100,000 alloc/free events in the recorded history
 # leading up to the snapshot.
 MAX_NUM_OF_MEM_EVENTS_PER_SNAPSHOT: int = 100000
-start_record_memory_history()
+start_record_memory_history(
+    logger=logger, max_entries=MAX_NUM_OF_MEM_EVENTS_PER_SNAPSHOT
+)
 # run propagation throughout the video and collect the results in a dict
 video_segments = {}  # video_segments contains the per-frame segmentation results
 
@@ -553,11 +328,13 @@ for out_frame_idx, out_obj_ids, out_mask_logits in predictor.propagate_in_video(
     }
 
 
-# In[16]:
+# In[13]:
 
 
 # delete any prior memory profiling data
-delete_recorded_memory_history(save_dir=pathlib.Path("../memory_snapshots/").resolve())
+delete_recorded_memory_history(
+    logger=logger, save_dir=pathlib.Path("../memory_snapshots/").resolve()
+)
 # clear the memory
 del out_mask_logits
 del out_obj_ids
@@ -565,11 +342,13 @@ del out_frame_idx
 torch.cuda.empty_cache()
 gc.collect()
 # save the memory snapshot to a file
-export_memory_snapshot(save_dir=pathlib.Path("../memory_snapshots/").resolve())
-stop_record_memory_history()
+export_memory_snapshot(
+    logger=logger, save_dir=pathlib.Path("../memory_snapshots/").resolve()
+)
+stop_record_memory_history(logger=logger)
 
 
-# In[17]:
+# In[14]:
 
 
 # render the segmentation results every few frames
@@ -591,9 +370,9 @@ for out_frame_idx in range(0, len(frame_names), vis_frame_stride):
         show_mask(mask=out_mask, ax=ax[row, col], obj_id=out_obj_id)
 
 
-# ## 7. Visualize the tracking and output the data
+# ## 6. Visualize the tracking and output the data
 
-# In[18]:
+# In[15]:
 
 
 # add all of the frames together for a rendered gif
@@ -629,7 +408,7 @@ tmp_files = list(Path(".").glob("tmp*.png"))
 [f.unlink() for f in tmp_files]
 
 
-# In[19]:
+# In[16]:
 
 
 img = io.imread(frame_names[0])
@@ -650,7 +429,7 @@ for out_frame_idx, frame_masks in video_segments.items():
     frame_image.save(masks_dir / f"{out_frame_idx}.png")
 
 
-# In[20]:
+# In[17]:
 
 
 # extract x,y center of mass of the masks with object id

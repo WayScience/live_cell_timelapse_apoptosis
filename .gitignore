@@ -2,9 +2,6 @@
 __pycache__/
 **.pyc
 
-# raw data
-data/
-
 # raw data but keep the metadata
 data/2023*
 
@@ -45,7 +42,7 @@ data/2023*
 5.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
 5.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
 
-# data
+# data (processed)
 data/models/dino_deitsmall16_pretrain_full_checkpoint.pth
 data/processed_images/**
 
@@ -72,4 +69,15 @@ environments/SAM2_install/segment-anything-2
 3.optimizing_CP/run_sam/notebooks/videos
 3.optimizing_CP/analysis_output/
 3.optimizing_CP/run_sam/notebooks/masks/masks.csv
-3.optimizing_CP/run_sam/masks/
+3.optimizing_CP/run_sam/masks/*.png
+3.optimizing_CP/run_sam/masks/*.csv
+
+# memory profiling
+3.optimizing_CP/run_sam/memory_snapshots/
+
+# models
+data/models/
+
+# intermediate files
+4.process_CP_features/data/
+6.data_harmonization/data/

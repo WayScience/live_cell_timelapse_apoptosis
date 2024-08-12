@@ -132,10 +132,10 @@ EOF
 
 # Let us clean up the installation files and directories and make our repository clean
 # rm any .deb files
-rm *.deb*
+rm ./*.deb*
 
 # rm any tar files
-rm *.tar*
+rm ./*.tar*
 
 # rm any cuda extracted directories
-rm -r *cudnn*
+rm -r ./*cudnn*
