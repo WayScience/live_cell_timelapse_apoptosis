@@ -111,5 +111,5 @@ metadata_6h_2ch
 # replace NaN with test
 metadata_6h_2ch = metadata_6h_2ch.fillna("test")
 # write to platemap
-metadata_24h.to_csv(platemap_6h_2ch_path, index=False)
+metadata_6h_2ch.to_csv(platemap_6h_2ch_path, index=False)
 metadata_6h_2ch.head()

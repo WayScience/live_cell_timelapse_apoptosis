@@ -4,9 +4,6 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python=3.8
-  - pip
-  - ipykernel
   - jupyter
   - r=4.2.0
   - r-essentials

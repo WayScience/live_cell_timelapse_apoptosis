@@ -9,7 +9,7 @@ These cells are treated with varying concentrations of staurosporine, a drug tha
 
 ### Doses of staurosporine and replicates
 
-| Staurosporine concentration (nM) | Number of replicates |
+| Staurosporine concentration (nM) | Number of well replicates |
 |----------------------------------|----------------------|
 | 0                                | 3                    |
 | 0.61                             | 3                    |
@@ -39,3 +39,26 @@ For 2 channel terminal Annexin V data we acquired at the following wavelengths:
 |---------|-----------------------------|--------------------------|
 | Hoecsht | 405 | 447/60 |
 | Annexin V | 640 | 685/40 |
+
+## Running the pipeline to extract features from CellProfiler and scDINO
+To run the pipeline, first we must install the required packages.
+We can do this by installing a conda environment.
+From the base directory of the repository, run the following command:
+
+```bash
+# change directory to the environment directory
+cd environments
+# create each of the conda environments needed
+conda env create -f scDINO.yaml # for scDINO
+conda env create -f timelapse_env.yaml # python environment for the pipeline processing
+conda env create -f CellProfiling_env.yaml # for CellProfiler
+conda env create -f R_env.yaml # for R and R packages
+```
+Do not worry about activating the environments as they will be activated when each shell script is run.
+
+Next, we must run the pipeline.
+To do this run the main shell script from the base directory of the repository:
+
+```bash
+source run_full_pipe.sh
+```
