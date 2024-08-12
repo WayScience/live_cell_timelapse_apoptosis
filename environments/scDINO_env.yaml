@@ -4,7 +4,7 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python=3.8
+  - python=3.8 # need to be 3.8 for scDINO
   - pip
   - pyarrow
   - imageio

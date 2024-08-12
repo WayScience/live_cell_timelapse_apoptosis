@@ -1,0 +1,34 @@
+# env file for running scDINO
+name: sam2_env
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+  - nvidia
+dependencies:
+  - python>=3.10
+  - pyarrow
+  - imageio
+  - ipykernel
+  - jupyter
+  - matplotlib
+  - numba
+  - numpy
+  - opencv
+  - pandas>=2.0.0
+  - scikit-image
+  - seaborn
+  - nvidia/label/cuda-12.1.0::cuda
+  - nvidia/label/cuda-12.1.0::cuda-toolkit
+  - nvidia/label/cuda-12.1.0::cuda-nvrtc
+  - nvidia/label/cuda-12.1.0::cuda-nvcc
+  - nvidia/label/cuda-12.1.0::libcufile
+  - nvidia/label/cuda-12.1.0::cuda-tools
+  - pytorch-cuda=12.1
+  - pip
+  - pip:
+    - torch==2.4
+    - stardist
+    - csbdeep
+    - tensorflow
+

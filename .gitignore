@@ -2,9 +2,6 @@
 __pycache__/
 **.pyc
 
-# raw data
-data/
-
 # raw data but keep the metadata
 data/2023*
 
@@ -45,10 +42,43 @@ data/2023*
 5.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
 5.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
 
-# data
+# data (processed)
 data/models/dino_deitsmall16_pretrain_full_checkpoint.pth
 data/processed_images/**
 
+2.cellprofiler_ic_processing/illum_directory_test
+3.cellprofiler_analysis/pipelines/generated_pipelines
+
+
+3.optimizing_CP/CellProfiler_optuna_utils/__pycache__
+2.cellprofiler_ic_processing/illum_directory_test_small
+3.optimizing_CP/analysis_output/optimized_pipes
+3.optimizing_CP/analysis_output/study_dir/*
+3.optimizing_CP/notebooks/logs
+3.optimizing_CP/scripts/logs
+3.optimizing_CP/logs
+
+
+3.optimizing_CP/notebooks/runinfo
+3.optimizing_CP/notebooks/optuna_profiling_utils.log
+3.optimizing_CP/pipelines/generated_pipelines
 # cytomining logs
 **runinfo
+
+# ignore irrelevant SAM 2 outputs
 environments/SAM2_install/segment-anything-2
+3.optimizing_CP/run_sam/notebooks/videos
+3.optimizing_CP/analysis_output/
+3.optimizing_CP/run_sam/notebooks/masks/masks.csv
+3.optimizing_CP/run_sam/masks/*.png
+3.optimizing_CP/run_sam/masks/*.csv
+
+# memory profiling
+3.optimizing_CP/run_sam/memory_snapshots/
+
+# models
+data/models/
+
+# intermediate files
+4.process_CP_features/data/
+6.data_harmonization/data/

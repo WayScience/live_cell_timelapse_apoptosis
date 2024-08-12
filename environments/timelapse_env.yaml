@@ -5,6 +5,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.11
+  - conda-forge::pandas=2.0.0
   - conda-forge::pandas>=2.0.0
   - conda-forge::jupyter
   - conda-forge::ipykernel

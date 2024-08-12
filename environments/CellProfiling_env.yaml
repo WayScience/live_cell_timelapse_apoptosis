@@ -30,9 +30,15 @@ dependencies:
 # Update to 4.2.0 to avoid libatk error
 - conda-forge::wxpython=4.2.0
 - conda-forge::sentry-sdk=0.18.0
+- conda-forge::optuna
+- conda-forge::optuna-dashboard
 - pip:
     - cellprofiler==4.2.6
     # For segmentation, we install Cellpose (version must at least 2.0 and less than 3.0 due to lack of plugin support)
     - cellpose>=2.1.0,<3.0
-    - CytoTable==0.0.6
+    - cellpose_omni
+    - omnipose
+    - CytoTable==0.0.9
     - pycytominer==1.1.0
+    - javabridge
+

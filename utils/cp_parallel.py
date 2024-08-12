@@ -7,7 +7,6 @@ Developed from NF1 repository script made by Jenna Tomkinson.
 
 import logging
 import multiprocessing
-import os
 import pathlib
 import subprocess
 from concurrent.futures import Future, ProcessPoolExecutor
@@ -24,11 +23,11 @@ def results_to_log(
     convert into a log file for each process.
 
     Args:
-        results (List[subprocess.CompletedProcess]): 
+        results (List[subprocess.CompletedProcess]):
             the outputs from a subprocess.run.
-        log_dir (pathlib.Path): 
+        log_dir (pathlib.Path):
             directory for log files.
-        run_name (str): 
+        run_name (str):
             a given name for the type of CellProfiler run being done on the plates (example: whole image features).
     """
     # Access the command (args) and stderr (output) for each CompletedProcess object
@@ -55,17 +54,18 @@ def run_cellprofiler_parallel(
     plate_info_dictionary: dict,
     run_name: str,
     plugins_dir: Optional[Union[pathlib.Path, None]] = None,
+    log_dir: Optional[pathlib.Path] = None,
 ) -> None:
     """
     This function utilizes multi-processing to run CellProfiler pipelines in parallel.
 
     Args:
-        plate_info_dictionary (dict): 
+        plate_info_dictionary (dict):
             dictionary with all paths for CellProfiler to run a pipeline.
-        run_name (str): 
+        run_name (str):
             a given name for the type of CellProfiler run being done on the plates (example: whole image features).
-        plugins_dir (pathlib.Path, optional): 
-            if you are using a CellProfiler plugin module in your pipeline, you must specify a path to the directory. 
+        plugins_dir (pathlib.Path, optional):
+            if you are using a CellProfiler plugin module in your pipeline, you must specify a path to the directory.
             This is an optional parameter and defaults to None (no plugin dir provided).
 
     Raises:
@@ -75,8 +75,11 @@ def run_cellprofiler_parallel(
     commands = []
 
     # make logs directory
-    log_dir = pathlib.Path("./logs")
-    os.makedirs(log_dir, exist_ok=True)
+    if log_dir is None:
+        log_dir = pathlib.Path("./logs")
+        pathlib.Path(log_dir).mkdir(exist_ok=True)
+    else:
+        pathlib.Path(log_dir).mkdir(exist_ok=True)
 
     # iterate through each plate in the dictionary
     for _, info in plate_info_dictionary.items():
@@ -115,7 +118,7 @@ def run_cellprofiler_parallel(
             if not pathlib.Path(plugins_dir).is_dir():
                 raise FileNotFoundError(
                     f"Plugins directory '{pathlib.Path(plugins_dir).name}' does not exist or is not a directory"
-                    )
+                )
             else:
                 command.extend(["--plugins-directory", plugins_dir])
 
