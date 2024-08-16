@@ -1,5 +1,5 @@
 # pycache
-__pycache__/
+**/__pycache__/
 **.pyc
 
 # raw data but keep the metadata
@@ -8,77 +8,84 @@ data/2023*
 # logs
 **.log
 
-# IC logs
-2.cellprofiler_ic_processing/notebooks/logs/
-2.cellprofiler_ic_processing/scripts/logs/
-
-# pycache
-**/__pycache__/
-
-# illumination corrected images
-2.cellprofiler_ic_processing/illum_directory
-
-# cellprofiler logs
-3.cellprofiler_analysis/scripts/logs
-3.cellprofiler_analysis/scripts/*.log
-3.cellprofiler_analysis/notebooks/logs
-3.cellprofiler_analysis/notebooks/*.logs
-
-# analysis results
-3.cellprofiler_analysis/analysis_output
-
-# cytomining results
-4.process_features/data/
-
-# scDINO outputs
-5.scDINO_analysis/1.scDINO_run/outputdir
-# scDINO logs
-5.scDINO_analysis/1.scDINO_run/.snakemake
-5.scDINO_analysis/1.scDINO_run/logs
-
-# temporal shiny app
-5.scDINO_analysis/2.scDINO_processing/temporal_shiny_app
-5.scDINO_analysis/2.scDINO_processing/notebooks/4.deploy_shiny_app.ipynb
-5.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
-5.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
-
-# data (processed)
-data/models/dino_deitsmall16_pretrain_full_checkpoint.pth
-data/processed_images/**
-
-2.cellprofiler_ic_processing/illum_directory_test
-3.cellprofiler_analysis/pipelines/generated_pipelines
-
-
-3.optimizing_CP/CellProfiler_optuna_utils/__pycache__
-2.cellprofiler_ic_processing/illum_directory_test_small
-3.optimizing_CP/analysis_output/optimized_pipes
-3.optimizing_CP/analysis_output/study_dir/*
-3.optimizing_CP/notebooks/logs
-3.optimizing_CP/scripts/logs
-3.optimizing_CP/logs
-
-
-3.optimizing_CP/notebooks/runinfo
-3.optimizing_CP/notebooks/optuna_profiling_utils.log
-3.optimizing_CP/pipelines/generated_pipelines
 # cytomining logs
 **runinfo
 
 # ignore irrelevant SAM 2 outputs
 environments/SAM2_install/segment-anything-2
-3.optimizing_CP/run_sam/notebooks/videos
-3.optimizing_CP/analysis_output/
-3.optimizing_CP/run_sam/notebooks/masks/masks.csv
-3.optimizing_CP/run_sam/masks/*.png
-3.optimizing_CP/run_sam/masks/*.csv
-
-# memory profiling
-3.optimizing_CP/run_sam/memory_snapshots/
-
 # models
 data/models/
 
-# intermediate files
-4.process_CP_features/data/
-6.data_harmonization/data/
+############################################
+# Directories to ignore for specific analyses
+############################################
+
+# IC logs
+2.cellprofiler_ic_processing/notebooks/logs/
+2.cellprofiler_ic_processing/scripts/logs/
+2.cellprofiler_ic_processing/illum_directory
+2.cellprofiler_ic_processing/illum_directory_test_small
+2.cellprofiler_ic_processing/illum_directory_test
+
+
+
+
+# cellprofiler logs
+4.cellprofiler_analysis/scripts/logs
+4.cellprofiler_analysis/scripts/*.log
+4.cellprofiler_analysis/notebooks/logs
+4.cellprofiler_analysis/notebooks/*.logs
+# analysis results
+4.cellprofiler_analysis/analysis_output
+4.cellprofiler_analysis/pipelines/generated_pipelines
+
+
+3.optimizing_CP_attempt/CellProfiler_optuna_utils/__pycache__
+3.optimizing_CP_attempt/analysis_output/optimized_pipes
+3.optimizing_CP_attempt/analysis_output/study_dir/*
+3.optimizing_CP_attempt/notebooks/logs
+3.optimizing_CP_attempt/scripts/logs
+3.optimizing_CP_attempt/logs
+3.optimizing_CP_attempt/run_sam/notebooks/videos
+3.optimizing_CP_attempt/analysis_output/
+3.optimizing_CP_attempt/run_sam/notebooks/masks/masks.csv
+3.optimizing_CP_attempt/run_sam/masks/*.png
+3.optimizing_CP_attempt/run_sam/masks/*.csv
+3.optimizing_CP_attempt/notebooks/runinfo
+3.optimizing_CP_attempt/notebooks/optuna_profiling_utils.log
+3.optimizing_CP_attempt/pipelines/generated_pipelines
+3.optimizing_CP_attempt/run_sam/memory_snapshots/
+
+
+# cytomining results
+5.process_CP_features/data/
+
+# scDINO outputs
+6.scDINO_analysis/1.scDINO_run/outputdir
+# scDINO logs
+6.scDINO_analysis/1.scDINO_run/.snakemake
+6.scDINO_analysis/1.scDINO_run/logs
+
+# temporal shiny app
+6.scDINO_analysis/2.scDINO_processing/temporal_shiny_app
+6.scDINO_analysis/2.scDINO_processing/notebooks/4.deploy_shiny_app.ipynb
+6.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
+6.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
+
+# data harmonization
+7.data_harmonization/data/
+
+
+# data (processed)
+data/models/dino_deitsmall16_pretrain_full_checkpoint.pth
+data/processed_images/**
+
+
+
+
+
+
+
+
+
+
