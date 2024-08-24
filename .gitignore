@@ -55,6 +55,7 @@ data/models/
 3.optimizing_CP_attempt/notebooks/optuna_profiling_utils.log
 3.optimizing_CP_attempt/pipelines/generated_pipelines
 3.optimizing_CP_attempt/run_sam/memory_snapshots/
+3.optimizing_CP_attempt/run_sam/sam2_processing_dir
 
 
 # cytomining results
