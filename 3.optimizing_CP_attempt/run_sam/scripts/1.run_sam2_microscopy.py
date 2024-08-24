@@ -344,6 +344,12 @@ gc.collect()
 # In[16]:
 
 
+stored_video_segments = {}
+
+
+# In[17]:
+
+
 # loop through each image set and predict the instances
 for i in range(len(image_set_dict["image_set_name"])):
     print(
@@ -410,6 +416,7 @@ for i in range(len(image_set_dict["image_set_name"])):
             out_obj_id: (out_mask_logits[i] > 0.0).cpu().numpy()
             for i, out_obj_id in enumerate(range(1, ann_obj_idx))
         }
+    stored_video_segments[image_set_dict["image_set_name"][i]] = video_segments
 
     # clear the memory
     del inference_state
@@ -423,7 +430,7 @@ for i in range(len(image_set_dict["image_set_name"])):
 
 # ### stop GPU profiling
 
-# In[17]:
+# In[18]:
 
 
 # save the memory snapshot to a file
@@ -433,17 +440,20 @@ export_memory_snapshot(
 stop_record_memory_history(logger=logger)
 
 
-# In[18]:
+# In[19]:
 
 
 masks_dir = pathlib.Path("../sam2_processing_dir/masks").resolve()
 if masks_dir.exists():
     shutil.rmtree(masks_dir)
 masks_dir.mkdir(exist_ok=True, parents=True)
-csv_file = pathlib.Path("../sam2_processing_dir/masks/masks.csv").resolve()
+gifs_dir = pathlib.Path("../sam2_processing_dir/gifs").resolve()
+if gifs_dir.exists():
+    shutil.rmtree(gifs_dir)
+gifs_dir.mkdir(exist_ok=True, parents=True)
 
 
-# In[19]:
+# In[20]:
 
 
 output_dict = {
@@ -457,7 +467,7 @@ output_dict = {
 }
 
 
-# In[20]:
+# In[21]:
 
 
 # loop through each image set and predict the instances
@@ -474,16 +484,11 @@ for i in range(len(image_set_dict["image_set_name"])):
     # add all of the frames together for a rendered gif
     # create a list of all the frames
     frames = []
+
+    video_segments = stored_video_segments[image_set_dict["image_set_name"][i]]
     for out_frame_idx in range(0, len(frame_names), 1):
         # create a figure
-        fig, ax = plt.subplots(1, 1, figsize=(10, 10))
-        # ax.imshow(
-        #     Image.open(os.path.join(image_set_dict['image_set_path'][i], frame_names[out_frame_idx])), cmap="gray"
-        # )
         # set the frame path and make the directory if it doesn't exist
-        frame_image_path = masks_dir / f"{image_set_dict['image_set_name'][i]}"
-        frame_image_path.mkdir(exist_ok=True, parents=True)
-
         # create a frame image
         frame_image = np.zeros((h, w), dtype=np.uint8)
         # loop through the objects in the frame
@@ -513,13 +518,17 @@ for i in range(len(image_set_dict["image_set_name"])):
         # frame_image = Image.fromarray(frame_image)
         # scale the image upscale back to the original size
         frame_image = Image.fromarray(frame_image)
-        frame_image = frame_image.resize((upscale_w, upscale_h), Image.LANCZOS)
+        frame_image = frame_image.resize((upscale_w, upscale_h), Image.NEAREST)
 
         # convert the frame image to ints
         # frame_image = frame_image.convert("L")
-        frame_image.save(frame_image_path / f"{out_frame_idx}.png")
+        frame_image_path = f"{masks_dir}/{image_set_dict['image_set_name'][i]}_T{str(out_frame_idx + 1).zfill(4)}_Z0001_C01.png"
+        frame_image.save(frame_image_path)
 
         # add title to the subplot
+        fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+        # show the image
+        ax.imshow(frame_image, cmap="gray")
         ax.set_title(f"Frame {out_frame_idx}")
         # save the figure to a file
         fig.savefig(f"tmp_{out_frame_idx}.png")
@@ -530,7 +539,9 @@ for i in range(len(image_set_dict["image_set_name"])):
         # append the image to the frames
         frames.append(img)
 
-    fig_path = pathlib.Path(f"{masks_dir}/out.gif").resolve()
+    fig_path = pathlib.Path(
+        f"{gifs_dir}/{image_set_dict['image_set_name'][i]}_out.gif"
+    ).resolve()
     # save the frames as a gif
     frames[0].save(
         fig_path, save_all=True, append_images=frames[1:], duration=10, loop=0
@@ -542,7 +553,7 @@ for i in range(len(image_set_dict["image_set_name"])):
     [f.unlink() for f in tmp_files]
 
 
-# In[21]:
+# In[22]:
 
 
 file_paths_df = pd.DataFrame(output_dict)
@@ -582,7 +593,7 @@ tbl = db.create_table("1.masked_images", schema=schema, mode="overwrite")
 tbl.add(file_paths_df)
 
 
-# In[22]:
+# In[23]:
 
 
 # read the data from the table and check the first few rows
