@@ -4,6 +4,10 @@
 
 # raw data but keep the metadata
 data/2023*
+data/objects_db
+environments/SAM2_install/segment-anything-2
+data/models
+
 
 # logs
 **.log
@@ -11,13 +15,7 @@ data/2023*
 # cytomining logs
 **runinfo
 
-# ignore irrelevant SAM 2 outputs
-environments/SAM2_install/segment-anything-2
-# models
-data/models/
-
-############################################
-# Directories to ignore for specific analyses
+# ignore irrelevant SAM 2 outputsdata/objects_db
 ############################################
 
 # IC logs
