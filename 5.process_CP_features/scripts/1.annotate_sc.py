@@ -35,14 +35,14 @@ output_dir.mkdir(exist_ok=True)
 
 # dictionary with each run for the cell type
 dict_of_inputs = {
-    "run_20230920ChromaLiveTL_24hr4ch_MaxIP": {
-        "source_path": pathlib.Path(
-            f"{data_dir}/20230920ChromaLiveTL_24hr4ch_MaxIP.parquet"
-        ).resolve(strict=True),
-        "platemap_path": pathlib.Path(f"{platemap_path}/platemap_24h.csv").resolve(
-            strict=True
-        ),
-    },
+    # "run_20230920ChromaLiveTL_24hr4ch_MaxIP": {
+    #     "source_path": pathlib.Path(
+    #         f"{data_dir}/20230920ChromaLiveTL_24hr4ch_MaxIP.parquet"
+    #     ).resolve(strict=True),
+    #     "platemap_path": pathlib.Path(f"{platemap_path}/platemap_24h.csv").resolve(
+    #         strict=True
+    #     ),
+    # },
     "run_20231017ChromaLive_6hr_4ch_MaxIP": {
         "source_path": pathlib.Path(
             f"{data_dir}/20231017ChromaLive_6hr_4ch_MaxIP.parquet"
@@ -51,14 +51,14 @@ dict_of_inputs = {
             strict=True
         ),
     },
-    "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
-        "source_path": pathlib.Path(
-            f"{data_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP.parquet"
-        ).resolve(strict=True),
-        "platemap_path": pathlib.Path(
-            f"{platemap_path}/platemap_AnnexinV_2ch.csv"
-        ).resolve(strict=True),
-    },
+    # "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
+    #     "source_path": pathlib.Path(
+    #         f"{data_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP.parquet"
+    #     ).resolve(strict=True),
+    #     "platemap_path": pathlib.Path(
+    #         f"{platemap_path}/platemap_AnnexinV_2ch.csv"
+    #     ).resolve(strict=True),
+    # },
 }
 
 

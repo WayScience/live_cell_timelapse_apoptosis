@@ -2,28 +2,23 @@
 # This script processes the timelapse data
 
 # convert all notebooks to python files into the scripts folder
+echo "Converting notebooks to Python scripts..."
 jupyter nbconvert --to python --output-dir=scripts/ notebooks/*.ipynb
+echo "Conversion complete."
 
-# move to the scripts directory
-cd scripts
+mamba activate cellprofiler_timelapse_env
 
-# run the python scripts in order (from convert+merge, annotate, normalize, feature select, and extract image features)
-echo "Starting processing single cells"
+cd scripts/
 
-echo "Converting and merging singles"
-conda run -n cellprofiler_timelapse_env python 0.merge_sc.py
+python 0.merge_sc.py
+python 1.annotate_sc.py
+python 2.normalize_sc_across_time.py
+python 2.normalize_sc_within_time.py
+python 3.feature_select_sc_across_time.py
+python 3.feature_select_sc_within_time.py
 
-echo "Annotating single cells"
-conda run -n cellprofiler_timelapse_env python 1.annotate_sc.py
+cd ../
 
-echo "Normalizing single cells"
-conda run -n cellprofiler_timelapse_env python 2.normalize_sc.py
+mamba deactivate
 
-echo "Feature selecting single cells"
-conda run -n cellprofiler_timelapse_envpython 3.feature_select_sc.py
-
-# revert to the original directory
-cd ..
-
-# Complete
-echo "Processing of single cells complete"
+echo "Processing complete."

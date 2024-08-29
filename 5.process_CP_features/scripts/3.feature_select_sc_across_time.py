@@ -35,14 +35,14 @@ output_dir.mkdir(exist_ok=True)
 
 # dictionary with each run for the cell type
 dict_of_inputs = {
-    "run_20230920ChromaLiveTL_24hr4ch_MaxIP": {
-        "normalized_df_path": pathlib.Path(
-            f"{data_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_norm.parquet"
-        ).resolve(),
-        "output_file_path": pathlib.Path(
-            f"{output_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_norm_fs.parquet"
-        ).resolve(),
-    },
+    # "run_20230920ChromaLiveTL_24hr4ch_MaxIP": {
+    #     "normalized_df_path": pathlib.Path(
+    #         f"{data_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_norm.parquet"
+    #     ).resolve(),
+    #     "output_file_path": pathlib.Path(
+    #         f"{output_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_norm_fs.parquet"
+    #     ).resolve(),
+    # },
     "run_20231017ChromaLive_6hr_4ch_MaxIP": {
         "normalized_df_path": pathlib.Path(
             f"{data_dir}/run_20231017ChromaLive_6hr_4ch_MaxIP_norm_pan_time_norm.parquet"
@@ -51,14 +51,14 @@ dict_of_inputs = {
             f"{output_dir}/run_20231017ChromaLive_6hr_4ch_MaxIP_norm_pan_time_fs.parquet"
         ).resolve(),
     },
-    "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
-        "normalized_df_path": pathlib.Path(
-            f"{data_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_norm.parquet"
-        ).resolve(),
-        "output_file_path": pathlib.Path(
-            f"{output_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_norm_fs.parquet"
-        ).resolve(),
-    },
+    # "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
+    #     "normalized_df_path": pathlib.Path(
+    #         f"{data_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_norm.parquet"
+    #     ).resolve(),
+    #     "output_file_path": pathlib.Path(
+    #         f"{output_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_norm_fs.parquet"
+    #     ).resolve(),
+    # },
 }
 
 

@@ -62,3 +62,15 @@ To do this run the main shell script from the base directory of the repository:
 ```bash
 source run_full_pipe.sh
 ```
+
+The following analysis will be performed:
+0. Download the data
+1. Preprocess the data
+2. Run illumination correction
+3a. OPTIONAL: Run CellProfiler optimization of pipeline [Deprecated]
+3b. Run SAM2 to track objects over time
+4. Run CellProfiler to extract features
+5. Process the CellProfiler output
+6. Run scDINO extract Deep Learning features
+7. Harmonize the features from CellProfiler and scDINO
+

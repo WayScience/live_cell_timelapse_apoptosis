@@ -25,9 +25,6 @@ data/models
 2.cellprofiler_ic_processing/illum_directory_test_small
 2.cellprofiler_ic_processing/illum_directory_test
 
-
-
-
 # cellprofiler logs
 4.cellprofiler_analysis/scripts/logs
 4.cellprofiler_analysis/scripts/*.log
@@ -38,22 +35,25 @@ data/models
 4.cellprofiler_analysis/pipelines/generated_pipelines
 
 
-3.optimizing_CP_attempt/CellProfiler_optuna_utils/__pycache__
-3.optimizing_CP_attempt/analysis_output/optimized_pipes
-3.optimizing_CP_attempt/analysis_output/study_dir/*
-3.optimizing_CP_attempt/notebooks/logs
-3.optimizing_CP_attempt/scripts/logs
-3.optimizing_CP_attempt/logs
-3.optimizing_CP_attempt/run_sam/notebooks/videos
-3.optimizing_CP_attempt/analysis_output/
-3.optimizing_CP_attempt/run_sam/notebooks/masks/masks.csv
-3.optimizing_CP_attempt/run_sam/masks/*.png
-3.optimizing_CP_attempt/run_sam/masks/*.csv
-3.optimizing_CP_attempt/notebooks/runinfo
-3.optimizing_CP_attempt/notebooks/optuna_profiling_utils.log
-3.optimizing_CP_attempt/pipelines/generated_pipelines
-3.optimizing_CP_attempt/run_sam/memory_snapshots/
-3.optimizing_CP_attempt/run_sam/sam2_processing_dir
+3a.optimizing_CP_attempt_optional/CellProfiler_optuna_utils/__pycache__
+3a.optimizing_CP_attempt_optional/analysis_output/optimized_pipes
+3a.optimizing_CP_attempt_optional/analysis_output/study_dir/*
+3a.optimizing_CP_attempt_optional/notebooks/logs
+3a.optimizing_CP_attempt_optional/scripts/logs
+3a.optimizing_CP_attempt_optional/logs
+3a.optimizing_CP_attempt_optional/analysis_output/
+
+3a.optimizing_CP_attempt_optional/notebooks/runinfo
+3a.optimizing_CP_attempt_optional/notebooks/optuna_profiling_utils.log
+3a.optimizing_CP_attempt_optional/pipelines/generated_pipelines
+
+
+3b.run_sam/memory_snapshots/
+3b.run_sam/sam2_processing_dir
+3b.run_sam/notebooks/masks/masks.csv
+3b.run_sam/masks/*.png
+3b.run_sam/masks/*.csv
+3b.run_sam/notebooks/videos
 
 
 # cytomining results

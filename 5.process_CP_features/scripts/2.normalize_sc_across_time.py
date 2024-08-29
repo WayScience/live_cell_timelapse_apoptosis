@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Normalize annotated single cells using negative control (DSMO 0.025% and DMSO 0.100%)
+# # Normalize annotated single cells using negative control
 
 # ## Import libraries
 
@@ -34,14 +34,14 @@ output_dir.mkdir(exist_ok=True)
 
 # dictionary with each run for the cell type
 dict_of_inputs = {
-    "run_20230920ChromaLiveTL_24hr4ch_MaxIP": {
-        "annotated_file_path": pathlib.Path(
-            f"{data_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_sc.parquet"
-        ).resolve(),
-        "output_file_path": pathlib.Path(
-            f"{output_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_norm.parquet"
-        ).resolve(),
-    },
+    # "run_20230920ChromaLiveTL_24hr4ch_MaxIP": {
+    #     "annotated_file_path": pathlib.Path(
+    #         f"{data_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_sc.parquet"
+    #     ).resolve(),
+    #     "output_file_path": pathlib.Path(
+    #         f"{output_dir}/run_20230920ChromaLiveTL_24hr4ch_MaxIP_norm.parquet"
+    #     ).resolve(),
+    # },
     "run_20231017ChromaLive_6hr_4ch_MaxIP": {
         "annotated_file_path": pathlib.Path(
             f"{data_dir}/run_20231017ChromaLive_6hr_4ch_MaxIP_sc.parquet"
@@ -50,14 +50,14 @@ dict_of_inputs = {
             f"{output_dir}/run_20231017ChromaLive_6hr_4ch_MaxIP_norm_pan_time_norm.parquet"
         ).resolve(),
     },
-    "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
-        "annotated_file_path": pathlib.Path(
-            f"{data_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_sc.parquet"
-        ).resolve(),
-        "output_file_path": pathlib.Path(
-            f"{output_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_norm.parquet"
-        ).resolve(),
-    },
+    # "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
+    #     "annotated_file_path": pathlib.Path(
+    #         f"{data_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_sc.parquet"
+    #     ).resolve(),
+    #     "output_file_path": pathlib.Path(
+    #         f"{output_dir}/run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_norm.parquet"
+    #     ).resolve(),
+    # },
 }
 
 
@@ -67,7 +67,7 @@ dict_of_inputs = {
 # This code cell will split the data into time steps and normalize each time step separately.
 # Then each normalized time step will be concatenated back together.
 
-# In[4]:
+# In[5]:
 
 
 for info, input_path in dict_of_inputs.items():
@@ -84,6 +84,8 @@ for info, input_path in dict_of_inputs.items():
     time_points = annotated_df.Metadata_Time.unique()
 
     output_dict_of_normalized_dfs = {}
+
+    print(f"Shape of the annotated data: {annotated_df.shape}")
 
     normalized_df = normalize(
         # df with annotated raw merged single cell features
@@ -105,3 +107,6 @@ for info, input_path in dict_of_inputs.items():
     # check to see if the features have been normalized
     print(normalized_df.shape)
     normalized_df.head()
+
+
+# In[ ]:

@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[1]:
+# In[ ]:
 
 
 import pathlib
@@ -17,7 +17,7 @@ import cp_parallel
 
 # ## Set paths and variables
 
-# In[2]:
+# In[ ]:
 
 
 # set the run type for the parallelization
@@ -29,16 +29,20 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # directory where images are located within folders
 images_dir = pathlib.Path("../../2.cellprofiler_ic_processing/illum_directory")
+# directory where masks are located within folders
+masks_dir = pathlib.Path(
+    "../../3.optimizing_CP_attempt/run_sam/sam2_processing_dir/masks"
+)
 
 # path to plugins directory as one of the pipelines uses the RunCellpose plugin
 plugins_dir = pathlib.Path(
-    "/home/lippincm/Documents/CellProfiler/src/frontend/cellprofiler/modules/plugins"
+    "/home/lippincm/Documents/CellProfiler-plugins/active_plugins"
 )
 
 
 # ## Create dictionary with all info for each plate
 
-# In[3]:
+# In[ ]:
 
 
 dict_of_inputs = {
