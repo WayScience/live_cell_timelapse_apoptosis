@@ -26,7 +26,7 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # directory where images are located within folders
 images_dir = pathlib.Path(
-    "../../2.cellprofiler_ic_processing/illum_directory_test_small"
+    "../../2.cellprofiler_ic_processing/illum_directory"
 ).resolve()
 # directory where masks are located within folders
 masks_dir = pathlib.Path("../../3b.run_sam/sam2_processing_dir/masks").resolve()

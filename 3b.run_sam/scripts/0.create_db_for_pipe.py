@@ -32,7 +32,7 @@ db = lancedb.connect(uri)
 
 # set the path to the videos
 tiff_dir = pathlib.Path(
-    "../../../2.cellprofiler_ic_processing/illum_directory_test_small/20231017ChromaLive_6hr_4ch_MaxIP/"
+    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_6hr_4ch_MaxIP/"
 ).resolve(strict=True)
 
 
@@ -65,10 +65,10 @@ tiff_df["binary_image"] = tiff_df["image"].apply(lambda x: x.tobytes())
 # sort the df by the well, fov, timepoint, z-slice
 tiff_df = tiff_df.sort_values(["Well", "FOV", "Timepoint", "Z-slice"])
 tiff_df.reset_index(drop=True, inplace=True)
-tiff_df.head()
+tiff_df.head(1)
 
 
-# In[5]:
+# In[7]:
 
 
 schema = pa.schema(
@@ -85,29 +85,6 @@ schema = pa.schema(
         pa.field("binary_image", pa.binary()),
     ]
 )
-tbl = db.create_table("0.original_images", schema=schema, mode="overwrite")
-
-tbl.add(tiff_df)
-
-
-# Check to ensure the df is retrievable and formatted correctly
-
-# In[6]:
-
-
-df = tbl.to_pandas()
-df.head()
-
-
-# In[7]:
-
-
-# load the first image
-df["image"][0]
-# load the binary data into a numpy array
-np.frombuffer(df["image"][0], dtype=np.uint8)
-# plto the image
-
-df["image"][0].reshape(1900, 1900)
-plt.imshow(df["image"][0].reshape(1900, 1900), cmap="gray")
-plt.show()
+tbl = db.create_table(
+    "0.original_images", mode="overwrite", data=tiff_df, schema=schema
+)

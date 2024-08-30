@@ -105,7 +105,7 @@ predictor = build_sam2_video_predictor(model_cfg, sam2_checkpoint)
 
 # set the path to the videos
 tiff_dir = pathlib.Path(
-    "../../2.cellprofiler_ic_processing/illum_directory_test_small/20231017ChromaLive_6hr_4ch_MaxIP/"
+    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_6hr_4ch_MaxIP/"
 ).resolve(strict=True)
 ordered_tiffs = pathlib.Path("../sam2_processing_dir/tiffs/").resolve()
 converted_to_video_dir = pathlib.Path("../sam2_processing_dir/pngs/").resolve()
@@ -306,6 +306,11 @@ for i in range(len(image_set_dict["image_set_name"])):
     image_set_dict["image_x_y_coords"].append(coords)
     image_set_dict["image_labels"].append(labels)
 
+# remove star dist model from memory
+del model
+# remove all stardist gpu memory
+torch.cuda.empty_cache()
+
 
 # ## 4. Track multiple objects in the video
 
@@ -440,7 +445,7 @@ for i in range(len(image_set_dict["image_set_name"])):
 
 # ### stop GPU profiling
 
-# In[18]:
+# In[ ]:
 
 
 # save the memory snapshot to a file
@@ -450,7 +455,7 @@ export_memory_snapshot(
 stop_record_memory_history(logger=logger)
 
 
-# In[19]:
+# In[ ]:
 
 
 masks_dir = pathlib.Path("../sam2_processing_dir/masks").resolve()
@@ -463,7 +468,7 @@ if gifs_dir.exists():
 gifs_dir.mkdir(exist_ok=True, parents=True)
 
 
-# In[20]:
+# In[ ]:
 
 
 output_dict = {
@@ -477,7 +482,7 @@ output_dict = {
 }
 
 
-# In[21]:
+# In[ ]:
 
 
 # loop through each image set and predict the instances
@@ -563,7 +568,7 @@ for i in range(len(image_set_dict["image_set_name"])):
     [f.unlink() for f in tmp_files]
 
 
-# In[22]:
+# In[ ]:
 
 
 file_paths_df = pd.DataFrame(output_dict)
@@ -603,7 +608,7 @@ tbl = db.create_table("1.masked_images", schema=schema, mode="overwrite")
 tbl.add(file_paths_df)
 
 
-# In[23]:
+# In[ ]:
 
 
 # read the data from the table and check the first few rows

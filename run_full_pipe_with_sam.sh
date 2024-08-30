@@ -30,14 +30,12 @@ echo "Starting the CellProfiler analysis..."
 
 # run SAM2
 
-# cd 3b.run_sam
-# jupyter nbconvert --to python --output-dir=scripts/ notebooks/*.ipynb
-# cd scripts/
-# mamba activate sam2_env
-# python 1.run_sam2_microscopy.py
-# cd ../../
+cd 3b.run_sam
+mamba activate sam2_env
+source run_sam2.sh
+cd ../
 
-# mamba deactivate
+mamba deactivate
 
 # extract the features
 mamba activate cellprofiler_timelapse_env
