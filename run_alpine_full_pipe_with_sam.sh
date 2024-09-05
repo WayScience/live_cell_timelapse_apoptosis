@@ -1,4 +1,16 @@
 #!/bin/bash
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=8
+#SBATCH --time=6:00:00
+#SBATCH --partition=aa100
+#SBATCH --gres=gpu:1
+#SBATCH --output=sample-%j.out
+
+
+
+
+
 # this is a gold standard reproducible pipeline for the analysis of Live-Cell timelapse imaging data
 
 
@@ -30,7 +42,9 @@ echo "Starting the CellProfiler analysis..."
 
 # run SAM2
 module load cuda
+module load anaconda
 module load mambaforge
+conda init bash
 
 cd 3b.run_sam
 mamba activate sam2_env

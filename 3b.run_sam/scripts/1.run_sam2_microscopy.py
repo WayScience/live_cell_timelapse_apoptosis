@@ -20,7 +20,7 @@
 
 # ## 1. Imports
 
-# In[1]:
+# In[ ]:
 
 
 import gc
@@ -73,7 +73,7 @@ print(torch.cuda.get_device_name(0))
 
 # ### Download the model(s)
 
-# In[2]:
+# In[ ]:
 
 
 # !wget https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_tiny.pt
@@ -95,7 +95,7 @@ pathlib.Path(new_model_path.parent).mkdir(parents=True, exist_ok=True)
 shutil.move(model_path, new_model_path)
 
 
-# In[3]:
+# In[ ]:
 
 
 # load in the model and the predictor
@@ -105,7 +105,7 @@ predictor = build_sam2_video_predictor(model_cfg, sam2_checkpoint)
 
 # set the path to the videos
 tiff_dir = pathlib.Path(
-    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_6hr_4ch_MaxIP/"
+    "../../2.cellprofiler_ic_processing/illum_directory_test/20231017ChromaLive_6hr_4ch_MaxIP/"
 ).resolve(strict=True)
 ordered_tiffs = pathlib.Path("../sam2_processing_dir/tiffs/").resolve()
 converted_to_video_dir = pathlib.Path("../sam2_processing_dir/pngs/").resolve()
@@ -116,7 +116,7 @@ ordered_tiffs.mkdir(parents=True, exist_ok=True)
 converted_to_video_dir.mkdir(parents=True, exist_ok=True)
 
 
-# In[4]:
+# In[ ]:
 
 
 # create the database object
@@ -126,7 +126,7 @@ db = lancedb.connect(uri)
 
 # ### Get data formatted correctly
 
-# In[5]:
+# In[ ]:
 
 
 # get the list of tiff files in the directory
@@ -156,7 +156,7 @@ tiff_df.reset_index(drop=True, inplace=True)
 tiff_df.head()
 
 
-# In[6]:
+# In[ ]:
 
 
 # copy the files to the new directory
@@ -167,7 +167,7 @@ for index, row in tiff_df.iterrows():
     shutil.copy(row["file_path"], new_path)
 
 
-# In[7]:
+# In[ ]:
 
 
 # get the list of directories in the ordered tiffs directory
@@ -190,7 +190,7 @@ for dir in ordered_tiff_dir_names:
                 print(f"Failed to convert {tiff_file}: {e}")
 
 
-# In[8]:
+# In[ ]:
 
 
 # get list of dirs in the converted to video dir
@@ -205,7 +205,7 @@ for dir in converted_dir_names:
 
 # ### Donwsample each frame to fit the images on the GPU - overwrite the copies JPEGs
 
-# In[9]:
+# In[ ]:
 
 
 # get files in the directory
@@ -215,10 +215,10 @@ converted_dirs_list = [f for f in converted_dirs_list if f.is_file()]
 files = [str(f) for f in converted_dirs_list]
 
 
-# In[10]:
+# In[ ]:
 
 
-downscale_factor = 10
+downscale_factor = 12
 # sort the files by name
 # downsample the image
 for f in files:
@@ -234,7 +234,7 @@ for f in files:
 # ### Get the first frame of each video
 # ### Set up a dict that holds the images path, the first frame_mask, and the first frame_centers
 
-# In[11]:
+# In[ ]:
 
 
 # where one image set here is a single well and fov over all timepoints
@@ -264,7 +264,7 @@ for dir in dirs:
 # - the x,y centers of the segmentation
 # - the extracted masks
 
-# In[12]:
+# In[ ]:
 
 
 model = StarDist2D.from_pretrained("2D_versatile_fluo")
@@ -314,7 +314,7 @@ torch.cuda.empty_cache()
 
 # ## 4. Track multiple objects in the video
 
-# In[13]:
+# In[ ]:
 
 
 image_set_dict.keys()
@@ -322,7 +322,7 @@ image_set_dict.keys()
 
 # ### Begin GPU Profiling
 
-# In[14]:
+# In[ ]:
 
 
 # Start recording memory snapshot history
@@ -348,7 +348,7 @@ start_record_memory_history(
 )
 
 
-# In[15]:
+# In[ ]:
 
 
 # clear the memory
@@ -356,13 +356,13 @@ torch.cuda.empty_cache()
 gc.collect()
 
 
-# In[16]:
+# In[ ]:
 
 
 stored_video_segments = {}
 
 
-# In[17]:
+# In[ ]:
 
 
 # loop through each image set and predict the instances
