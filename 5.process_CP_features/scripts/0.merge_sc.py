@@ -229,9 +229,17 @@ for sqlite_file, info in dict_of_inputs.items():
     print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
     # add single cell count per well as metadata column to parquet file and save back to same path
     sc_utils.add_sc_count_metadata_file(
-        data_path=dest_path, well_column_name="Image_Metadata_Well", file_type="parquet"
+        data_path=dest_path,
+        well_column_name="Metadata_ImageNumber",
+        file_type="parquet",
     )
     # read the parquet file to check if metadata was added
     df1 = pd.read_parquet(dest_path)
     print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
     print(f"Added single cell count as metadata to {pathlib.Path(dest_path).name}!")
+
+
+# In[6]:
+
+
+df1.head()
