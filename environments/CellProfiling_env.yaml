@@ -32,6 +32,7 @@ dependencies:
 - conda-forge::sentry-sdk=0.18.0
 - conda-forge::optuna
 - conda-forge::optuna-dashboard
+- conda-forge::lancedb
 - pip:
     - cellprofiler==4.2.6
     # For segmentation, we install Cellpose (version must at least 2.0 and less than 3.0 due to lack of plugin support)
