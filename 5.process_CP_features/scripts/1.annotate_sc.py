@@ -10,6 +10,7 @@
 
 import pathlib
 
+import lancedb
 import pandas as pd
 from pycytominer import annotate
 from pycytominer.cyto_utils import output
@@ -35,14 +36,6 @@ output_dir.mkdir(exist_ok=True)
 
 # dictionary with each run for the cell type
 dict_of_inputs = {
-    "run_20230920ChromaLiveTL_24hr4ch_MaxIP": {
-        "source_path": pathlib.Path(
-            f"{data_dir}/20230920ChromaLiveTL_24hr4ch_MaxIP.parquet"
-        ).resolve(strict=True),
-        "platemap_path": pathlib.Path(f"{platemap_path}/platemap_24h.csv").resolve(
-            strict=True
-        ),
-    },
     "run_20231017ChromaLive_6hr_4ch_MaxIP": {
         "source_path": pathlib.Path(
             f"{data_dir}/20231017ChromaLive_6hr_4ch_MaxIP.parquet"
@@ -50,14 +43,6 @@ dict_of_inputs = {
         "platemap_path": pathlib.Path(f"{platemap_path}/platemap_6hr_4ch.csv").resolve(
             strict=True
         ),
-    },
-    "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
-        "source_path": pathlib.Path(
-            f"{data_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP.parquet"
-        ).resolve(strict=True),
-        "platemap_path": pathlib.Path(
-            f"{platemap_path}/platemap_AnnexinV_2ch.csv"
-        ).resolve(strict=True),
     },
 }
 
@@ -121,3 +106,128 @@ for data_run, info in dict_of_inputs.items():
     # check last annotated df to see if it has been annotated correctly
     print(annotated_df.shape)
     annotated_df.head()
+
+
+# ## Add the object tacking from SAM2
+
+# In[5]:
+
+
+# set and connect to the db
+# create the database object
+uri = pathlib.Path("../../data/objects_db").resolve()
+db = lancedb.connect(uri)
+
+
+# In[6]:
+
+
+# get the db schema and tables
+db.table_names()
+# load table
+table = db["1.masked_images"]
+location_metadata_df = table.to_pandas()
+print(location_metadata_df.shape)
+location_metadata_df.head()
+
+
+# In[7]:
+
+
+# change frame to Metadata_Time
+location_metadata_df.rename(columns={"frame": "Metadata_Time"}, inplace=True)
+# add 1 to Metadata_Time to match the timepoints in the single cell data
+location_metadata_df["Metadata_Time"] = location_metadata_df["Metadata_Time"] + 1
+# change formatting to leading 4 zeros
+location_metadata_df["Metadata_Time"] = location_metadata_df["Metadata_Time"].apply(
+    lambda x: f"{x:04}"
+)
+print(location_metadata_df.shape)
+location_metadata_df.head()
+
+
+# In[8]:
+
+
+print(annotated_df.shape)
+annotated_df["Metadata_image_set_name"] = (
+    annotated_df["Metadata_Well"].astype(str)
+    + "_"
+    + "F"
+    + annotated_df["Metadata_FOV"].astype(str)
+)
+image_set_names = annotated_df.pop("Metadata_image_set_name")
+# move to front
+annotated_df.insert(0, "Metadata_image_set_name", image_set_names)
+time = annotated_df.pop("Metadata_Time")
+annotated_df.insert(1, "Metadata_Time", time)
+x_coord = annotated_df.pop("Metadata_Nuclei_Location_Center_X")
+Y_coord = annotated_df.pop("Metadata_Nuclei_Location_Center_Y")
+annotated_df.insert(2, "Metadata_Nuclei_Location_Center_X", x_coord)
+annotated_df.insert(3, "Metadata_Nuclei_Location_Center_Y", Y_coord)
+annotated_df.head()
+
+
+# In[9]:
+
+
+# drop NaN values in the centroid columns from annotated_df
+print(annotated_df.shape)
+annotated_df = annotated_df.dropna(
+    subset=["Metadata_Nuclei_Location_Center_X", "Metadata_Nuclei_Location_Center_Y"]
+)
+print(annotated_df.shape)
+print(location_metadata_df.shape)
+
+
+# In[10]:
+
+
+# match the x and y coordinates to the image set name in the location metadata df
+annotated_df["Metadata_Nuclei_Location_Center_X"] = annotated_df[
+    "Metadata_Nuclei_Location_Center_X"
+].astype(int)
+annotated_df["Metadata_Nuclei_Location_Center_Y"] = annotated_df[
+    "Metadata_Nuclei_Location_Center_Y"
+].astype(int)
+location_metadata_df["x"] = location_metadata_df["x"].astype(int)
+location_metadata_df["y"] = location_metadata_df["y"].astype(int)
+
+merged_df = annotated_df.merge(
+    location_metadata_df,
+    how="left",
+    left_on=[
+        "Metadata_Nuclei_Location_Center_X",
+        "Metadata_Nuclei_Location_Center_Y",
+        "Metadata_Time",
+        "Metadata_image_set_name",
+    ],
+    right_on=["x", "y", "Metadata_Time", "image_set_name"],
+)
+print(merged_df.shape)
+# sort by image_set_name and Metadata_Time
+merged_df = merged_df.sort_values(by=["Metadata_image_set_name", "Metadata_Time"])
+# drop right columns
+merged_df = merged_df.drop(
+    columns=[
+        "image_set_name",
+        "object_id",
+        "x",
+        "y",
+        "mask_path",
+        "mask_file_name",
+        "mask_file_path",
+    ]
+)
+merged_df.head()
+
+
+# In[11]:
+
+
+# save annotated df as parquet file
+output(
+    df=merged_df,
+    output_filename=output_file,
+    output_type="parquet",
+)

@@ -25,6 +25,7 @@ dependencies:
   - nvidia/label/cuda-12.1.0::libcufile
   - nvidia/label/cuda-12.1.0::cuda-tools
   - pytorch-cuda=12.1
+  - lancedb
   - pip
   - pip:
     - torch==2.4

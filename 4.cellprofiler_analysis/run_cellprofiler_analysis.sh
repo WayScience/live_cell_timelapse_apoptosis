@@ -9,7 +9,7 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts/
 
 # run the python script
-conda run -n cellprofiler_timelapse_env python run_cellprofiler_analysis.py
+conda run -n cellprofiler_timelapse_env python run_cellprofiler_pipe_with_sam_outputs.py
 
 # change the directory back to the orginal directory
 cd ../
