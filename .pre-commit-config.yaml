@@ -1,39 +1,44 @@
----
 repos:
+  # Update the pre-commit hooks
+-   repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
+    rev: v0.5.0       # Insert the latest tag here
+    hooks:
+    -   id: pre-commit-update
+        args: [--exclude, black, --keep, isort]
   # Formats import order
-  - repo: https://github.com/pycqa/isort
+-   repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
-      - id: isort
+    -   id: isort
         name: isort (python)
         args: ["--profile", "black", "--filter-files"]
 
   # Code formatter for both python files and jupyter notebooks
-  - repo: https://github.com/psf/black
+-   repo: https://github.com/psf/black
     rev: 24.3.0
     hooks:
-      - id: black-jupyter
-      - id: black
+    -   id: black-jupyter
+    -   id: black
         language_version: python3.10
 
-  - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.8.5
+-   repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.9.0
     hooks:
-    - id: nbqa-isort
-      additional_dependencies: [isort==5.6.4]
-      args: [--profile=black]
+    -   id: nbqa-isort
+        additional_dependencies: [isort==5.6.4]
+        args: [--profile=black]
 
   # remove unused imports
-  - repo: https://github.com/hadialqattan/pycln.git
+-   repo: https://github.com/hadialqattan/pycln.git
     rev: v2.4.0
     hooks:
-      - id: pycln
+    -   id: pycln
 
   # additional hooks found with in the pre-commit lib
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
     hooks:
-      - id: trailing-whitespace # removes trailing white spaces
-      - id: mixed-line-ending # removes mixed end of line
+    -   id: trailing-whitespace # removes trailing white spaces
+    -   id: mixed-line-ending # removes mixed end of line
         args:
-          - --fix=lf
+        -   --fix=lf

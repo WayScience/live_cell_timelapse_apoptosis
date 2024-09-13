@@ -26,7 +26,7 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # directory where images are located within folders
 images_dir = pathlib.Path(
-    "../../2.cellprofiler_ic_processing/illum_directory"
+    "../../2.cellprofiler_ic_processing/illum_directory_test/"
 ).resolve()
 # directory where masks are located within folders
 masks_dir = pathlib.Path("../../3b.run_sam/sam2_processing_dir/masks").resolve()
@@ -43,6 +43,9 @@ plugins_dir = pathlib.Path(
 # make a new dir for input images
 CP_input_dir = pathlib.Path("../../3b.run_sam/sam2_processing_dir/CP_input/").resolve()
 CP_input_dir.mkdir(exist_ok=True, parents=True)
+# remove any existing files in the dir from previous runs
+if CP_input_dir.exists():
+    shutil.rmtree(CP_input_dir)
 
 # copy all images to the new dir
 for image in images_dir.rglob("*.tiff"):

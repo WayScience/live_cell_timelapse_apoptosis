@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# This notebook creates a lance database for storing image/single-cell metadata for tracking single cells through time.
+# This lance db will be called in the next notebook in this analysis.
+
 # In[1]:
 
 
@@ -20,7 +23,7 @@ from tqdm import tqdm
 
 
 # create the database object
-uri = pathlib.Path("../../../data/objects_db").resolve()
+uri = pathlib.Path("../../data/objects_db").resolve()
 # delete the database directory if it exists
 if uri.exists():
     os.system(f"rm -rf {uri}")
@@ -54,6 +57,9 @@ tiff_df[["Well", "FOV", "Timepoint", "Z-slice", "Channel", "illum"]] = tiff_df[
 ].str.split("_", expand=True)
 tiff_df["Well_FOV"] = tiff_df["Well"] + "_" + tiff_df["FOV"]
 # drop all channels except for the first one
+# this is so there is one row per cell
+# specifically the first channel is the nuclei channel
+# and I will be tracking the obj=ects through the nuclei channel
 tiff_df = tiff_df[tiff_df["Channel"] == "C01"]
 tiff_df = tiff_df.drop(columns=["Channel", "illum"])
 
@@ -71,6 +77,7 @@ tiff_df.head(1)
 # In[7]:
 
 
+# create the schema for the table in the database
 schema = pa.schema(
     [
         pa.field("file_name", pa.string()),
@@ -85,6 +92,7 @@ schema = pa.schema(
         pa.field("binary_image", pa.binary()),
     ]
 )
+# create the table in the database following the schema
 tbl = db.create_table(
     "0.original_images", mode="overwrite", data=tiff_df, schema=schema
 )

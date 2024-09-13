@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This notebook solves the tracking issue by using [SAM2](https://github.com/facebookresearch/segment-anything-2/tree/main).
-# Here I use the pretrained model to segment the Nuclei in the video.
+# This notebook solves the cell tracking issue by using [SAM2](https://github.com/facebookresearch/segment-anything-2/tree/main) instead of the functionality within CellProfiler.
+# Here I use the pretrained model to segment the nuclei in the video.
 # The output is a mask for each object in each frame and the x,y coordinates centers of each object in each frame.
 
 # This is a notebook that needs perfect conditions to work.
 # With a GeForce RTX 3090 TI, the 24GB of VRAM sometimes are not enough to process the videos.
 #
 # Hold your breath, pick a four-leaf clover, avoid black cats, cracks, and mirrors, and let's go!
+#
+# This notebook is converted to a script and ran from script to be compatible with HPC cluster.
 
 # # Table of Contents for this Notebook
 # #### 1. Imports
@@ -23,36 +25,33 @@
 # In[ ]:
 
 
-import gc
-import logging
-import pathlib
-import shutil
-import subprocess
-import sys
+# top level imports
+import gc  # garbage collector
+import logging  # logging
+import pathlib  # path handling
+import shutil  # file handling
+import subprocess  # subprocess handling
+import sys  # system
 
-import imageio
-import lancedb
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import pyarrow as pa
-import torch
-from csbdeep.utils import Path, normalize
-from PIL import Image
-from sam2.build_sam import build_sam2, build_sam2_video_predictor
-from sam2.sam2_image_predictor import SAM2ImagePredictor
-from skimage import io
-from skimage.measure import label, regionprops
-from skimage.transform import resize
-from stardist import fill_label_holes, random_label_cmap
-from stardist.data import test_image_nuclei_2d
-from stardist.matching import matching_dataset
-from stardist.models import StarDist2D
-from stardist.plot import render_label
-from torchvision import models
+import lancedb  # lancedb database
+import matplotlib.pyplot as plt  # plotting
+import numpy as np  # numerical python
+import pandas as pd  # data handling
+import pyarrow as pa  # pyarrow for parquet
+import torch  # pytorch deep learning
+from csbdeep.utils import Path, normalize  # dependecy for stardist
+from PIL import Image  # image handling
+from sam2.build_sam import build_sam2, build_sam2_video_predictor  # sam2
+from sam2.sam2_image_predictor import SAM2ImagePredictor  # sam2 image predictor
+from skimage import io  # image handling
+from skimage.measure import label, regionprops  # coordinate handling
+from skimage.transform import resize  # image handling
+from stardist.models import StarDist2D  # stardist
+from stardist.plot import render_label  # stardist
+from torchvision import models  # pytorch models
 
 sys.path.append("../../utils/")
-from SAM2_utils import (
+from SAM2_utils import (  # sam2 utils
     delete_recorded_memory_history,
     export_memory_snapshot,
     generate_random_coords,
@@ -76,23 +75,29 @@ print(torch.cuda.get_device_name(0))
 # In[ ]:
 
 
-# !wget https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_tiny.pt
-# # move the model to the correct location
-# model_path = pathlib.Path("sam2_hiera_tiny.pt").resolve()
-# new_model_path = pathlib.Path("../../../data/models").resolve() / model_path.name
-# pathlib.Path(new_model_path.parent).mkdir(parents=True, exist_ok=True)
-# shutil.move(model_path, new_model_path)
+models_dict = {
+    "sam2_hiera_tiny.pt": "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_tiny.pt",
+    "sam2_hiera_small.pt": "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_small.pt",
+    "sam2_hiera_base_plus.pt": "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_base_plus.pt",
+    "sam2_hiera_large.pt": "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_large.pt",
+}
+
+
+# In[ ]:
 
 
 # Download the file using wget
-url = "https://dl.fbaipublicfiles.com/segment_anything_2/072824/sam2_hiera_tiny.pt"
-subprocess.run(["wget", url], check=True)
-
-# Move the model to the correct location
-model_path = pathlib.Path("sam2_hiera_tiny.pt").resolve()
-new_model_path = pathlib.Path("../../../data/models").resolve() / model_path.name
-pathlib.Path(new_model_path.parent).mkdir(parents=True, exist_ok=True)
-shutil.move(model_path, new_model_path)
+# this is the model checkpoint for the SAM2 model
+for file in models_dict.keys():
+    model_path = pathlib.Path(file).resolve()
+    new_model_path = pathlib.Path("../../data/models").resolve() / model_path.name
+    # check if the model already exists
+    if not new_model_path.exists():
+        subprocess.run(["wget", models_dict[file]], check=True)
+        new_model_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(model_path, new_model_path)
+    else:
+        print(f"Model {new_model_path} already exists. Skipping download.")
 
 
 # In[ ]:
@@ -104,9 +109,8 @@ model_cfg = "sam2_hiera_t.yaml"
 predictor = build_sam2_video_predictor(model_cfg, sam2_checkpoint)
 
 # set the path to the videos
-tiff_dir = pathlib.Path(
-    "../../2.cellprofiler_ic_processing/illum_directory_test/20231017ChromaLive_6hr_4ch_MaxIP/"
-).resolve(strict=True)
+import logging  # logging
+
 ordered_tiffs = pathlib.Path("../sam2_processing_dir/tiffs/").resolve()
 converted_to_video_dir = pathlib.Path("../sam2_processing_dir/pngs/").resolve()
 if converted_to_video_dir.exists():
@@ -218,7 +222,9 @@ files = [str(f) for f in converted_dirs_list]
 # In[ ]:
 
 
-downscale_factor = 12
+# need to downscale to fit the model and images on the GPU
+# note that this is an arbitrary number and can be changed
+downscale_factor = 8
 # sort the files by name
 # downsample the image
 for f in files:
@@ -239,11 +245,11 @@ for f in files:
 
 # where one image set here is a single well and fov over all timepoints
 image_set_dict = {
-    "image_set_name": [],
-    "image_set_path": [],
-    "image_set_first_frame": [],
-    "image_x_y_coords": [],
-    "image_labels": [],
+    "image_set_name": [],  # e.g. well_fov
+    "image_set_path": [],  # path to the directory
+    "image_set_first_frame": [],  # path to the first frame
+    "image_x_y_coords": [],  # list of x,y coordinates
+    "image_labels": [],  # list of labels for the x,y coordinates
 }
 
 # get the list of directories in the ordered tiffs directory
@@ -269,6 +275,10 @@ for dir in dirs:
 
 model = StarDist2D.from_pretrained("2D_versatile_fluo")
 
+# choose to visualize the results or not
+# best for troubleshooting or exploring the model
+visualize = False
+
 # loop through each image set and predict the instances
 for i in range(len(image_set_dict["image_set_name"])):
     print(
@@ -279,29 +289,31 @@ for i in range(len(image_set_dict["image_set_name"])):
     # convert the labels into position coordinates
     regions = regionprops(label(labels))
     coords = np.array([r.centroid for r in regions])
-
-    # plot the points and the masks and the image side by side by side
-    fig, ax = plt.subplots(1, 4, figsize=(30, 15))
-    ax[0].imshow(img, cmap="gray")
-    ax[0].set_title("Image")
-    ax[1].imshow(render_label(labels, img=img))
-    ax[1].set_title("Masks")
-    ax[2].imshow(img, cmap="gray")
-    ax[2].scatter(
-        coords[:, 1],
-        coords[:, 0],
-        color="red",
-        marker="*",
-        s=100,
-        edgecolor="white",
-        linewidth=1.25,
-    )
-    ax[2].set_title("Points")
     coords = coords[:, [1, 0]]
-    ax[3].invert_yaxis()
-    # make the aspect ratio equal
-    ax[3].set_aspect("equal")
-    show_points(coords, np.ones(len(coords)), ax[3])
+
+    if visualize:
+        # plot the points and the masks and the image side by side by side
+        fig, ax = plt.subplots(1, 4, figsize=(30, 15))
+        ax[0].imshow(img, cmap="gray")
+        ax[0].set_title("Image")
+        ax[1].imshow(render_label(labels, img=img))
+        ax[1].set_title("Masks")
+        ax[2].imshow(img, cmap="gray")
+        ax[2].scatter(
+            coords[:, 1],
+            coords[:, 0],
+            color="red",
+            marker="*",
+            s=100,
+            edgecolor="white",
+            linewidth=1.25,
+        )
+        ax[2].set_title("Points")
+
+        ax[3].invert_yaxis()
+        # make the aspect ratio equal
+        ax[3].set_aspect("equal")
+        show_points(coords, np.ones(len(coords)), ax[3])
     labels = np.ones(coords.shape[0], dtype=np.int32)
     image_set_dict["image_x_y_coords"].append(coords)
     image_set_dict["image_labels"].append(labels)
@@ -313,12 +325,6 @@ torch.cuda.empty_cache()
 
 
 # ## 4. Track multiple objects in the video
-
-# In[ ]:
-
-
-image_set_dict.keys()
-
 
 # ### Begin GPU Profiling
 
@@ -377,8 +383,8 @@ for i in range(len(image_set_dict["image_set_name"])):
     # initialize the state
     inference_state = predictor.init_state(
         video_path=str(image_set_dict["image_set_path"][i]),
-        offload_video_to_cpu=True,
-        offload_state_to_cpu=True,
+        offload_video_to_cpu=True,  # set to True if the video is too large to fit in GPU memory
+        offload_state_to_cpu=True,  # set to True if the state is too large to fit in GPU memory
     )
     predictor.reset_state(inference_state)
     prompts = {}
@@ -458,14 +464,27 @@ stop_record_memory_history(logger=logger)
 # In[ ]:
 
 
+# remove previous runs generated files
+# each of these directories will be created if they do not exist
+# the new files will be saved in these directories
+
+# for masks
 masks_dir = pathlib.Path("../sam2_processing_dir/masks").resolve()
 if masks_dir.exists():
     shutil.rmtree(masks_dir)
 masks_dir.mkdir(exist_ok=True, parents=True)
+
+# for gifs
 gifs_dir = pathlib.Path("../sam2_processing_dir/gifs").resolve()
 if gifs_dir.exists():
     shutil.rmtree(gifs_dir)
 gifs_dir.mkdir(exist_ok=True, parents=True)
+
+# for combined masks and tiffs
+combined_dir = pathlib.Path("../sam2_processing_dir/CP_input").resolve()
+if combined_dir.exists():
+    shutil.rmtree(combined_dir)
+combined_dir.mkdir(exist_ok=True, parents=True)
 
 
 # In[ ]:
@@ -485,7 +504,7 @@ output_dict = {
 # In[ ]:
 
 
-# loop through each image set and predict the instances
+# loop through each image set and save the predicted masks as images
 for i in range(len(image_set_dict["image_set_name"])):
     print(
         f"{image_set_dict['image_set_name'][i]}: {image_set_dict['image_set_first_frame'][i]}"
@@ -508,7 +527,6 @@ for i in range(len(image_set_dict["image_set_name"])):
         frame_image = np.zeros((h, w), dtype=np.uint8)
         # loop through the objects in the frame
         for out_obj_id, out_mask in video_segments[out_frame_idx].items():
-            # show_mask(mask=out_mask, ax=ax, obj_id=out_obj_id)
             # add the mask to the frame image
             frame_image += (out_mask[0] * 255).astype(np.uint8)
             out_mask = np.array(out_mask[0], dtype=np.float32)
@@ -530,13 +548,11 @@ for i in range(len(image_set_dict["image_set_name"])):
                 output_dict["mask_path"].append(masks_dir)
 
         # save the frame image
-        # frame_image = Image.fromarray(frame_image)
         # scale the image upscale back to the original size
         frame_image = Image.fromarray(frame_image)
         frame_image = frame_image.resize((upscale_w, upscale_h), Image.NEAREST)
 
         # convert the frame image to ints
-        # frame_image = frame_image.convert("L")
         frame_image_path = f"{masks_dir}/{image_set_dict['image_set_name'][i]}_T{str(out_frame_idx + 1).zfill(4)}_Z0001_mask.png"
         frame_image.save(frame_image_path)
 

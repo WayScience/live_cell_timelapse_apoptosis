@@ -14,8 +14,7 @@ python 0.merge_sc.py
 python 1.annotate_sc.py
 python 2.normalize_sc_across_time.py
 python 2.normalize_sc_within_time.py
-python 3.feature_select_sc_across_time.py
-python 3.feature_select_sc_within_time.py
+python 3.feature_select_sc.py
 
 cd ../
 

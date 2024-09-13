@@ -49,7 +49,10 @@ data/models
 
 
 3b.run_sam/memory_snapshots/
-3b.run_sam/sam2_processing_dir
+3b.run_sam/sam2_processing_dir/tiffs
+3b.run_sam/sam2_processing_dir/CP_input
+3b.run_sam/sam2_processing_dir/masks
+3b.run_sam/sam2_processing_dir/pngs
 3b.run_sam/notebooks/masks/masks.csv
 3b.run_sam/masks/*.png
 3b.run_sam/masks/*.csv
