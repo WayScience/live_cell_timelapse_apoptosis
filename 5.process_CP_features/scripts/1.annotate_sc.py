@@ -171,7 +171,7 @@ annotated_df.head()
 # In[9]:
 
 
-# drop NaN values from annotated_df
+# drop NaN values in the centroid columns from annotated_df
 print(annotated_df.shape)
 annotated_df = annotated_df.dropna(
     subset=["Metadata_Nuclei_Location_Center_X", "Metadata_Nuclei_Location_Center_Y"]
