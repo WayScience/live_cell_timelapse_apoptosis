@@ -14,20 +14,23 @@ conda activate cellprofiler_timelapse_env
 # convert the jupyter notebook to a python script
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
-conda deactivate
+cd ../../
 
 cd ../../
 git clone https://github.com/CellProfiler/CellProfiler-plugins.git
-cd live_cell_timelapse_apoptosis/4.cellprofiler_analysis/ 
 
 # change the directory to the scripts folder
-cd scripts/
+
+cd live_cell_timelapse_apoptosis/4.cellprofiler_analysis/scripts/
+
 
 # run the python script
-conda run -n cellprofiler_timelapse_env python run_cellprofiler_pipe_with_sam_outputs.py
+python run_cellprofiler_pipe_with_sam_outputs.py
 
 # change the directory back to the orginal directory
 cd ../
+
+conda deactivate
 
 # End of the script
 echo "CellProfiler analysis is completed."
