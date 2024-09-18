@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # This notebook solves the cell tracking issue by using [SAM2](https://github.com/facebookresearch/segment-anything-2/tree/main) instead of the functionality within CellProfiler.
-# Here, I use the pretrained model to segment the nuclei in the video.
+# Here I use the pretrained model to segment the nuclei in the video.
 # The output is a mask for each object in each frame and the x,y coordinates centers of each object in each frame.
 
 # This is a notebook that needs perfect conditions to work.
@@ -22,7 +22,7 @@
 
 # ## 1. Imports
 
-# In[ ]:
+# In[1]:
 
 
 # top level imports
@@ -72,7 +72,7 @@ print(torch.cuda.get_device_name(0))
 
 # ### Download the model(s)
 
-# In[ ]:
+# In[2]:
 
 
 models_dict = {
@@ -83,7 +83,7 @@ models_dict = {
 }
 
 
-# In[ ]:
+# In[3]:
 
 
 # Download the file using wget
@@ -100,7 +100,7 @@ for file in models_dict.keys():
         print(f"Model {new_model_path} already exists. Skipping download.")
 
 
-# In[ ]:
+# In[4]:
 
 
 # load in the model and the predictor
@@ -109,7 +109,6 @@ model_cfg = "sam2_hiera_t.yaml"
 predictor = build_sam2_video_predictor(model_cfg, sam2_checkpoint)
 
 # set the path to the videos
-import logging  # logging
 
 ordered_tiffs = pathlib.Path("../sam2_processing_dir/tiffs/").resolve()
 converted_to_video_dir = pathlib.Path("../sam2_processing_dir/pngs/").resolve()
@@ -120,7 +119,18 @@ ordered_tiffs.mkdir(parents=True, exist_ok=True)
 converted_to_video_dir.mkdir(parents=True, exist_ok=True)
 
 
-# In[ ]:
+# In[5]:
+
+
+tiff_dir = pathlib.Path(
+    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_6hr_4ch_MaxIP_test_small"
+).resolve(strict=True)
+terminal_dir = pathlib.Path(
+    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small"
+).resolve(strict=True)
+
+
+# In[6]:
 
 
 # create the database object
@@ -130,11 +140,12 @@ db = lancedb.connect(uri)
 
 # ### Get data formatted correctly
 
-# In[ ]:
+# In[7]:
 
 
 # get the list of tiff files in the directory
 tiff_files = list(tiff_dir.glob("*.tiff"))
+tiff_files = tiff_files + list(terminal_dir.glob("*.tiff"))
 tiff_file_names = [file.stem for file in tiff_files]
 # files to df
 tiff_df = pd.DataFrame({"file_name": tiff_file_names, "file_path": tiff_files})
@@ -160,7 +171,7 @@ tiff_df.reset_index(drop=True, inplace=True)
 tiff_df.head()
 
 
-# In[ ]:
+# In[8]:
 
 
 # copy the files to the new directory
@@ -171,7 +182,7 @@ for index, row in tiff_df.iterrows():
     shutil.copy(row["file_path"], new_path)
 
 
-# In[ ]:
+# In[9]:
 
 
 # get the list of directories in the ordered tiffs directory
@@ -194,7 +205,7 @@ for dir in ordered_tiff_dir_names:
                 print(f"Failed to convert {tiff_file}: {e}")
 
 
-# In[ ]:
+# In[10]:
 
 
 # get list of dirs in the converted to video dir
@@ -209,7 +220,7 @@ for dir in converted_dir_names:
 
 # ### Donwsample each frame to fit the images on the GPU - overwrite the copies JPEGs
 
-# In[ ]:
+# In[11]:
 
 
 # get files in the directory
@@ -219,12 +230,12 @@ converted_dirs_list = [f for f in converted_dirs_list if f.is_file()]
 files = [str(f) for f in converted_dirs_list]
 
 
-# In[ ]:
+# In[12]:
 
 
 # need to downscale to fit the model and images on the GPU
 # note that this is an arbitrary number and can be changed
-downscale_factor = 8
+downscale_factor = 10
 # sort the files by name
 # downsample the image
 for f in files:
@@ -240,7 +251,7 @@ for f in files:
 # ### Get the first frame of each video
 # ### Set up a dict that holds the images path, the first frame_mask, and the first frame_centers
 
-# In[ ]:
+# In[13]:
 
 
 # where one image set here is a single well and fov over all timepoints
@@ -270,7 +281,7 @@ for dir in dirs:
 # - the x,y centers of the segmentation
 # - the extracted masks
 
-# In[ ]:
+# In[14]:
 
 
 model = StarDist2D.from_pretrained("2D_versatile_fluo")
@@ -328,7 +339,7 @@ torch.cuda.empty_cache()
 
 # ### Begin GPU Profiling
 
-# In[ ]:
+# In[15]:
 
 
 # Start recording memory snapshot history
@@ -354,7 +365,7 @@ start_record_memory_history(
 )
 
 
-# In[ ]:
+# In[16]:
 
 
 # clear the memory
@@ -362,13 +373,13 @@ torch.cuda.empty_cache()
 gc.collect()
 
 
-# In[ ]:
+# In[17]:
 
 
 stored_video_segments = {}
 
 
-# In[ ]:
+# In[18]:
 
 
 # loop through each image set and predict the instances

@@ -35,7 +35,12 @@ db = lancedb.connect(uri)
 
 # set the path to the videos
 tiff_dir = pathlib.Path(
-    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_6hr_4ch_MaxIP/"
+    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_6hr_4ch_MaxIP_test_small/"
+).resolve(strict=True)
+
+# set the path to the terminal data
+terminal_data = pathlib.Path(
+    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small"
 ).resolve(strict=True)
 
 
@@ -46,6 +51,7 @@ tiff_dir = pathlib.Path(
 
 # get the list of tiff files in the directory
 tiff_files = list(tiff_dir.glob("*.tiff"))
+tiff_files = tiff_files + list(terminal_data.glob("*.tiff"))
 tiff_file_names = [file.stem for file in tiff_files]
 # files to df
 tiff_df = pd.DataFrame({"file_name": tiff_file_names, "file_path": tiff_files})
@@ -74,7 +80,7 @@ tiff_df.reset_index(drop=True, inplace=True)
 tiff_df.head(1)
 
 
-# In[7]:
+# In[5]:
 
 
 # create the schema for the table in the database
