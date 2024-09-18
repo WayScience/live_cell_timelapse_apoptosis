@@ -10,21 +10,23 @@
 # Channel 2: CL488-1
 # Channel 3: CL488-2
 # Channel 4: CL561
-#
+# 
 # There are two channels in the terminal dataset:
 # Channel 1: DAPI
 # Channel 5: Annexin V
-#
-# Note that Channel 5 does not exists in the first 13 time points only the terminal timepoints.
+# 
+# Note that Channel 5 does not exists in the first 13 time points only the terminal timepoints. 
 # Similarly, the terminal time points do not have the CL488-1, CL488-2, and CL561 channels.
 
 # In[1]:
 
 
 import pathlib
+import sys
 
 import numpy as np
 import pandas as pd
+
 
 # In[2]:
 
@@ -48,3 +50,4 @@ for f in tiff_files:
     print(f)
     print(f.with_name(f.name.replace("T0001", "T0014")))
     f.rename(f.with_name(f.name.replace("T0001", "T0014")))
+
