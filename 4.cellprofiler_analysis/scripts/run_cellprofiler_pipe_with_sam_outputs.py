@@ -12,7 +12,14 @@ import sys
 sys.path.append("../../utils/")
 import cp_parallel
 
+
 # ## Set paths and variables
+
+# In[ ]:
+
+
+HPC = False
+
 
 # In[2]:
 
@@ -35,6 +42,8 @@ masks_dir = pathlib.Path("../../3b.run_sam/sam2_processing_dir/masks").resolve()
 plugins_dir = pathlib.Path(
     "/home/lippincm/Documents/CellProfiler-plugins/active_plugins"
 ).resolve()
+
+HPC_plugins_dir = pathlib.Path("/scratch/alpine/mlippincott@xsede.org/").resolve()
 
 
 # In[3]:
@@ -91,8 +100,16 @@ pprint.pprint(dict_of_inputs, indent=4)
 # In[5]:
 
 
-cp_parallel.run_cellprofiler_parallel(
-    plate_info_dictionary=dict_of_inputs,
-    run_name=run_name,
-    plugins_dir=plugins_dir,
-)
+if not HPC:
+    cp_parallel.run_cellprofiler_parallel(
+        plate_info_dictionary=dict_of_inputs,
+        run_name=run_name,
+        plugins_dir=plugins_dir,
+    )
+else:
+    cp_parallel.run_cellprofiler_parallel(
+        plate_info_dictionary=dict_of_inputs,
+        run_name=run_name,
+        plugins_dir=HPC_plugins_dir,
+    )
+

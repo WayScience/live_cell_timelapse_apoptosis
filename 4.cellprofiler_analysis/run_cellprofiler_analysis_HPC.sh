@@ -16,6 +16,9 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 conda deactivate
 
+cd ../../
+git clone https://github.com/CellProfiler/CellProfiler-plugins.git
+cd live_cell_timelapse_apoptosis/4.cellprofiler_analysis/ 
 
 # change the directory to the scripts folder
 cd scripts/
