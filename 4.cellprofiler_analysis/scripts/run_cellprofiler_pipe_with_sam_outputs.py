@@ -13,6 +13,7 @@ import sys
 sys.path.append("../../utils/")
 import cp_parallel
 
+
 # ## Set paths and variables
 
 # In[2]:
@@ -112,3 +113,4 @@ cp_parallel.run_cellprofiler_parallel(
     run_name=run_name,
     plugins_dir=plugins_dir,
 )
+

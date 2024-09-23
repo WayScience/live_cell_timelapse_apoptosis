@@ -9,6 +9,7 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 # check if the CellProfiler-plugins directory exists
 if [ -d "../../CellProfiler-plugins" ]; then
     echo "CellProfiler-plugins directory exists."
+    cd scripts/
 else
     echo "CellProfiler-plugins directory does not exist."
     cd ../../
