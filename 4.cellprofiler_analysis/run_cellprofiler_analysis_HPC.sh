@@ -21,12 +21,13 @@ else
     echo "CellProfiler-plugins directory does not exist."
     cd ../../
     git clone https://github.com/CellProfiler/CellProfiler-plugins.git
+    cd live_cell_timelapse_apoptosis/4.cellprofiler_analysis/scripts/
 fi
 
 PLUGINS_DIR=../../../CellProfiler-plugins/active_plugins/
 # change the directory to the scripts folder
 
-cd live_cell_timelapse_apoptosis/4.cellprofiler_analysis/scripts/
+
 
 
 # run the python script
