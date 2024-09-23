@@ -20,6 +20,7 @@ if [ -d "../../CellProfiler-plugins" ]; then
 else
     echo "CellProfiler-plugins directory does not exist."
     git clone https://github.com/CellProfiler/CellProfiler-plugins.git
+fi
 
 PLUGINS_DIR=../../../CellProfiler-plugins/active_plugins/
 # change the directory to the scripts folder
