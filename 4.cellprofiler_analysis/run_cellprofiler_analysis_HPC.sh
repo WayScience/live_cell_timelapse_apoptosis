@@ -15,8 +15,6 @@ conda activate cellprofiler_timelapse_env
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
 cd ../../
-
-cd ../../
 git clone https://github.com/CellProfiler/CellProfiler-plugins.git
 
 # change the directory to the scripts folder

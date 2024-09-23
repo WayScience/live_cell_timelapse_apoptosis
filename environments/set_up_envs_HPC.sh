@@ -20,4 +20,5 @@ done
 
 
 # set up plugins for cellprofiler
-/home/lippincm/miniforge3/envs/cellprofiler_timelapse_env/bin/cellprofiler
+/scratch/alpine/${USER}/CellProfiler-plugins/active_plugins
+

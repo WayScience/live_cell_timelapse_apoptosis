@@ -5,11 +5,11 @@
 # Here I use the pretrained model to segment the nuclei in the video.
 # The output is a mask for each object in each frame and the x,y coordinates centers of each object in each frame.
 
-# This is a notebook that needs perfect conditions to work.
+# This is a notebook that needs perfect conditions to work. 
 # With a GeForce RTX 3090 TI, the 24GB of VRAM sometimes are not enough to process the videos.
-#
+# 
 # Hold your breath, pick a four-leaf clover, avoid black cats, cracks, and mirrors, and let's go!
-#
+# 
 # This notebook is converted to a script and ran from script to be compatible with HPC cluster.
 
 # # Table of Contents for this Notebook
@@ -22,7 +22,7 @@
 
 # ## 1. Imports
 
-# In[1]:
+# In[ ]:
 
 
 # top level imports
@@ -72,7 +72,7 @@ print(torch.cuda.get_device_name(0))
 
 # ### Download the model(s)
 
-# In[2]:
+# In[ ]:
 
 
 models_dict = {
@@ -83,7 +83,7 @@ models_dict = {
 }
 
 
-# In[3]:
+# In[ ]:
 
 
 # Download the file using wget
@@ -100,7 +100,7 @@ for file in models_dict.keys():
         print(f"Model {new_model_path} already exists. Skipping download.")
 
 
-# In[4]:
+# In[ ]:
 
 
 # load in the model and the predictor
@@ -119,7 +119,7 @@ ordered_tiffs.mkdir(parents=True, exist_ok=True)
 converted_to_video_dir.mkdir(parents=True, exist_ok=True)
 
 
-# In[5]:
+# In[ ]:
 
 
 tiff_dir = pathlib.Path(
@@ -130,7 +130,7 @@ terminal_dir = pathlib.Path(
 ).resolve(strict=True)
 
 
-# In[6]:
+# In[ ]:
 
 
 # create the database object
@@ -140,7 +140,7 @@ db = lancedb.connect(uri)
 
 # ### Get data formatted correctly
 
-# In[7]:
+# In[ ]:
 
 
 # get the list of tiff files in the directory
@@ -171,7 +171,7 @@ tiff_df.reset_index(drop=True, inplace=True)
 tiff_df.head()
 
 
-# In[8]:
+# In[ ]:
 
 
 # copy the files to the new directory
@@ -182,7 +182,7 @@ for index, row in tiff_df.iterrows():
     shutil.copy(row["file_path"], new_path)
 
 
-# In[9]:
+# In[ ]:
 
 
 # get the list of directories in the ordered tiffs directory
@@ -205,7 +205,7 @@ for dir in ordered_tiff_dir_names:
                 print(f"Failed to convert {tiff_file}: {e}")
 
 
-# In[10]:
+# In[ ]:
 
 
 # get list of dirs in the converted to video dir
@@ -220,7 +220,7 @@ for dir in converted_dir_names:
 
 # ### Donwsample each frame to fit the images on the GPU - overwrite the copies JPEGs
 
-# In[11]:
+# In[ ]:
 
 
 # get files in the directory
@@ -230,12 +230,12 @@ converted_dirs_list = [f for f in converted_dirs_list if f.is_file()]
 files = [str(f) for f in converted_dirs_list]
 
 
-# In[12]:
+# In[ ]:
 
 
 # need to downscale to fit the model and images on the GPU
 # note that this is an arbitrary number and can be changed
-downscale_factor = 10
+downscale_factor = 5
 # sort the files by name
 # downsample the image
 for f in files:
@@ -251,7 +251,7 @@ for f in files:
 # ### Get the first frame of each video
 # ### Set up a dict that holds the images path, the first frame_mask, and the first frame_centers
 
-# In[13]:
+# In[ ]:
 
 
 # where one image set here is a single well and fov over all timepoints
@@ -281,7 +281,7 @@ for dir in dirs:
 # - the x,y centers of the segmentation
 # - the extracted masks
 
-# In[14]:
+# In[ ]:
 
 
 model = StarDist2D.from_pretrained("2D_versatile_fluo")
@@ -339,7 +339,7 @@ torch.cuda.empty_cache()
 
 # ### Begin GPU Profiling
 
-# In[15]:
+# In[ ]:
 
 
 # Start recording memory snapshot history
@@ -365,7 +365,7 @@ start_record_memory_history(
 )
 
 
-# In[16]:
+# In[ ]:
 
 
 # clear the memory
@@ -373,13 +373,13 @@ torch.cuda.empty_cache()
 gc.collect()
 
 
-# In[17]:
+# In[ ]:
 
 
 stored_video_segments = {}
 
 
-# In[18]:
+# In[ ]:
 
 
 # loop through each image set and predict the instances
@@ -640,3 +640,4 @@ tbl.add(file_paths_df)
 
 # read the data from the table and check the first few rows
 tbl.to_pandas().head()
+

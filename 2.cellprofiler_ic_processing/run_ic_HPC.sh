@@ -20,7 +20,7 @@ echo "Starting IC processing"
 
 # Run CellProfiler for IC processing
 conda run -n cellprofiler_timelapse_env python 0.perform_ic.py
-conda run -n cellprofiler_timelapse_env python 1.process_ic_teminal_data.ipynb
+conda run -n cellprofiler_timelapse_env python 1.process_ic_teminal_data.py
 
 # return the directory that script was run from
 cd ../

@@ -11,13 +11,13 @@
 # TODO: Add the link to the data once it is available
 
 # pre-process the data
-cd 1.pre_process_data/
-source run_preprocessing.sh
-cd ../
+#cd 1.pre_process_data/
+#source run_preprocessing.sh
+#cd ../
 
 # run illumination correction
 cd 2.cellprofiler_ic_processing
-source run_ic.sh
+source run_ic_HPC.sh
 cd ../
 
 echo "Data download and pre-processing complete"

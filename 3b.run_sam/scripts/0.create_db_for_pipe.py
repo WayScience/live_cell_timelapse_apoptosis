@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# This notebook creates a lance database for storing image/single-cell metadata for tracking single cells through time.
+# This notebook creates a lance database for storing image/single-cell metadata for tracking single cells through time. 
 # This lance db will be called in the next notebook in this analysis.
 
 # In[1]:
@@ -18,6 +18,7 @@ import pandas as pd
 import pyarrow as pa
 import tifffile
 from tqdm import tqdm
+
 
 # In[2]:
 
@@ -102,3 +103,4 @@ schema = pa.schema(
 tbl = db.create_table(
     "0.original_images", mode="overwrite", data=tiff_df, schema=schema
 )
+
