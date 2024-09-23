@@ -4,6 +4,7 @@
 # In[1]:
 
 
+import argparse
 import pathlib
 import pprint
 import shutil
@@ -17,7 +18,21 @@ import cp_parallel
 # In[2]:
 
 
-HPC = False
+# set up the argument parser
+parser = argparse.ArgumentParser(
+    description="run the CellProfiler pipeline on a set of images"
+)
+parser.add_argument(
+    "--plugins_directory",
+    "-p",
+    required=True,
+    type=str,
+    help="the directory containing the CellProfiler plugins",
+)
+
+args = parser.parse_args()
+
+plugins_dir = pathlib.Path(args.plugins_directory).resolve(strict=True)
 
 
 # In[3]:
@@ -36,13 +51,6 @@ images_dir = pathlib.Path(
 ).resolve()
 # directory where masks are located within folders
 masks_dir = pathlib.Path("../../3b.run_sam/sam2_processing_dir/masks").resolve()
-
-# path to plugins directory as one of the pipelines uses the RunCellpose plugin
-plugins_dir = pathlib.Path(
-    "/home/lippincm/Documents/CellProfiler-plugins/active_plugins"
-).resolve()
-
-HPC_plugins_dir = pathlib.Path("/scratch/alpine/mlippincott@xsede.org/").resolve()
 
 
 # In[4]:
@@ -99,15 +107,8 @@ pprint.pprint(dict_of_inputs, indent=4)
 # In[6]:
 
 
-if not HPC:
-    cp_parallel.run_cellprofiler_parallel(
-        plate_info_dictionary=dict_of_inputs,
-        run_name=run_name,
-        plugins_dir=plugins_dir,
-    )
-else:
-    cp_parallel.run_cellprofiler_parallel(
-        plate_info_dictionary=dict_of_inputs,
-        run_name=run_name,
-        plugins_dir=HPC_plugins_dir,
-    )
+cp_parallel.run_cellprofiler_parallel(
+    plate_info_dictionary=dict_of_inputs,
+    run_name=run_name,
+    plugins_dir=plugins_dir,
+)
