@@ -6,9 +6,15 @@ conda activate cellprofiler_timelapse_env
 # convert the jupyter notebook to a python script
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
+# check if the CellProfiler-plugins directory exists
+if [ -d "../../CellProfiler-plugins" ]; then
+    echo "CellProfiler-plugins directory exists."
+else
+    echo "CellProfiler-plugins directory does not exist."
+    cd ../../
+    git clone https://github.com/CellProfiler/CellProfiler-plugins.git
+fi
 
-cd ../../
-git clone https://github.com/CellProfiler/CellProfiler-plugins.git
 PLUGINS_DIR=../../../CellProfiler-plugins/active_plugins/
 # change the directory to the scripts folder
 

@@ -19,6 +19,7 @@ if [ -d "../../CellProfiler-plugins" ]; then
     echo "CellProfiler-plugins directory exists."
 else
     echo "CellProfiler-plugins directory does not exist."
+    cd ../../
     git clone https://github.com/CellProfiler/CellProfiler-plugins.git
 fi
 
