@@ -21,7 +21,7 @@ import cp_parallel
 
 # set up the argument parser
 parser = argparse.ArgumentParser(
-    description="run the CellProfiler pipeline on a set of images"
+    description="Run the CellProfiler pipeline on a set of images"
 )
 parser.add_argument(
     "--plugins_directory",
