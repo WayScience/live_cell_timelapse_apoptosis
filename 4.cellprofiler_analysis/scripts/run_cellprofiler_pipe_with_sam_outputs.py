@@ -28,7 +28,7 @@ parser.add_argument(
     "-p",
     required=True,
     type=str,
-    help="the directory containing the CellProfiler plugins",
+    help="The directory containing the CellProfiler plugins",
 )
 
 args = parser.parse_args()
