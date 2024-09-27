@@ -58,10 +58,10 @@ def euclidean_coordinate_fuzzy_match(
     # split each data frame into each cell_merge_column
     all_images = df_left[unique_image_column].unique()
 
-    merged_df_list = []
-    total_CP_cells = 0
-    total_annotated_cells = 0
-    distances = []
+    merged_df_list = []  # list to store the merged dataframes
+    total_CP_cells = 0  # total number of cells in the left dataframe
+    total_annotated_cells = 0  # total number of cells that were annotated
+    distances = []  # list to store the distances between the coordinates
 
     for image in all_images:
         subset_df_left = df_left[df_left[unique_image_column] == image]
