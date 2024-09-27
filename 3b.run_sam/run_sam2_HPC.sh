@@ -5,7 +5,7 @@
 #SBATCH --time=6:00:00
 #SBATCH --partition=aa100
 #SBATCH --gres=gpu:1
-#SBATCH --output=sample-%j.out
+#SBATCH --output=alpine_std_out_std_err-%j.out
 
 
 # run SAM2

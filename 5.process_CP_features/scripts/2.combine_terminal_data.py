@@ -52,7 +52,7 @@ dict_of_inputs = {
 
 # ### load the database into the memory
 
-# In[6]:
+# In[4]:
 
 
 # set and connect to the db
@@ -78,13 +78,13 @@ print(location_metadata_df.shape)
 location_metadata_df.head()
 
 
-# In[8]:
+# In[5]:
 
 
 location_metadata_df["Metadata_Time"].unique()
 
 
-# In[7]:
+# In[6]:
 
 
 # split the dataframes by terminal time and non-terminal time
@@ -96,7 +96,7 @@ print(terminal_location_metadata_df.shape)
 
 # ### Merge the terminal and single cell data
 
-# In[4]:
+# In[7]:
 
 
 main_df = pd.read_parquet(
@@ -110,10 +110,20 @@ print(main_df.shape)
 print(terminal_df.shape)
 
 
-# In[5]:
+# In[12]:
 
 
-terminal_df
+main_df.head()
+main_df["Metadata_object_id"].unique()
+
+
+# In[8]:
+
+
+terminal_df.head()
+
+
+# In[ ]:
 
 
 # In[ ]:

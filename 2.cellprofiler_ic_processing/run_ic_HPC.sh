@@ -5,7 +5,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=6:00:00
-#SBATCH --output=sample-%j.out
+#SBATCH --output=alpine_std_out_std_err-%j.out
 
 module purge
 module load anaconda

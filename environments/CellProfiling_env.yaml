@@ -44,5 +44,6 @@ dependencies:
     - pycytominer==1.1.0
     - javabridge
     - tensorflow
+    - fuzzymatcher
 
 

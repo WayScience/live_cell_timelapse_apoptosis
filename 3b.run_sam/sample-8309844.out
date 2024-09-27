@@ -1,111 +1,0 @@
-Starting SAM2 pipe for object detection...
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/condabin/conda
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/bin/conda
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/bin/conda-env
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/bin/activate
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/bin/deactivate
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/etc/profile.d/conda.sh
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/etc/fish/conf.d/conda.fish
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/shell/condabin/Conda.psm1
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/shell/condabin/conda-hook.ps1
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/lib/python3.9/site-packages/xontrib/conda.xsh
-no change     /curc/sw/mambaforge-pypy3/23.1.0-1/etc/profile.d/conda.csh
-no change     /home/mlippincott@xsede.org/.bashrc
-No action taken.
-[NbConvertApp] Converting notebook notebooks/0.create_db_for_pipe.ipynb to python
-[NbConvertApp] Writing 3107 bytes to scripts/0.create_db_for_pipe.py
-[NbConvertApp] Converting notebook notebooks/1.run_sam2_microscopy.ipynb to python
-[NbConvertApp] Writing 20453 bytes to scripts/1.run_sam2_microscopy.py
-[2024-09-23T19:17:19Z WARN  lance::dataset] No existing dataset at /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/data/objects_db/0.original_images.lance, it will be created
-2024-09-23 13:19:44.670469: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:485] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
-2024-09-23 13:19:47.644135: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:8454] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
-2024-09-23 13:19:48.676949: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1452] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
-2024-09-23 13:19:54.182526: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
-To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2024-09-23 13:20:41.047634: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-2024-09-23 13:22:19.017384: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2343] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
-Skipping registering GPU devices...
-INFO:__main__:Deleted memory snapshot file: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/memory_snapshots
-INFO:__main__:Starting snapshot record_memory_history
-True
-0
-1
-NVIDIA A100 80GB PCIe
-Model /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/data/models/sam2_hiera_tiny.pt already exists. Skipping download.
-Model /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/data/models/sam2_hiera_small.pt already exists. Skipping download.
-Model /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/data/models/sam2_hiera_base_plus.pt already exists. Skipping download.
-Model /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/data/models/sam2_hiera_large.pt already exists. Skipping download.
-Found model '2D_versatile_fluo' for 'StarDist2D'.
-Loading network weights from 'weights_best.h5'.
-Loading thresholds from 'thresholds.json'.
-Using default values: prob_thresh=0.479071, nms_thresh=0.3.
-E-11_F0002: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0002/001.jpeg
-C-02_F0003: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0003/001.jpeg
-C-02_F0002: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0002/001.jpeg
-C-02_F0001: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0001/001.jpeg
-E-11_F0003: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0003/001.jpeg
-E-11_F0001: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0001/001.jpeg
-C-02_F0004: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0004/001.jpeg
-E-11_F0004: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0004/001.jpeg
-E-11_F0002: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0002/001.jpeg
-380 380
-frame loading (JPEG):   0%|          | 0/14 [00:00<?, ?it/s]frame loading (JPEG):  36%|███▌      | 5/14 [00:00<00:00, 49.72it/s]frame loading (JPEG):  71%|███████▏  | 10/14 [00:00<00:00, 21.29it/s]frame loading (JPEG): 100%|██████████| 14/14 [00:00<00:00, 27.51it/s]
-transformer.py (270): Memory efficient kernel not used because: (Triggered internally at ../aten/src/ATen/native/transformers/cuda/sdp_utils.cpp:723.)
-transformer.py (270): Memory Efficient attention has been runtime disabled. (Triggered internally at ../aten/src/ATen/native/transformers/sdp_utils_cpp.h:495.)
-transformer.py (270): Flash attention kernel not used because: (Triggered internally at ../aten/src/ATen/native/transformers/cuda/sdp_utils.cpp:725.)
-transformer.py (270): Expected query, key and value to all be of dtype: {Half, BFloat16}. Got Query dtype: float, Key dtype: float, and Value dtype: float instead. (Triggered internally at ../aten/src/ATen/native/transformers/sdp_utils_cpp.h:98.)
-transformer.py (270): CuDNN attention kernel not used because: (Triggered internally at ../aten/src/ATen/native/transformers/cuda/sdp_utils.cpp:727.)
-transformer.py (270): The CuDNN backend needs to be enabled by setting the enviornment variable`TORCH_CUDNN_SDPA_ENABLED=1` (Triggered internally at ../aten/src/ATen/native/transformers/cuda/sdp_utils.cpp:496.)
-module.py (1562): Flash Attention kernel failed due to: No available kernel. Aborting execution.
-Falling back to all available kernels for scaled_dot_product_attention (which may have a slower speed).
-sam2_video_predictor.py (873): cannot import name '_C' from 'sam2' (/gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/environments/SAM2_install/segment-anything-2/sam2/__init__.py)
-
-Skipping the post-processing step due to the error above. You can still use SAM 2 and it's OK to ignore the error above, although some post-processing functionality may be limited (which doesn't affect the results in most cases; see https://github.com/facebookresearch/segment-anything-2/blob/main/INSTALL.md).
-propagate in video:   0%|          | 0/14 [00:00<?, ?it/s]propagate in video:  14%|█▍        | 2/14 [00:02<00:14,  1.19s/it]propagate in video:  21%|██▏       | 3/14 [00:04<00:19,  1.76s/it]propagate in video:  29%|██▊       | 4/14 [00:08<00:22,  2.29s/it]propagate in video:  36%|███▌      | 5/14 [00:11<00:25,  2.84s/it]propagate in video:  43%|████▎     | 6/14 [00:16<00:27,  3.40s/it]propagate in video:  50%|█████     | 7/14 [00:21<00:27,  3.99s/it]propagate in video:  57%|█████▋    | 8/14 [00:27<00:27,  4.60s/it]propagate in video:  64%|██████▍   | 9/14 [00:33<00:25,  5.01s/it]propagate in video:  71%|███████▏  | 10/14 [00:39<00:21,  5.30s/it]propagate in video:  79%|███████▊  | 11/14 [00:45<00:16,  5.52s/it]propagate in video:  86%|████████▌ | 12/14 [00:51<00:11,  5.66s/it]propagate in video:  93%|█████████▎| 13/14 [00:57<00:05,  5.75s/it]propagate in video: 100%|██████████| 14/14 [01:03<00:00,  5.83s/it]propagate in video: 100%|██████████| 14/14 [01:03<00:00,  4.54s/it]
-C-02_F0003: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0003/001.jpeg
-380 380
-frame loading (JPEG):   0%|          | 0/14 [00:00<?, ?it/s]frame loading (JPEG):  43%|████▎     | 6/14 [00:00<00:00, 50.16it/s]frame loading (JPEG):  86%|████████▌ | 12/14 [00:00<00:00, 50.46it/s]frame loading (JPEG): 100%|██████████| 14/14 [00:00<00:00, 50.28it/s]
-propagate in video:   0%|          | 0/14 [00:00<?, ?it/s]propagate in video:   7%|▋         | 1/14 [00:00<00:02,  4.80it/s]propagate in video:  14%|█▍        | 2/14 [00:02<00:17,  1.45s/it]propagate in video:  21%|██▏       | 3/14 [00:05<00:23,  2.18s/it]propagate in video:  29%|██▊       | 4/14 [00:09<00:28,  2.82s/it]propagate in video:  36%|███▌      | 5/14 [00:13<00:31,  3.46s/it]propagate in video:  43%|████▎     | 6/14 [00:19<00:32,  4.12s/it]propagate in video:  50%|█████     | 7/14 [00:25<00:33,  4.80s/it]propagate in video:  57%|█████▋    | 8/14 [00:32<00:33,  5.51s/it]propagate in video:  64%|██████▍   | 9/14 [00:39<00:29,  5.98s/it]propagate in video:  71%|███████▏  | 10/14 [00:46<00:25,  6.30s/it]propagate in video:  79%|███████▊  | 11/14 [00:53<00:19,  6.53s/it]propagate in video:  86%|████████▌ | 12/14 [01:00<00:13,  6.68s/it]propagate in video:  93%|█████████▎| 13/14 [01:07<00:06,  6.79s/it]propagate in video: 100%|██████████| 14/14 [01:14<00:00,  6.87s/it]propagate in video: 100%|██████████| 14/14 [01:14<00:00,  5.34s/it]
-C-02_F0002: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0002/001.jpeg
-380 380
-frame loading (JPEG):   0%|          | 0/14 [00:00<?, ?it/s]frame loading (JPEG):  43%|████▎     | 6/14 [00:00<00:00, 50.78it/s]frame loading (JPEG):  86%|████████▌ | 12/14 [00:00<00:00, 50.44it/s]frame loading (JPEG): 100%|██████████| 14/14 [00:00<00:00, 50.34it/s]
-propagate in video:   0%|          | 0/14 [00:00<?, ?it/s]propagate in video:   7%|▋         | 1/14 [00:00<00:02,  4.83it/s]propagate in video:  14%|█▍        | 2/14 [00:02<00:17,  1.43s/it]propagate in video:  21%|██▏       | 3/14 [00:05<00:23,  2.14s/it]propagate in video:  29%|██▊       | 4/14 [00:09<00:27,  2.77s/it]propagate in video:  36%|███▌      | 5/14 [00:13<00:30,  3.40s/it]propagate in video:  43%|████▎     | 6/14 [00:19<00:32,  4.05s/it]propagate in video:  50%|█████     | 7/14 [00:25<00:32,  4.71s/it]propagate in video:  57%|█████▋    | 8/14 [00:31<00:32,  5.40s/it]propagate in video:  64%|██████▍   | 9/14 [00:38<00:29,  5.86s/it]propagate in video:  71%|███████▏  | 10/14 [00:45<00:24,  6.17s/it]propagate in video:  79%|███████▊  | 11/14 [00:52<00:19,  6.39s/it]propagate in video:  86%|████████▌ | 12/14 [00:59<00:13,  6.54s/it]propagate in video:  93%|█████████▎| 13/14 [01:06<00:06,  6.64s/it]propagate in video: 100%|██████████| 14/14 [01:13<00:00,  6.71s/it]propagate in video: 100%|██████████| 14/14 [01:13<00:00,  5.23s/it]
-C-02_F0001: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0001/001.jpeg
-380 380
-frame loading (JPEG):   0%|          | 0/14 [00:00<?, ?it/s]frame loading (JPEG):  36%|███▌      | 5/14 [00:00<00:00, 49.33it/s]frame loading (JPEG):  71%|███████▏  | 10/14 [00:00<00:00, 49.25it/s]frame loading (JPEG): 100%|██████████| 14/14 [00:00<00:00, 49.10it/s]
-propagate in video:   0%|          | 0/14 [00:00<?, ?it/s]propagate in video:   7%|▋         | 1/14 [00:00<00:02,  4.94it/s]propagate in video:  14%|█▍        | 2/14 [00:02<00:16,  1.41s/it]propagate in video:  21%|██▏       | 3/14 [00:05<00:23,  2.12s/it]propagate in video:  29%|██▊       | 4/14 [00:09<00:27,  2.74s/it]propagate in video:  36%|███▌      | 5/14 [00:13<00:30,  3.36s/it]propagate in video:  43%|████▎     | 6/14 [00:18<00:31,  3.99s/it]propagate in video:  50%|█████     | 7/14 [00:24<00:32,  4.67s/it]propagate in video:  57%|█████▋    | 8/14 [00:31<00:32,  5.34s/it]propagate in video:  64%|██████▍   | 9/14 [00:38<00:28,  5.78s/it]propagate in video:  71%|███████▏  | 10/14 [00:45<00:24,  6.08s/it]propagate in video:  79%|███████▊  | 11/14 [00:51<00:18,  6.29s/it]propagate in video:  86%|████████▌ | 12/14 [00:58<00:12,  6.44s/it]propagate in video:  93%|█████████▎| 13/14 [01:05<00:06,  6.53s/it]propagate in video: 100%|██████████| 14/14 [01:12<00:00,  6.60s/it]propagate in video: 100%|██████████| 14/14 [01:12<00:00,  5.16s/it]
-E-11_F0003: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0003/001.jpeg
-380 380
-frame loading (JPEG):   0%|          | 0/14 [00:00<?, ?it/s]frame loading (JPEG):  43%|████▎     | 6/14 [00:00<00:00, 51.45it/s]frame loading (JPEG):  86%|████████▌ | 12/14 [00:00<00:00, 51.21it/s]frame loading (JPEG): 100%|██████████| 14/14 [00:00<00:00, 51.07it/s]
-propagate in video:   0%|          | 0/14 [00:00<?, ?it/s]propagate in video:   7%|▋         | 1/14 [00:00<00:02,  5.75it/s]propagate in video:  14%|█▍        | 2/14 [00:02<00:14,  1.21s/it]propagate in video:  21%|██▏       | 3/14 [00:04<00:19,  1.81s/it]propagate in video:  29%|██▊       | 4/14 [00:07<00:23,  2.35s/it]propagate in video:  36%|███▌      | 5/14 [00:11<00:25,  2.88s/it]propagate in video:  43%|████▎     | 6/14 [00:16<00:27,  3.43s/it]propagate in video:  50%|█████     | 7/14 [00:21<00:28,  4.00s/it]propagate in video:  57%|█████▋    | 8/14 [00:27<00:27,  4.60s/it]propagate in video:  64%|██████▍   | 9/14 [00:33<00:24,  4.99s/it]propagate in video:  71%|███████▏  | 10/14 [00:38<00:21,  5.25s/it]propagate in video:  79%|███████▊  | 11/14 [00:44<00:16,  5.44s/it]propagate in video:  86%|████████▌ | 12/14 [00:50<00:11,  5.61s/it]propagate in video:  93%|█████████▎| 13/14 [00:56<00:05,  5.68s/it]propagate in video: 100%|██████████| 14/14 [01:02<00:00,  5.73s/it]propagate in video: 100%|██████████| 14/14 [01:02<00:00,  4.46s/it]
-E-11_F0001: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0001/001.jpeg
-380 380
-frame loading (JPEG):   0%|          | 0/14 [00:00<?, ?it/s]frame loading (JPEG):  43%|████▎     | 6/14 [00:00<00:00, 49.84it/s]frame loading (JPEG):  79%|███████▊  | 11/14 [00:00<00:00, 49.92it/s]frame loading (JPEG): 100%|██████████| 14/14 [00:00<00:00, 49.67it/s]
-propagate in video:   0%|          | 0/14 [00:00<?, ?it/s]propagate in video:   7%|▋         | 1/14 [00:00<00:02,  6.21it/s]propagate in video:  14%|█▍        | 2/14 [00:01<00:13,  1.12s/it]propagate in video:  21%|██▏       | 3/14 [00:04<00:18,  1.69s/it]propagate in video:  29%|██▊       | 4/14 [00:07<00:21,  2.19s/it]propagate in video:  36%|███▌      | 5/14 [00:10<00:24,  2.68s/it]propagate in video:  43%|████▎     | 6/14 [00:15<00:25,  3.19s/it]propagate in video:  50%|█████     | 7/14 [00:19<00:26,  3.72s/it]propagate in video:  57%|█████▋    | 8/14 [00:25<00:25,  4.27s/it]propagate in video:  64%|██████▍   | 9/14 [00:30<00:23,  4.63s/it]propagate in video:  71%|███████▏  | 10/14 [00:36<00:19,  4.89s/it]propagate in video:  79%|███████▊  | 11/14 [00:41<00:15,  5.06s/it]propagate in video:  86%|████████▌ | 12/14 [00:47<00:10,  5.18s/it]propagate in video:  93%|█████████▎| 13/14 [00:52<00:05,  5.26s/it]propagate in video: 100%|██████████| 14/14 [00:57<00:00,  5.32s/it]propagate in video: 100%|██████████| 14/14 [00:57<00:00,  4.14s/it]
-C-02_F0004: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0004/001.jpeg
-380 380
-frame loading (JPEG):   0%|          | 0/14 [00:00<?, ?it/s]frame loading (JPEG):  43%|████▎     | 6/14 [00:00<00:00, 50.75it/s]frame loading (JPEG):  86%|████████▌ | 12/14 [00:00<00:00, 50.52it/s]frame loading (JPEG): 100%|██████████| 14/14 [00:00<00:00, 49.27it/s]
-propagate in video:   0%|          | 0/14 [00:00<?, ?it/s]propagate in video:   7%|▋         | 1/14 [00:00<00:02,  5.90it/s]propagate in video:  14%|█▍        | 2/14 [00:02<00:14,  1.17s/it]propagate in video:  21%|██▏       | 3/14 [00:04<00:19,  1.76s/it]propagate in video:  29%|██▊       | 4/14 [00:07<00:22,  2.28s/it]propagate in video:  36%|███▌      | 5/14 [00:11<00:25,  2.80s/it]propagate in video:  43%|████▎     | 6/14 [00:15<00:26,  3.33s/it]propagate in video:  50%|█████     | 7/14 [00:20<00:27,  3.88s/it]propagate in video:  57%|█████▋    | 8/14 [00:26<00:26,  4.45s/it]propagate in video:  64%|██████▍   | 9/14 [00:32<00:24,  4.84s/it]propagate in video:  71%|███████▏  | 10/14 [00:37<00:20,  5.10s/it]propagate in video:  79%|███████▊  | 11/14 [00:43<00:15,  5.28s/it]propagate in video:  86%|████████▌ | 12/14 [00:49<00:10,  5.40s/it]propagate in video:  93%|█████████▎| 13/14 [00:54<00:05,  5.49s/it]propagate in video: 100%|██████████| 14/14 [01:00<00:00,  5.54s/it]propagate in video: 100%|██████████| 14/14 [01:00<00:00,  4.32s/it]
-E-11_F0004: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0004/001.jpeg
-380 380
-frame loading (JPEG):   0%|          | 0/14 [00:00<?, ?it/s]frame loading (JPEG):  43%|████▎     | 6/14 [00:00<00:00, 50.77it/s]frame loading (JPEG):  86%|████████▌ | 12/14 [00:00<00:00, 50.72it/s]frame loading (JPEG): 100%|██████████| 14/14 [00:00<00:00, 50.43it/s]
-propagate in video:   0%|          | 0/14 [00:00<?, ?it/s]propagate in video:   7%|▋         | 1/14 [00:00<00:02,  5.25it/s]propagate in video:  14%|█▍        | 2/14 [00:02<00:15,  1.33s/it]propagate in video:  21%|██▏       | 3/14 [00:05<00:21,  1.99s/it]propagate in video:  29%|██▊       | 4/14 [00:08<00:25,  2.58s/it]propagate in video:  36%|███▌      | 5/14 [00:12<00:28,  3.16s/it]propagate in video:  43%|████▎     | 6/14 [00:17<00:30,  3.76s/it]propagate in video:  50%|█████     | 7/14 [00:23<00:30,  4.38s/it]propagate in video:  57%|█████▋    | 8/14 [00:29<00:30,  5.03s/it]propagate in video:  64%|██████▍   | 9/14 [00:36<00:27,  5.46s/it]propagate in video:  71%|███████▏  | 10/14 [00:42<00:22,  5.75s/it]propagate in video:  79%|███████▊  | 11/14 [00:48<00:17,  5.95s/it]propagate in video:  86%|████████▌ | 12/14 [00:55<00:12,  6.09s/it]propagate in video:  93%|█████████▎| 13/14 [01:01<00:06,  6.19s/it]propagate in video: 100%|██████████| 14/14 [01:08<00:00,  6.25s/it]propagate in video: 100%|██████████| 14/14 [01:08<00:00,  4.87s/it]
-INFO:__main__:Saving snapshot to local file: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/memory_snapshots/c3gpu-a9-u35-1.rc.int.colorado.edu_Sep_23_13_32_20.pickle
-INFO:__main__:Stopping snapshot record_memory_history
-[2024-09-23T19:33:16Z WARN  lance::dataset] No existing dataset at /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/data/objects_db/1.masked_images.lance, it will be created
-E-11_F0002: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0002/001.jpeg
-380 380 upscaled 1900 1900
-C-02_F0003: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0003/001.jpeg
-380 380 upscaled 1900 1900
-C-02_F0002: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0002/001.jpeg
-380 380 upscaled 1900 1900
-C-02_F0001: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0001/001.jpeg
-380 380 upscaled 1900 1900
-E-11_F0003: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0003/001.jpeg
-380 380 upscaled 1900 1900
-E-11_F0001: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0001/001.jpeg
-380 380 upscaled 1900 1900
-C-02_F0004: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/C-02_F0004/001.jpeg
-380 380 upscaled 1900 1900
-E-11_F0004: /gpfs/alpine1/scratch/mlippincott@xsede.org/live_cell_timelapse_apoptosis/3b.run_sam/sam2_processing_dir/pngs/E-11_F0004/001.jpeg
-380 380 upscaled 1900 1900
