@@ -55,7 +55,7 @@ def euclidean_coordinate_fuzzy_match(
     pd.DataFrame
         A merged dataframe of the two input dataframes based on the euclidean distance between the coordinates
     """
-    # split the each data fram into each cell_merge_column
+    # split each data frame into each cell_merge_column
     all_images = df_left[unique_image_column].unique()
 
     merged_df_list = []
