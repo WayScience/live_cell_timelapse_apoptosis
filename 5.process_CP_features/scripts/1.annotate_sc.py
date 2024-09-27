@@ -269,7 +269,7 @@ for data_run in dict_of_inputs.keys():
 
     print(annotated_df_path)
     annotated_df = pd.read_parquet(annotated_df_path)
-    print(f"Oringinal shape of {data_run} is {annotated_df.shape}")
+    print(f"Original shape of {data_run} is {annotated_df.shape}")
 
     annotated_df["Metadata_image_set_name"] = (
         annotated_df["Metadata_Well"].astype(str)
