@@ -15,7 +15,7 @@
 # Channel 1: DAPI
 # Channel 5: Annexin V
 # 
-# Note that Channel 5 does not exists in the first 13 time points only the terminal timepoints. 
+# Note that Channel 5 does not exists in the main dataset (13 time points), only the terminal timepoints. 
 # Similarly, the terminal time points do not have the CL488-1, CL488-2, and CL561 channels.
 
 # In[1]:
