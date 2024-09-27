@@ -79,9 +79,48 @@ presets.config["cellprofiler_sqlite_pycytominer"][
 
 
 dict_of_inputs = {
-    "run_20231004ChromaLive_6hr_4ch_MaxIP": {
+    # commented out for now - keeping for the full run though!
+    # "run_20231004ChromaLive_6hr_4ch_MaxIP": {
+    #     "source_path": pathlib.Path(
+    #         f"{source_dir}/20231017ChromaLive_6hr_4ch_MaxIP/timelapse_4ch_analysis.sqlite"
+    #     ).resolve(),
+    #     "dest_path": pathlib.Path(
+    #         f"{output_dir}/20231017ChromaLive_6hr_4ch_MaxIP.parquet"
+    #     ).resolve(),
+    #     "preset": """WITH Per_Image_Filtered AS (
+    #             SELECT
+    #                 Metadata_ImageNumber,
+    #                 Image_Metadata_Well,
+    #                 Image_Metadata_FOV,
+    #                 Image_Metadata_Time,
+    #                 Image_PathName_CL_488_1
+    #                 Image_PathName_CL_488_2,
+    #                 Image_PathName_CL_561,
+    #                 Image_PathName_mask,
+    #                 Image_FileName_CL_488_1,
+    #                 Image_FileName_CL_488_2,
+    #                 Image_FileName_CL_561,
+    #                 Image_FileName_DNA,
+    #             FROM
+    #                 read_parquet('per_image.parquet')
+    #             )
+    #         SELECT
+    #             *
+    #         FROM
+    #             Per_Image_Filtered AS per_image
+    #         LEFT JOIN read_parquet('per_cytoplasm.parquet') AS per_cytoplasm ON
+    #             per_cytoplasm.Metadata_ImageNumber = per_image.Metadata_ImageNumber
+    #         LEFT JOIN read_parquet('per_cells.parquet') AS per_cells ON
+    #             per_cells.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+    #             AND per_cells.Metadata_Cells_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Cells
+    #         LEFT JOIN read_parquet('per_nuclei.parquet') AS per_nuclei ON
+    #             per_nuclei.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+    #             AND per_nuclei.Metadata_Nuclei_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Nuclei
+    #             """,
+    # },
+    "20231017ChromaLive_6hr_4ch_MaxIP_test_small": {
         "source_path": pathlib.Path(
-            f"{source_dir}/20231017ChromaLive_6hr_4ch_MaxIP/timelapse_4ch_analysis.sqlite"
+            f"{source_dir}/20231017ChromaLive_6hr_4ch_MaxIP_test_small/timelapse_4ch_analysis.sqlite"
         ).resolve(),
         "dest_path": pathlib.Path(
             f"{output_dir}/20231017ChromaLive_6hr_4ch_MaxIP.parquet"
@@ -101,6 +140,42 @@ dict_of_inputs = {
                     Image_FileName_CL_561,
                     Image_FileName_DNA,
 
+
+
+                FROM
+                    read_parquet('per_image.parquet')
+                )
+            SELECT
+                *
+            FROM
+                Per_Image_Filtered AS per_image
+            LEFT JOIN read_parquet('per_cytoplasm.parquet') AS per_cytoplasm ON
+                per_cytoplasm.Metadata_ImageNumber = per_image.Metadata_ImageNumber
+            LEFT JOIN read_parquet('per_cells.parquet') AS per_cells ON
+                per_cells.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+                AND per_cells.Metadata_Cells_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Cells
+            LEFT JOIN read_parquet('per_nuclei.parquet') AS per_nuclei ON
+                per_nuclei.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
+                AND per_nuclei.Metadata_Nuclei_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Nuclei
+                """,
+    },
+    "20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small": {
+        "source_path": pathlib.Path(
+            f"{source_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small/timelapse_2ch_analysis.sqlite"
+        ).resolve(),
+        "dest_path": pathlib.Path(
+            f"{output_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP.parquet"
+        ).resolve(),
+        "preset": """WITH Per_Image_Filtered AS (
+                SELECT
+                    Metadata_ImageNumber,
+                    Image_Metadata_Well,
+                    Image_Metadata_FOV,
+                    Image_Metadata_Time,
+                    Image_PathName_AnnexinV,
+                    Image_PathName_DNA,
+                    Image_FileName_AnnexinV,
+                    Image_FileName_DNA
 
 
                 FROM

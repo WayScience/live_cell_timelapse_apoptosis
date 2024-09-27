@@ -15,6 +15,7 @@ import sys
 sys.path.append("../../utils/")
 import cp_parallel
 
+
 # ## Set paths and variables
 
 # In[ ]:
@@ -91,7 +92,7 @@ pprint.pprint(dict_of_inputs, indent=4)
 
 
 # ## Run analysis pipeline on each plate in parallel
-#
+# 
 # This cell is not finished to completion due to how long it would take. It is ran in the python file instead.
 
 # In[ ]:
@@ -102,3 +103,4 @@ cp_parallel.run_cellprofiler_parallel(
     run_name=run_name,
     plugins_dir=plugins_dir,
 )
+

@@ -2,14 +2,14 @@
 # coding: utf-8
 
 # This notebook solves the cell tracking issue by using [SAM2](https://github.com/facebookresearch/segment-anything-2/tree/main) instead of the functionality within CellProfiler.
-# Here, I use the pretrained model to segment the nuclei in the video.
+# Here I use the pretrained model to segment the nuclei in the video.
 # The output is a mask for each object in each frame and the x,y coordinates centers of each object in each frame.
 
-# This is a notebook that needs perfect conditions to work.
+# This is a notebook that needs perfect conditions to work. 
 # With a GeForce RTX 3090 TI, the 24GB of VRAM sometimes are not enough to process the videos.
-#
+# 
 # Hold your breath, pick a four-leaf clover, avoid black cats, cracks, and mirrors, and let's go!
-#
+# 
 # This notebook is converted to a script and ran from script to be compatible with HPC cluster.
 
 # # Table of Contents for this Notebook
@@ -109,7 +109,6 @@ model_cfg = "sam2_hiera_t.yaml"
 predictor = build_sam2_video_predictor(model_cfg, sam2_checkpoint)
 
 # set the path to the videos
-import logging  # logging
 
 ordered_tiffs = pathlib.Path("../sam2_processing_dir/tiffs/").resolve()
 converted_to_video_dir = pathlib.Path("../sam2_processing_dir/pngs/").resolve()
@@ -118,6 +117,17 @@ if converted_to_video_dir.exists():
 
 ordered_tiffs.mkdir(parents=True, exist_ok=True)
 converted_to_video_dir.mkdir(parents=True, exist_ok=True)
+
+
+# In[ ]:
+
+
+tiff_dir = pathlib.Path(
+    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_6hr_4ch_MaxIP_test_small"
+).resolve(strict=True)
+terminal_dir = pathlib.Path(
+    "../../2.cellprofiler_ic_processing/illum_directory/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small"
+).resolve(strict=True)
 
 
 # In[ ]:
@@ -135,6 +145,7 @@ db = lancedb.connect(uri)
 
 # get the list of tiff files in the directory
 tiff_files = list(tiff_dir.glob("*.tiff"))
+tiff_files = tiff_files + list(terminal_dir.glob("*.tiff"))
 tiff_file_names = [file.stem for file in tiff_files]
 # files to df
 tiff_df = pd.DataFrame({"file_name": tiff_file_names, "file_path": tiff_files})
@@ -224,7 +235,7 @@ files = [str(f) for f in converted_dirs_list]
 
 # need to downscale to fit the model and images on the GPU
 # note that this is an arbitrary number and can be changed
-downscale_factor = 8
+downscale_factor = 5
 # sort the files by name
 # downsample the image
 for f in files:
@@ -629,3 +640,4 @@ tbl.add(file_paths_df)
 
 # read the data from the table and check the first few rows
 tbl.to_pandas().head()
+

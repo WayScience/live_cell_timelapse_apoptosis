@@ -58,18 +58,19 @@ for info, input_path in dict_of_inputs.items():
     # read in the annotated file
     print(input_path)
     annotated_df = pd.read_parquet(input_path["annotated_file_path"])
-
+    annotated_df.reset_index(drop=True, inplace=True)
     # Normalize the single cell data per time point
 
     # make the time column an integer
     annotated_df.Metadata_Time = annotated_df.Metadata_Time.astype(int)
 
-    # get the unique time points
-    time_points = annotated_df.Metadata_Time.unique()
-
-    output_dict_of_normalized_dfs = {}
-
     print(f"Shape of the annotated data: {annotated_df.shape}")
+    meta_features = annotated_df.columns[
+        annotated_df.columns.str.contains("Metadata")
+    ].to_list()
+    features = annotated_df.columns[
+        ~annotated_df.columns.str.contains("Metadata")
+    ].to_list()
 
     normalized_df = normalize(
         # df with annotated raw merged single cell features
@@ -85,9 +86,7 @@ for info, input_path in dict_of_inputs.items():
         output_filename=input_path["output_file_path"],
         output_type="parquet",
     )
-    print(
-        f"Single cells have been normalized for PBMC cells and saved to {pathlib.Path(info).name} !"
-    )
+    print(f"Single cells have been normalized and saved to {pathlib.Path(info).name} !")
     # check to see if the features have been normalized
     print(normalized_df.shape)
     normalized_df.head()
