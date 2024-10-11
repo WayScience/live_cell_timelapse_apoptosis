@@ -12,3 +12,4 @@ dependencies:
   - r-rsconnect
   - r-dplyr
   - r-tidyr
+  - r-platetools
