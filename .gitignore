@@ -57,6 +57,7 @@ data/models
 3b.run_sam/masks/*.png
 3b.run_sam/masks/*.csv
 3b.run_sam/notebooks/videos
+3b.run_sam/sam2_processing_dir/*
 
 
 # cytomining results
