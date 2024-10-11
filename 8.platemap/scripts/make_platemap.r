@@ -1,5 +1,6 @@
-library(ggplot2)
-library(platetools)
+suppressPackageStartupMessages(suppressWarnings(library(ggplot2)))
+suppressPackageStartupMessages(suppressWarnings(library(platetools)))
+suppressPackageStartupMessages(suppressWarnings(library(RColorBrewer)))
 
 # set path to data
 data_path <- file.path("..","..","data","platemap_6hr_4ch.csv")
@@ -32,13 +33,13 @@ data$dose <- factor(data$dose, levels = c(
 ))
 
 # set colours for each dose
-library(RColorBrewer)
+
 
 colorgrad <- colorRampPalette(brewer.pal(10, "Blues"))
 
 
 width <- 10
-height <- 10
+height <- 7
 options(repr.plot.width = width, repr.plot.height = height)
 platemap <- (
     platetools::raw_map(
