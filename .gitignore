@@ -7,6 +7,9 @@ data/2023*
 data/objects_db
 environments/SAM2_install/segment-anything-2
 data/models
+data/preprocessed_data
+data/raw_data
+data/test_data
 
 
 # logs
@@ -24,6 +27,7 @@ data/models
 2.cellprofiler_ic_processing/illum_directory
 2.cellprofiler_ic_processing/illum_directory_test_small
 2.cellprofiler_ic_processing/illum_directory_test
+
 
 # cellprofiler logs
 4.cellprofiler_analysis/scripts/logs
@@ -58,6 +62,8 @@ data/models
 3b.run_sam/masks/*.csv
 3b.run_sam/notebooks/videos
 3b.run_sam/sam2_processing_dir/*
+3b.run_sam/stardist_processing_dir/*
+
 
 
 # cytomining results

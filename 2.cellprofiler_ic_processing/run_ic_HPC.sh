@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=6
+#SBATCH --ntasks=64
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
@@ -14,7 +14,7 @@ module load anaconda
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
 # change the directory to the scripts folder
-cd scripts/
+cd scripts/ || exit
 
 echo "Starting IC processing"
 

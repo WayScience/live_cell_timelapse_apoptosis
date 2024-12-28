@@ -14,8 +14,8 @@
 # There are two channels in the terminal dataset:
 # Channel 1: DAPI
 # Channel 5: Annexin V
-# 
-# Note that Channel 5 does not exists in the main dataset (13 time points), only the terminal timepoints. 
+#
+# Note that Channel 5 does not exists in the first 13 time points only the terminal timepoints.
 # Similarly, the terminal time points do not have the CL488-1, CL488-2, and CL561 channels.
 
 # In[1]:
@@ -29,21 +29,25 @@ import pandas as pd
 # In[2]:
 
 
-# set the path to terminal data
-terminal_data_path = pathlib.Path(
-    "../illum_directory/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small"
-).resolve(strict=True)
+run_test_data = True
 
-# number of timepoints in the main data
-num_timepoints = 13
+if not run_test_data:
+    illum_directory = pathlib.Path("../illum_directory").resolve()
+
+else:
+    illum_directory = pathlib.Path("../illum_directory_test").resolve()
+
+experiment = "20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP"
 
 
-# get the list of files in the terminal data directory that are tiffs
-tiff_files = list(terminal_data_path.glob("*.tiff"))
-tiff_files = sorted(tiff_files)
-# change the timepoint from "T0001" to "T0014" to match the main data format and position
-# rewrite the list of files to the terminal data directory
-for f in tiff_files:
-    print(f)
-    print(f.with_name(f.name.replace("T0001", "T0014")))
-    f.rename(f.with_name(f.name.replace("T0001", "T0014")))
+# In[3]:
+
+
+# get the list of dirs in the raw_data_path
+dirs = [x for x in illum_directory.iterdir() if x.is_dir()]
+# get the list of all dirs in the dir
+for dir in dirs:
+    if experiment in dir.name:
+        for image in dir.glob("*.tiff"):
+            if "T0001" in image.name:
+                image.rename(image.with_name(image.name.replace("T0001", "T0014")))
