@@ -2,14 +2,15 @@
 # coding: utf-8
 
 # # Run CellProfiler `illum.cppipe` (IC) pipeline
-#
+# 
 # In this notebook, we run the CellProfiler IC pipeline to calculate the illumination (illum) correction functions for all images per channel (4), apply the functions, and save images into a new directory.
 
 # ## Import libraries
 
-# In[1]:
+# In[ ]:
 
 
+import argparse
 import pathlib
 import sys
 
@@ -18,12 +19,37 @@ import cp_parallel
 import cp_utils as cp_utils
 import tqdm
 
+# check if in a jupyter notebook
+try:
+    cfg = get_ipython().config
+    in_notebook = True
+except NameError:
+    in_notebook = False
+
+
 # ## Set paths
 
-# In[2]:
+# In[ ]:
 
 
-run_test_data = True
+if not in_notebook:
+    print("Running as script")
+    # set up arg parser
+    parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
+
+    parser.add_argument(
+        "--test_data",
+        type=bool,
+        default=False,
+        help="Use test data",
+    )
+
+    args = parser.parse_args()
+    run_test_data = args.test_data
+else:
+    print("Running in a notebook")
+    run_test_data = True
+
 
 if not run_test_data:
     preprocessed_data_path = pathlib.Path("../../data/preprocessed_data/").resolve()
@@ -85,3 +111,4 @@ for dir in dirs:
 cp_parallel.run_cellprofiler_parallel(
     plate_info_dictionary=dict_of_inputs, run_name=run_name
 )
+
