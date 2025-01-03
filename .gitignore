@@ -7,9 +7,10 @@ data/2023*
 data/objects_db
 environments/SAM2_install/segment-anything-2
 data/models
-data/preprocessed_data
-data/raw_data
-data/test_data
+data/preprocessed_data/*
+data/raw_data/*
+data/test_data/*
+
 
 
 # logs
@@ -64,7 +65,10 @@ data/test_data
 3b.run_sam/sam2_processing_dir/*
 3b.run_sam/stardist_processing_dir/*
 
-
+3c.segment_cells/results/*
+3c.segment_cells/figures/*
+3c.segment_cells/tmp_output/*
+!3c.segment_cells/figures/C-02_F0001_tracks.gif
 
 # cytomining results
 5.process_CP_features/data/
