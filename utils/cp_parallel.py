@@ -12,8 +12,6 @@ import subprocess
 from concurrent.futures import Future, ProcessPoolExecutor
 from typing import List, Optional, Union
 
-from exceptions import MaxWorkerError
-
 
 def results_to_log(
     results: List[subprocess.CompletedProcess], log_dir: pathlib.Path, run_name: str
@@ -126,14 +124,10 @@ def run_cellprofiler_parallel(
         commands.append(command)
 
     # set the number of CPUs/workers as the number of commands
-    num_processes = len(commands)
-    print(f"Number of processes: {num_processes}")
+    num_jobs = len(commands)
+    print(f"Number of processes: {num_jobs}")
 
-    # make sure that the number of workers does not exceed the maximum number of workers for the machine
-    if num_processes > multiprocessing.cpu_count():
-        raise MaxWorkerError(
-            "Exception occurred: The number of commands exceeds the number of CPUs/workers. Please reduce the number of commands."
-        )
+    num_processes = multiprocessing.cpu_count()
 
     # set parallelization executer to the number of commands
     executor = ProcessPoolExecutor(max_workers=num_processes)
