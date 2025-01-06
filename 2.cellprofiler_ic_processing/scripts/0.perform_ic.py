@@ -39,9 +39,8 @@ if not in_notebook:
 
     parser.add_argument(
         "--test_data",
-        type=bool,
-        default=False,
-        help="Use test data",
+        action="store_true",
+        help="Use the test data instead of the full dataset",
     )
 
     args = parser.parse_args()
