@@ -7,6 +7,10 @@ data/2023*
 data/objects_db
 environments/SAM2_install/segment-anything-2
 data/models
+data/test_data/*
+data/raw_data/*
+data/preprocessed_data/*
+data/processed_images/*
 
 
 # logs
@@ -58,6 +62,7 @@ data/models
 3b.run_sam/masks/*.csv
 3b.run_sam/notebooks/videos
 3b.run_sam/sam2_processing_dir/*
+3b.run_sam/stardist_processing_dir/*
 
 
 # cytomining results
@@ -75,6 +80,7 @@ data/models
 6.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
 6.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
 
+3b.run_sam/stardist_processing_dir/*
 # data harmonization
 7.data_harmonization/data/
 
