@@ -12,7 +12,7 @@ import pathlib
 
 
 # set data path
-data_path = pathlib.Path("../../data").resolve(strict=True)
+data_path = pathlib.Path("../../data/raw_data/").resolve(strict=True)
 
 
 # In[3]:
