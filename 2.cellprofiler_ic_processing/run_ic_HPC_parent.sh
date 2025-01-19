@@ -56,7 +56,7 @@ done
 
 conda activate cellprofiler_timelapse_env
 cd scripts/ || exit
-conda run -n cellprofiler_timelapse_env python 1.process_ic_teminal_data.py
+python 1.process_ic_teminal_data.py
 cd ../ || exit
 conda deactivate
 
