@@ -13,14 +13,16 @@ module load anaconda
 # convert the notebook to a python script
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
-# change the directory to the scripts folder
+
+dir=$1
+
 cd scripts/ || exit
 
 echo "Starting IC processing"
 
 # Run CellProfiler for IC processing
-conda run -n cellprofiler_timelapse_env python 0.perform_ic.py # --test_data True
-conda run -n cellprofiler_timelapse_env python 1.process_ic_teminal_data.py # --test_data
+conda run -n cellprofiler_timelapse_env python 0.perform_ic.py --input_dir $dir
+conda run -n cellprofiler_timelapse_env python 1.process_ic_teminal_data.py
 
 # return the directory that script was run from
 cd ../ || exit
