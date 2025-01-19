@@ -16,8 +16,8 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 cd scripts/ || exit
 
 # get a list of all dirs in the raw data folder
-data_dir="../../data/20231017ChromaLive_6hr_4ch_MaxIP"
-terminal_data="../../data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP"
+data_dir="../../data/preprocessed_data/20231017ChromaLive_6hr_4ch_MaxIP"
+terminal_data="../../data/preprocessed_data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP"
 
 mapfile -t FOV_dirs < <(ls -d $data_dir/*)
 mapfile -t terminal_dirs < <(ls -d $terminal_data/*)

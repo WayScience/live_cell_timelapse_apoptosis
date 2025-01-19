@@ -9,12 +9,12 @@ cd scripts/ || exit
 
 echo "Starting IC processing"
 
-for FOV_dir in ../../data/test_data/20231017ChromaLive_6hr_4ch_MaxIP/*; do
+for FOV_dir in ../../data/preprocessed_data/20231017ChromaLive_6hr_4ch_MaxIP/*; do
     # Run CellProfiler for IC processing
     python 0.perform_ic.py --input_dir $FOV_dir
 done
 
-for terminal_dirs in ../../data/test_data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/*; do
+for terminal_dirs in ../../data/preprocessed_data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/*; do
     # Run CellProfiler for IC processing
     python 0.perform_ic.py --input_dir $terminal_dirs
 done
