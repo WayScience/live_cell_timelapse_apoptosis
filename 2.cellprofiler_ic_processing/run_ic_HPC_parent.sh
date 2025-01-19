@@ -18,7 +18,7 @@ cd scripts/ || exit
 # get a list of all dirs in the raw data folder
 data_dir="../../data/20231017ChromaLive_6hr_4ch_MaxIP"
 terminal_data="../../data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP"
-# data_dir="../../../data/test_dir"
+
 mapfile -t FOV_dirs < <(ls -d $data_dir/*)
 mapfile -t terminal_dirs < <(ls -d $terminal_data/*)
 echo length of plate_dirs: ${#FOV_dirs[@]}
@@ -48,7 +48,7 @@ for terminal_dirs in "${terminal_dirs[@]}"; do
     sbatch run_ic_HPC_child.sh "$terminal_dirs"
 done
 
-
+number_of_jobs=$(squeue -u $USER | wc -l)
 while [ $number_of_jobs -gt 2 ]; do
         sleep 1s
         number_of_jobs=$(squeue -u $USER | wc -l)
