@@ -1,28 +1,31 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=6
+#SBATCH --ntasks=1
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=6:00:00
-#SBATCH --output=alpine_std_out_std_err-%j.out
+#SBATCH --time=30:00
+#SBATCH --output=ic_child-%j.out
 
 module purge
 module load anaconda
 
 # convert the notebook to a python script
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
+conda activate cellprofiler_timelapse_env
 
-# change the directory to the scripts folder
-cd scripts/
+dir=$1
+
+cd scripts/ || exit
 
 echo "Starting IC processing"
 
 # Run CellProfiler for IC processing
-conda run -n cellprofiler_timelapse_env python 0.perform_ic.py
-conda run -n cellprofiler_timelapse_env python 1.process_ic_teminal_data.py
+python 0.perform_ic.py --input_dir $dir
 
 # return the directory that script was run from
-cd ../
+cd ../ || exit
+
+conda deactivate
 
 echo "IC processing complete"
