@@ -38,14 +38,14 @@ for FOV_dir in "${FOV_dirs[@]}"; do
     sbatch run_ic_HPC_child.sh "$FOV_dir"
 done
 
-for terminal_dirs in "${terminal_dirs[@]}"; do
+for terminal_dir in "${terminal_dirs[@]}"; do
     # get the number of jobs for the user
     number_of_jobs=$(squeue -u $USER | wc -l)
     while [ $number_of_jobs -gt 990 ]; do
         sleep 1s
         number_of_jobs=$(squeue -u $USER | wc -l)
     done
-    sbatch run_ic_HPC_child.sh "$terminal_dirs"
+    sbatch run_ic_HPC_child.sh "$terminal_dir"
 done
 
 number_of_jobs=$(squeue -u $USER | wc -l)
