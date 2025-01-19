@@ -7,7 +7,7 @@
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
@@ -15,9 +15,11 @@ import pathlib
 import sys
 
 sys.path.append("../../utils")
-import cp_parallel
-import cp_utils as cp_utils
-import tqdm
+from cp_utils import run_cellprofiler
+
+
+# In[7]:
+
 
 # check if in a jupyter notebook
 try:
@@ -26,88 +28,72 @@ try:
 except NameError:
     in_notebook = False
 
-
-# ## Set paths
-
-# In[ ]:
-
-
 if not in_notebook:
     print("Running as script")
     # set up arg parser
     parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
 
     parser.add_argument(
-        "--test_data",
-        action="store_true",
-        help="Use the test data instead of the full dataset",
+        "--input_dir",
+        type=str,
+        help="Directory containing the images to be segmented",
+        required=True,
     )
-
     args = parser.parse_args()
-    run_test_data = args.test_data
+    input_dir = pathlib.Path(args.input_dir).resolve()
 else:
     print("Running in a notebook")
-    run_test_data = True
+    input_dir = pathlib.Path(
+        "../../data/test_data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/C-02_F0001"
+    ).resolve()
 
 
-if not run_test_data:
-    preprocessed_data_path = pathlib.Path("../../data/preprocessed_data/").resolve()
-    illum_directory = pathlib.Path("../illum_directory").resolve()
+# ## Set paths
 
+# In[12]:
+
+
+if "test" in str(input_dir):
+    illum_directory = pathlib.Path("../illum_directory/test_data/").resolve()
 else:
-    preprocessed_data_path = pathlib.Path("../../data/test_data/").resolve()
-    illum_directory = pathlib.Path("../illum_directory_test").resolve()
+    illum_directory = pathlib.Path("../illum_directory/").resolve()
+
+if "Annexin" in str(input_dir):
+    illum_directory = pathlib.Path(f"{illum_directory}/endpoint").resolve()
+    path_to_pipeline = pathlib.Path("../pipelines/illum_2ch.cppipe").resolve()
+else:
+    illum_directory = pathlib.Path(f"{illum_directory}/timelapse").resolve()
+    path_to_pipeline = pathlib.Path("../pipelines/illum_4ch.cppipe").resolve()
+
+illum_directory.mkdir(parents=True, exist_ok=True)
 
 
-illum_directory.mkdir(exist_ok=True, parents=True)
+# In[13]:
+
+
+illum_name = str(input_dir).split("/")[-2] + "_" + str(input_dir).split("/")[-1]
+print(illum_name)
 
 
 # ## Define the input paths
 
-# In[3]:
+# In[14]:
 
 
-dict_of_inputs = {}
-
-
-# In[4]:
-
-
-# get the list of dirs in the raw_data_path
-dirs = [x for x in preprocessed_data_path.iterdir() if x.is_dir()]
-# get the list of all dirs in the dir
-for dir in dirs:
-    # get the list of all dirs in the dir
-    subdirs = [x for x in dir.iterdir() if x.is_dir()]
-    for subdir in subdirs:
-        run_name = f"{dir.name}_{subdir.name}"
-        if "4ch" in dir.name:
-            dict_of_inputs[run_name] = {
-                "path_to_images": pathlib.Path(subdir).resolve(strict=True),
-                "path_to_output": pathlib.Path(illum_directory / run_name).resolve(),
-                "path_to_pipeline": pathlib.Path(
-                    "../pipelines/illum_4ch.cppipe"
-                ).resolve(),
-            }
-        elif "2ch" in dir.name:
-            dict_of_inputs[run_name] = {
-                "path_to_images": pathlib.Path(subdir).resolve(strict=True),
-                "path_to_output": pathlib.Path(illum_directory / run_name).resolve(),
-                "path_to_pipeline": pathlib.Path(
-                    "../pipelines/illum_2ch.cppipe"
-                ).resolve(),
-            }
-        else:
-            ValueError("The directory name does not contain 2ch or 4ch")
+path_to_output = pathlib.Path(f"{illum_directory}/{illum_name}").resolve()
 
 
 # ## Run `illum.cppipe` pipeline and calculate + save IC images
 # This last cell does not get run as we run this pipeline in the command line.
 
-# In[5]:
+# In[15]:
 
 
-cp_parallel.run_cellprofiler_parallel(
-    plate_info_dictionary=dict_of_inputs, run_name=run_name
+run_cellprofiler(
+    path_to_pipeline=path_to_pipeline,
+    path_to_input=input_dir,
+    path_to_output=path_to_output,
+    sqlite_name=illum_name,
+    rename_sqlite_file_bool=True,
 )
 

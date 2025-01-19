@@ -18,63 +18,39 @@
 # Note that Channel 5 does not exists in the first 13 time points only the terminal timepoints. 
 # Similarly, the terminal time points do not have the CL488-1, CL488-2, and CL561 channels.
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
+import glob
 import pathlib
 import sys
 
 import numpy as np
 import pandas as pd
 
-# check if in a jupyter notebook
-try:
-    cfg = get_ipython().config
-    in_notebook = True
-except NameError:
-    in_notebook = False
+
+# In[2]:
 
 
-# In[ ]:
-
-
-if not in_notebook:
-    print("Running as script")
-    # set up arg parser
-    parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
-
-    parser.add_argument(
-        "--test_data",
-        action="store_true",
-        help="Use the test data instead of the full dataset",
-    )
-
-    args = parser.parse_args()
-    run_test_data = args.test_data
-else:
-    print("Running in a notebook")
-    run_test_data = True
-
-
-if not run_test_data:
-    illum_directory = pathlib.Path("../illum_directory").resolve()
-
-else:
-    illum_directory = pathlib.Path("../illum_directory_test").resolve()
-
-experiment = "20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP"
+illum_directory = pathlib.Path("../illum_directory").resolve(strict=True)
+# get all directories in the illum_directory recursively
+illum_directories = glob.glob(str(illum_directory) + "/**/", recursive=True)
+# get all files in the illum_directories
+illum_files = [glob.glob(directory + "/*") for directory in illum_directories]
+# filter for files
+illum_files = [
+    file for sublist in illum_files for file in sublist if pathlib.Path(file).is_file()
+]
 
 
 # In[3]:
 
 
-# get the list of dirs in the raw_data_path
-dirs = [x for x in illum_directory.iterdir() if x.is_dir()]
-# get the list of all dirs in the dir
-for dir in dirs:
-    if experiment in dir.name:
-        for image in dir.glob("*.tiff"):
-            if "T0001" in image.name:
-                image.rename(image.with_name(image.name.replace("T0001", "T0014")))
+for file in illum_files:
+    if "Annexin" in file:
+        if "T0001" in file:
+            file = pathlib.Path(file)
+            file.rename(file.with_name(file.name.replace("T0001", "T0014")))
+            print(file)
 

@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=64
+#SBATCH --ntasks=1
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=6:00:00
-#SBATCH --output=alpine_std_out_std_err-%j.out
+#SBATCH --output=ic_parent-%j.out
 
 module purge
 module load anaconda
