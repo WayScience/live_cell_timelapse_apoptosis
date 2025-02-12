@@ -1,27 +1,23 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[18]:
+# In[1]:
 
 
 import argparse
 import os
 import pathlib
+import shutil
 
 import matplotlib.pyplot as plt
 import numpy as np
-import optuna
 import pandas as pd
 import seaborn as sns
-import skimage
 import tifffile
-import torch
-import tqdm
 from PIL import Image
 from rich.pretty import pprint
 from ultrack import to_tracks_layer, track, tracks_to_zarr
 from ultrack.config import MainConfig
-from ultrack.imgproc import normalize
 from ultrack.tracks import close_tracks_gaps
 from ultrack.utils import estimate_parameters_from_labels, labels_to_contours
 
@@ -61,7 +57,7 @@ clear_gpu_memory()
 import napari
 from napari.utils.notebook_display import nbscreenshot
 
-# In[19]:
+# In[2]:
 
 
 if not in_notebook:
@@ -92,13 +88,13 @@ figures_output_dir.mkdir(exist_ok=True)
 results_output_dir.mkdir(exist_ok=True)
 
 
-# In[ ]:
+# In[3]:
 
 
 print(f"Input directory: {input_dir}")
 
 
-# In[20]:
+# In[4]:
 
 
 file_extensions = {".tif", ".tiff"}
@@ -114,7 +110,7 @@ print(f"Found {len(mask_files)} tiff files in the input directory")
 print(f"Found {len(nuclei_files)} nuclei files in the input directory")
 
 
-# In[21]:
+# In[5]:
 
 
 # read in the masks and create labels
@@ -131,7 +127,7 @@ for tiff_file in nuclei_files:
 nuclei = np.array(nuclei)
 
 
-# In[22]:
+# In[6]:
 
 
 image_dims = tifffile.imread(tiff_files[0]).shape
@@ -140,7 +136,7 @@ timelapse_raw = np.zeros(
 )
 
 
-# In[23]:
+# In[7]:
 
 
 detections = np.zeros((len(masks), image_dims[0], image_dims[1]), dtype=np.uint16)
@@ -156,7 +152,7 @@ print(detections.shape, edges.shape)
 clear_gpu_memory()
 
 
-# In[24]:
+# In[8]:
 
 
 params_df = estimate_parameters_from_labels(masks, is_timelapse=True)
@@ -166,7 +162,7 @@ if in_notebook:
 
 # ## Optimize the tracking using optuna and ultrack
 
-# In[25]:
+# In[9]:
 
 
 config = MainConfig()
@@ -176,7 +172,7 @@ config.tracking_config.disappear_weight = -0.2
 pprint(config.dict())
 
 
-# In[26]:
+# In[10]:
 
 
 track(
@@ -187,7 +183,7 @@ track(
 )
 
 
-# In[27]:
+# In[11]:
 
 
 tracks_df, graph = to_tracks_layer(config)
@@ -199,7 +195,7 @@ tracks_df = close_tracks_gaps(
 )
 
 
-# In[28]:
+# In[12]:
 
 
 labels = tracks_to_zarr(config, tracks_df)
@@ -211,7 +207,7 @@ print(f"Found {tracks_df['track_id'].nunique()} unique tracks in the dataset.")
 tracks_df.head()
 
 
-# In[29]:
+# In[13]:
 
 
 # save the tracks as parquet
@@ -224,7 +220,7 @@ timepoints = tracks_df["t"].unique()
 cum_tracks_df = cum_tracks_df.loc[cum_tracks_df["t"] == -1]
 
 
-# In[30]:
+# In[14]:
 
 
 if in_notebook:
@@ -256,7 +252,7 @@ if in_notebook:
         plt.close()
 
 
-# In[31]:
+# In[15]:
 
 
 # load each image
@@ -267,15 +263,15 @@ fig_path = figures_output_dir / f"{str(input_dir).split('MaxIP_')[1]}_tracks.gif
 # plot the line of each track in matplotlib over a gif
 # get the tracks
 # save the frames as a gif
-frames[0].save(fig_path, save_all=True, append_images=frames[1:], duration=100)
+frames[0].save(fig_path, save_all=True, append_images=frames[1:], duration=100, loop=0)
 
 
-# In[32]:
+# In[16]:
 
 
 # clean up tracking files
 # remove temporary_output_dir
-# shutil.rmtree(temporary_output_dir)
+shutil.rmtree(temporary_output_dir)
 
 track_db_path = pathlib.Path("data.db").resolve()
 metadata_toml_path = pathlib.Path("metadata.toml").resolve()
@@ -285,13 +281,13 @@ if metadata_toml_path.exists():
     metadata_toml_path.unlink()
 
 
-# In[33]:
+# In[17]:
 
 
 clear_gpu_memory()
 
 
-# In[34]:
+# In[18]:
 
 
 if in_notebook:
@@ -306,4 +302,4 @@ if in_notebook:
     viewer.layers["masks"].visible = False
 
     nbscreenshot(viewer)
-    viewer.close()
+    # viewer.close()
