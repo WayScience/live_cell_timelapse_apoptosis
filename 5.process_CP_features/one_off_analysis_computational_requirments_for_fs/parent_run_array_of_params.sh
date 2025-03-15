@@ -5,12 +5,11 @@
 #SBATCH --time=10:00:00
 #SBATCH --output=ic_parent-%j.out
 
-
+module load miniforge
+conda init bash
 conda activate cellprofiler_timelapse_env
 
 jupyter nbconvert --to python --output-dir=scripts/ notebooks/*.ipynb
-
-
 
 # define array of parameters
 num_features_path="./arrays/num_of_features.txt"
