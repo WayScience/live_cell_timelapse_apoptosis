@@ -6,7 +6,7 @@ echo "Converting notebooks to Python scripts..."
 jupyter nbconvert --to python --output-dir=scripts/ notebooks/*.ipynb
 echo "Conversion complete."
 
-mamba activate cellprofiler_timelapse_env
+conda activate cellprofiler_timelapse_env
 
 # check if the data is present in the data folder
 # if present then remove the directory
@@ -16,16 +16,19 @@ if [ -d "data" ]; then
     echo "Data folder removed."
 fi
 
-cd scripts/
+well_fov="C-02_F0001"
 
-python 0.merge_sc.py
-python 1.annotate_sc.py
-python 2.normalize_sc_across_time.py
-python 2.normalize_sc_within_time.py
-python 3.feature_select_sc.py
+cd scripts/ || exit
 
-cd ../
+python 0.merge_sc.py --well_fov $well_fov
+python 1.annotate_sc.py --well_fov $well_fov
+python 2.fuzzy_matching.py --well_fov $well_fov
+python 3.combine_profiles.py
+python 4.normalize.py
+python 5.feature_select_sc.py
 
-mamba deactivate
+cd ../ || exit
+
+conda deactivate
 
 echo "Processing complete."
