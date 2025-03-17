@@ -229,7 +229,7 @@ if in_notebook:
         cum_tracks_df = pd.concat([cum_tracks_df, tmp_df])
         plt.figure(figsize=(6, 3))
         plt.subplot(1, 3, 1)
-        # rescale tbe intensity of the raw image
+        # rescale the intensity of the raw image
         raw_image = timelapse_raw[frame_index, :, :]
         raw_image = raw_image * 4096
         plt.imshow(nuclei[frame_index, :, :], cmap="gray")
