@@ -131,9 +131,6 @@ nuclei = np.array(nuclei)
 
 
 image_dims = tifffile.imread(tiff_files[0]).shape
-timelapse_raw = np.zeros(
-    (len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16
-)
 
 
 # In[7]:
@@ -142,12 +139,10 @@ timelapse_raw = np.zeros(
 detections = np.zeros((len(masks), image_dims[0], image_dims[1]), dtype=np.uint16)
 edges = np.zeros((len(masks), image_dims[0], image_dims[1]), dtype=np.uint16)
 for frame_index, frame in enumerate(masks):
-    detections[frame_index, :, :], edges[frame_index, :, :] = labels_to_contours(frame)
+    detections[frame_index, :, :], edges[frame_index, :, :] = labels_to_contours(
+        frame
+    )  # gets the contours of the masks and the edges
 print(detections.shape, edges.shape)
-# tifffile.imwrite(f"{temporary_output_dir}/stardist_labels.tif", stardist_labels)
-# tifffile.imwrite(f"{temporary_output_dir}/timelapse_raw.tif", timelapse_raw)
-# tifffile.imwrite(f"{temporary_output_dir}/detections.tif", detections)
-# tifffile.imwrite(f"{temporary_output_dir}/edges.tif", edges)
 
 clear_gpu_memory()
 
@@ -160,7 +155,10 @@ if in_notebook:
     params_df["area"].plot(kind="hist", bins=100, title="Area histogram")
 
 
-# ## Optimize the tracking using optuna and ultrack
+# ## Optimize the tracking using ultrack
+
+# In[ ]:
+
 
 # In[9]:
 
@@ -198,7 +196,9 @@ tracks_df = close_tracks_gaps(
 # In[12]:
 
 
-labels = tracks_to_zarr(config, tracks_df)
+labels = tracks_to_zarr(
+    config, tracks_df
+)  # incase needed for napari or other CZI-specific applications
 tracks_df.to_parquet(
     f"{results_output_dir}/{str(input_dir).split('MaxIP_')[1]}_tracks.parquet"
 )
@@ -210,9 +210,7 @@ tracks_df.head()
 # In[13]:
 
 
-# save the tracks as parquet
 tracks_df.reset_index(drop=True, inplace=True)
-tracks = np.zeros((len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16)
 cum_tracks_df = tracks_df.copy()
 timepoints = tracks_df["t"].unique()
 
@@ -224,21 +222,20 @@ cum_tracks_df = cum_tracks_df.loc[cum_tracks_df["t"] == -1]
 
 
 if in_notebook:
+    nuclei = nuclei * 4096
     for frame_index, _ in enumerate(nuclei):
         tmp_df = tracks_df.loc[tracks_df["t"] == frame_index]
         cum_tracks_df = pd.concat([cum_tracks_df, tmp_df])
         plt.figure(figsize=(6, 3))
         plt.subplot(1, 3, 1)
         # rescale the intensity of the raw image
-        raw_image = timelapse_raw[frame_index, :, :]
-        raw_image = raw_image * 4096
         plt.imshow(nuclei[frame_index, :, :], cmap="gray")
         plt.title("Raw")
         plt.axis("off")
 
         plt.subplot(1, 3, 2)
         plt.imshow(detections[frame_index, :, :], cmap="gray")
-        plt.title("Detections")
+        plt.title("Masks")
         plt.axis("off")
 
         plt.subplot(1, 3, 3)
@@ -302,4 +299,3 @@ if in_notebook:
     viewer.layers["masks"].visible = False
 
     nbscreenshot(viewer)
-    # viewer.close()

@@ -67,7 +67,7 @@ data/processed_images/*
 
 # cytomining results
 5.process_CP_features/data/
-
+5.process_CP_features/one_off_analysis_computational_requirments_for_fs/results_of_memory_profiling/*
 # scDINO outputs
 6.scDINO_analysis/1.scDINO_run/outputdir
 # scDINO logs
