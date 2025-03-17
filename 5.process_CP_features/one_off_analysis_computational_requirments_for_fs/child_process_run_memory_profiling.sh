@@ -5,7 +5,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=1:00:00
-#SBATCH --output=merge_child-%j.out
+#SBATCH --output=one_off_child-%j.out
 
 module load miniforge
 conda init bash
