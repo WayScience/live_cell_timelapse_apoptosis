@@ -18,13 +18,14 @@ well_fov_path="../../2.cellprofiler_ic_processing/illum_directory/timelapse/"
 well_fovs=$(ls $well_fov_path)
 echo "${well_fovs[@]}"
 
+cd ../ || exit
+
 for well_fov in $well_fovs; do
     echo "Processing well_fov: $well_fov"
     # check python script exit code
-    sbatch HPC_child_cell_tracking_script.sh "{$well_fov_path$well_fov}"
+    full_path="${well_fov_path}${well_fov}"
+    sbatch HPC_child_cell_tracking_script.sh $full_path
 done
-
-cd ../ || exit
 
 conda deactivate
 

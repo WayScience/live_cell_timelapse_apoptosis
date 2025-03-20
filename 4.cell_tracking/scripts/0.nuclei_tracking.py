@@ -57,6 +57,7 @@ clear_gpu_memory()
 import napari
 from napari.utils.notebook_display import nbscreenshot
 
+
 # In[2]:
 
 
@@ -160,6 +161,9 @@ if in_notebook:
 # In[ ]:
 
 
+
+
+
 # In[9]:
 
 
@@ -221,32 +225,32 @@ cum_tracks_df = cum_tracks_df.loc[cum_tracks_df["t"] == -1]
 # In[14]:
 
 
-if in_notebook:
-    nuclei = nuclei * 4096
-    for frame_index, _ in enumerate(nuclei):
-        tmp_df = tracks_df.loc[tracks_df["t"] == frame_index]
-        cum_tracks_df = pd.concat([cum_tracks_df, tmp_df])
-        plt.figure(figsize=(6, 3))
-        plt.subplot(1, 3, 1)
-        # rescale the intensity of the raw image
-        plt.imshow(nuclei[frame_index, :, :], cmap="gray")
-        plt.title("Raw")
-        plt.axis("off")
+nuclei = nuclei * 4096
+for frame_index, _ in enumerate(nuclei):
+    tmp_df = tracks_df.loc[tracks_df["t"] == frame_index]
+    cum_tracks_df = pd.concat([cum_tracks_df, tmp_df])
+    plt.figure(figsize=(6, 3))
+    plt.subplot(1, 3, 1)
+    # rescale the intensity of the raw image
 
-        plt.subplot(1, 3, 2)
-        plt.imshow(detections[frame_index, :, :], cmap="gray")
-        plt.title("Masks")
-        plt.axis("off")
+    plt.imshow(nuclei[frame_index, :, :], cmap="gray")
+    plt.title("Raw")
+    plt.axis("off")
 
-        plt.subplot(1, 3, 3)
-        sns.lineplot(data=cum_tracks_df, x="x", y="y", hue="track_id", legend=False)
-        plt.imshow(detections[frame_index, :, :], cmap="gray", alpha=0.5)
-        plt.title(f"Frame {frame_index}")
-        plt.axis("off")
+    plt.subplot(1, 3, 2)
+    plt.imshow(detections[frame_index, :, :], cmap="gray")
+    plt.title("Masks")
+    plt.axis("off")
 
-        plt.tight_layout()
-        plt.savefig(f"{temporary_output_dir}/tracks_{frame_index}.png")
-        plt.close()
+    plt.subplot(1, 3, 3)
+    sns.lineplot(data=cum_tracks_df, x="x", y="y", hue="track_id", legend=False)
+    plt.imshow(detections[frame_index, :, :], cmap="gray", alpha=0.5)
+    plt.title(f"Frame {frame_index}")
+    plt.axis("off")
+
+    plt.tight_layout()
+    plt.savefig(f"{temporary_output_dir}/tracks_{frame_index}.png")
+    plt.close()
 
 
 # In[15]:
@@ -299,3 +303,4 @@ if in_notebook:
     viewer.layers["masks"].visible = False
 
     nbscreenshot(viewer)
+

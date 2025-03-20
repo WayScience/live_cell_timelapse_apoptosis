@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --time=30:00
-#SBATCH --partition=aa100
+#SBATCH --partition=al40
 #SBATCH --gres=gpu:1
 #SBATCH --output=cell_tracking-%j.out
 
