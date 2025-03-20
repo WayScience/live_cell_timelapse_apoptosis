@@ -64,6 +64,8 @@ data/processed_images/*
 3b.run_sam/sam2_processing_dir/*
 3b.run_sam/stardist_processing_dir/*
 
+4.cell_tracking/figures/*
+4.cell_tracking/results/*
 
 # cytomining results
 5.process_CP_features/data/
