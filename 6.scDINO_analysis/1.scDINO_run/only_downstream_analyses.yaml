@@ -4,7 +4,7 @@ meta:
   name_of_run: "apoptosis_timelapse"
   output_dir: "outputdir"
   # dataset dir needs to be changed to the location of the dataset
-  dataset_dir: "../../data/processed_images/crops"
+  dataset_dir: "../0.pre-process_images/data/processed_images/sc_crops"
   folder_depth_for_labels: 0 # 0 is the folder where the images are, 1 is the folder above, etc.
   test_datasetsplit_fraction: 1.0
   seed: 0 #should match scDINO seed if you want to use the same train/test split
@@ -20,12 +20,12 @@ compute_cls_features:
   num_samples: 5000 # only used if use_weighted_sampler is True
   normalize: True
   parse_mean_std_from_file: True
-  mean_std_file_location: "../../data/processed_images/mean_std_normalization/mean_std.txt" #"dir/mean_and_std_of_dataset.txt"
+  mean_std_file_location: "../0.pre-process_images/data/processed_images/mean_std_normalization/mean_std.txt" #"dir/mean_and_std_of_dataset.txt"
   norm_per_channel: "[(0.1, 0.1, 0.1, 0.1, 0.1),(0.1, 0.1, 0.1, 0.1, 0.1)]" #only used if parse_mean_std_from_file is False
   use_cuda: True
   num_gpus: 1
   batch_size_per_gpu: 24
-  num_workers: 20
+  num_workers: 10
   # change the path to the location of the model
   pretrained_weights: "../../data/models" #dir_to_pretrained_weights
   read_model_arch_dynamically: False

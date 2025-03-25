@@ -7,7 +7,18 @@ suppressPackageStartupMessages(suppressWarnings(library(shiny)))
 umap_df_path <- file.path("..","..","1.scDINO_run/outputdir/apoptosis_timelapse/CLS_features/CLS_features_annotated_umap.csv")
 # load UMAP df
 umap_df <- read.csv(umap_df_path)
-head(umap_df,2)
+options(repr.matrix.max.rows = 10, repr.matrix.max.cols = 5)
+
+head(umap_df)
+
+unique(umap_df$Metadata_Time)
+umap_df$Metadata_Time <- factor(
+    umap_df$Metadata_Time,
+    levels=c(
+        0,1,2,3,4,5,6,7,8,9,10,11,12,13
+)
+)
+unique(umap_df$Metadata_Time)
 
 # get all wells
 unique(umap_df$Metadata_Well)

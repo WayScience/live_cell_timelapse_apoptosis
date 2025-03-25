@@ -5,7 +5,7 @@
 conda activate scDINO_env
 
 # change dir to the notebook folder
-cd notebooks
+cd notebooks || exit
 
 # run the notebooks
 papermill 0.scDINO_processing_individual_channels.ipynb 0.scDINO_processing_individual_channels.ipynb
@@ -24,7 +24,7 @@ conda activate scDINO_env
 papermill 3.scDINO_cls_timelapse_vizualization.ipynb 3.scDINO_cls_timelapse_vizualization.ipynb
 
 # change dir back to the original folder
-cd ..
+cd .. || exit
 
 # convert the ran notebooks to scripts
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb

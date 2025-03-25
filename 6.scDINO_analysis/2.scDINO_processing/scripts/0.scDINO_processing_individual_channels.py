@@ -163,6 +163,7 @@ Metadata_cols = cls_df.columns[cls_df.columns.str.contains("Metadata")]
 cls_df = cls_df[
     Metadata_cols.tolist() + cls_df.columns.difference(Metadata_cols).tolist()
 ]
+print(cls_df.shape)
 cls_df.head()
 
 
