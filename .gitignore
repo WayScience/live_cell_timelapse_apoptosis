@@ -7,10 +7,12 @@ data/2023*
 data/objects_db
 environments/SAM2_install/segment-anything-2
 data/models
+
 data/test_data/*
 data/raw_data/*
 data/preprocessed_data/*
 data/processed_images/*
+
 
 
 # logs
@@ -28,6 +30,7 @@ data/processed_images/*
 2.cellprofiler_ic_processing/illum_directory
 2.cellprofiler_ic_processing/illum_directory_test_small
 2.cellprofiler_ic_processing/illum_directory_test
+
 
 # cellprofiler logs
 4.cellprofiler_analysis/scripts/logs
@@ -66,6 +69,12 @@ data/processed_images/*
 
 4.cell_tracking/figures/*
 4.cell_tracking/results/*
+
+3c.segment_cells/results/*
+3c.segment_cells/figures/*
+3c.segment_cells/tmp_output/*
+!3c.segment_cells/figures/C-02_F0001_tracks.gif
+
 # cytomining results
 5.process_CP_features/data/
 
