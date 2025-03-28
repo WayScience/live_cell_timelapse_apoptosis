@@ -130,7 +130,7 @@ cls_df["Metadata_ImageNumber"] = cls_df["Metadata_image_path"].apply(
 )
 
 cls_df["Metadata_Nuclei_Number_Object_Number"] = cls_df["Metadata_image_path"].apply(
-    lambda x: pathlib.Path(x).name.split("_")[8]
+    lambda x: pathlib.Path(x).name.split("cell_number_")[1].split("_crop")[0]
 )
 
 cls_df.head()
