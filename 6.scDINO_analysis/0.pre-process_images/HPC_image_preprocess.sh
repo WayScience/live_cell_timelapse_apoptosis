@@ -1,5 +1,15 @@
 #!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --nstasks=64
+#SBATCH --partition=al40
+#SBATCH --gres=gpu:1
+#SBATCH --qos=normal
+#SBATCH --account=amc-general
+#SBATCH --time=24:00:00
+#SBATCH --output=child_featurize-%j.out
 
+module load miniforge
+conda init bash
 # activate the correct env
 conda activate scDINO_env
 
