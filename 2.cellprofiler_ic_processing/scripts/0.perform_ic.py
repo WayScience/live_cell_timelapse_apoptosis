@@ -10,90 +10,90 @@
 # In[1]:
 
 
+import argparse
 import pathlib
 import sys
 
 sys.path.append("../../utils")
-import cp_parallel
-import cp_utils as cp_utils
-import tqdm
+from cp_utils import run_cellprofiler
+
+
+# In[7]:
+
+
+# check if in a jupyter notebook
+try:
+    cfg = get_ipython().config
+    in_notebook = True
+except NameError:
+    in_notebook = False
+
+if not in_notebook:
+    print("Running as script")
+    # set up arg parser
+    parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
+
+    parser.add_argument(
+        "--input_dir",
+        type=str,
+        help="Directory containing the images to be segmented",
+        required=True,
+    )
+    args = parser.parse_args()
+    input_dir = pathlib.Path(args.input_dir).resolve()
+else:
+    print("Running in a notebook")
+    input_dir = pathlib.Path(
+        "../../data/test_data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/C-02_F0001"
+    ).resolve()
 
 
 # ## Set paths
 
-# In[2]:
+# In[12]:
 
 
-run_name = "illumination_correction"
-# path to folder for IC images
-illum_directory = pathlib.Path("../illum_directory").resolve()
-# make sure the directory exists
-illum_directory.mkdir(exist_ok=True, parents=True)
+if "test" in str(input_dir):
+    illum_directory = pathlib.Path("../illum_directory/test_data/").resolve()
+else:
+    illum_directory = pathlib.Path("../illum_directory/").resolve()
+
+if "Annexin" in str(input_dir):
+    illum_directory = pathlib.Path(f"{illum_directory}/endpoint").resolve()
+    path_to_pipeline = pathlib.Path("../pipelines/illum_2ch.cppipe").resolve()
+else:
+    illum_directory = pathlib.Path(f"{illum_directory}/timelapse").resolve()
+    path_to_pipeline = pathlib.Path("../pipelines/illum_4ch.cppipe").resolve()
+
+illum_directory.mkdir(parents=True, exist_ok=True)
+
+
+# In[13]:
+
+
+illum_name = str(input_dir).split("/")[-2] + "_" + str(input_dir).split("/")[-1]
+print(illum_name)
 
 
 # ## Define the input paths
 
-# In[3]:
+# In[14]:
 
 
-dict_of_inputs = {
-    # "run_20230920ChromaLiveTL_24hr4ch_MaxIP": {
-    #     "path_to_images": pathlib.Path(
-    #         "../../data/20230920ChromaLiveTL_24hr4ch_MaxIP"
-    #     ).resolve(),
-    #     "path_to_output": pathlib.Path(
-    #         f"{illum_directory}/20230920ChromaLiveTL_24hr4ch_MaxIP/"
-    #     ).resolve(),
-    #     "path_to_pipeline": pathlib.Path("../pipelines/illum_4ch.cppipe").resolve(),
-    # },
-    # "run_20231017ChromaLive_6hr_4ch_MaxIP": {
-    #     "path_to_images": pathlib.Path(
-    #         "../../data/20231017ChromaLive_6hr_4ch_MaxIP"
-    #     ).resolve(),
-    #     "path_to_output": pathlib.Path(
-    #         f"{illum_directory}/20231017ChromaLive_6hr_4ch_MaxIP/"
-    #     ).resolve(),
-    #     "path_to_pipeline": pathlib.Path("../pipelines/illum_4ch.cppipe").resolve(),
-    # },
-    # "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
-    #     "path_to_images": pathlib.Path(
-    #         "../../data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP"
-    #     ).resolve(),
-    #     "path_to_output": pathlib.Path(
-    #         f"{illum_directory}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP/"
-    #     ).resolve(),
-    #     "path_to_pipeline": pathlib.Path("../pipelines/illum_2ch.cppipe").resolve(),
-    # },
-    # testing small datasets to make sure the pipeline works
-    # these have both Well C02 FOV 1 and Well E11 FOV 4
-    "run_20231017ChromaLive_6hr_4ch_MaxIP_test_small": {
-        "path_to_images": pathlib.Path(
-            "../../data/20231017ChromaLive_6hr_4ch_MaxIP_test_small"
-        ).resolve(),
-        "path_to_output": pathlib.Path(
-            f"{illum_directory}/20231017ChromaLive_6hr_4ch_MaxIP_test_small/"
-        ).resolve(),
-        "path_to_pipeline": pathlib.Path("../pipelines/illum_4ch.cppipe").resolve(),
-    },
-    "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small": {
-        "path_to_images": pathlib.Path(
-            "../../data/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small"
-        ).resolve(),
-        "path_to_output": pathlib.Path(
-            f"{illum_directory}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small/"
-        ).resolve(),
-        "path_to_pipeline": pathlib.Path("../pipelines/illum_2ch.cppipe").resolve(),
-    },
-}
+path_to_output = pathlib.Path(f"{illum_directory}/{illum_name}").resolve()
 
 
 # ## Run `illum.cppipe` pipeline and calculate + save IC images
 # This last cell does not get run as we run this pipeline in the command line.
 
-# In[4]:
+# In[15]:
 
 
-cp_parallel.run_cellprofiler_parallel(
-    plate_info_dictionary=dict_of_inputs, run_name=run_name
+run_cellprofiler(
+    path_to_pipeline=path_to_pipeline,
+    path_to_input=input_dir,
+    path_to_output=path_to_output,
+    sqlite_name=illum_name,
+    rename_sqlite_file_bool=True,
 )
 

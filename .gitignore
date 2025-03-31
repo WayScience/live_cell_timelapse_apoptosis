@@ -7,10 +7,12 @@ data/2023*
 data/objects_db
 environments/SAM2_install/segment-anything-2
 data/models
+
 data/test_data/*
 data/raw_data/*
 data/preprocessed_data/*
 data/processed_images/*
+
 
 
 # logs
@@ -28,6 +30,7 @@ data/processed_images/*
 2.cellprofiler_ic_processing/illum_directory
 2.cellprofiler_ic_processing/illum_directory_test_small
 2.cellprofiler_ic_processing/illum_directory_test
+
 
 # cellprofiler logs
 4.cellprofiler_analysis/scripts/logs
@@ -64,10 +67,14 @@ data/processed_images/*
 3b.run_sam/sam2_processing_dir/*
 3b.run_sam/stardist_processing_dir/*
 
+3c.segment_cells/results/*
+3c.segment_cells/figures/*
+3c.segment_cells/tmp_output/*
+!3c.segment_cells/figures/C-02_F0001_tracks.gif
 
 # cytomining results
 5.process_CP_features/data/
-
+5.process_CP_features/one_off_analysis_computational_requirments_for_fs/results_of_memory_profiling/*
 # scDINO outputs
 6.scDINO_analysis/1.scDINO_run/outputdir
 # scDINO logs
@@ -96,6 +103,6 @@ data/processed_images/**
 4.cell_tracking/results/*
 6.scDINO_analysis/0.pre-process_images/data/*
 
-
-
-
+4.cell_tracking/figures/*
+# keep one example of the figures
+!4.cell_tracking/figures/C-02_F0003_tracks.gif
