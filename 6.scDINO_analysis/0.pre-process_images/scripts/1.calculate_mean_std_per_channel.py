@@ -22,11 +22,11 @@ from torchvision import datasets
 
 
 # set the path to the data
-data_dir = pathlib.Path("../../../data/processed_images/crops/").resolve(strict=True)
+data_dir = pathlib.Path("../data/processed_images/sc_crops/").resolve(strict=True)
 
 # output path
 output_file_path = pathlib.Path(
-    "../../../data/processed_images/mean_std_normalization/mean_std.txt"
+    "../data/processed_images/mean_std_normalization/mean_std.txt"
 ).resolve()
 # make sure the output directory exists
 output_file_path.parent.mkdir(parents=True, exist_ok=True)
