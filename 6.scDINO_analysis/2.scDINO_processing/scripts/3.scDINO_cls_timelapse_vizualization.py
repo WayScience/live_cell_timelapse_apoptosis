@@ -48,9 +48,13 @@ interval = 1000 / fps
 print(f"Interval: {interval}")
 
 
-# In[5]:
+# In[ ]:
 
 
+# this loop will create a gif for each dose
+# and save it to the output path
+# the gifs will be named Staurosporine_XXXnM.gif
+# where XXX is the dose
 for dose in unique_doses:
     fig, ax = plt.subplots(figsize=(6, 6))
 

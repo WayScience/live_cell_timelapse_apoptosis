@@ -31,40 +31,7 @@ except NameError:
     in_notebook = False
 
 
-# ## Import paths
-
-# In[2]:
-
-
-# set the path to the data directory
-data_file_dir = pathlib.Path(
-    "../../../5.process_CP_features/data/4.normalized_data/profiles/normalized_profile.parquet"
-).resolve(strict=True)
-
-# read in the data
-cp_feature_data = pd.read_parquet(data_file_dir)
-# print the data
-print(cp_feature_data.shape)
-cp_feature_data.head()
-
-
-# In[3]:
-
-
-well_fov = cp_feature_data["Metadata_Well"] + "_F" + cp_feature_data["Metadata_FOV"]
-cp_feature_data.insert(0, "Metadata_Well_FOV", well_fov)
-# get columns that contain Metadata
-metadata_columns = [col for col in cp_feature_data.columns if "Metadata" in col]
-metadata_df = cp_feature_data[metadata_columns]
-# get columns that contain Features
-feature_df = cp_feature_data.drop(columns=metadata_columns)
-# show all columns
-metadata_df.head()
-
-
-# This cell is not run as it takes a long time to run...
-
-# In[4]:
+# In[ ]:
 
 
 def get_crop_counts(list_of_counts: List[Tuple[int, int, int]]) -> Tuple[int, int, int]:
@@ -92,16 +59,13 @@ def get_crop_counts(list_of_counts: List[Tuple[int, int, int]]) -> Tuple[int, in
     return (total_ommited, total_sucessful, total_total)
 
 
-# In[5]:
-
-
 def crop_image(
     i: int,
     image_path: str,
     radius: int = 50,
     add_channels: Optional[bool] = False,
     total_channels: int = 5,
-) -> None:
+) -> Tuple[int, int, int]:
     """
 
     Crop the image based on the metadata and save the cropped image to disk
@@ -120,10 +84,11 @@ def crop_image(
 
     Returns
     -------
-    None
+    Tuple[int, int, int]
+        A tuple containing the counts of omitted crops, successful crops and total crops
     """
-    sucessful_count = 0
-    ommited_count = 0
+    successful_count = 0
+    omitted_count = 0
     total_count = 1
     image_information_df = metadata_df.copy().iloc[i]
 
@@ -172,7 +137,7 @@ def crop_image(
     # This ensures that all crops are the same dimensions and can be used in the model
     if image_DNA_crop.shape[0] < radius * 2 or image_DNA_crop.shape[1] < radius * 2:
         ommited_count = 1
-        return (ommited_count, sucessful_count, total_count)
+        return (omitted_count, successful_count, total_count)
     # merge the channels to a single image
     image_merge = np.stack(
         [image_DNA_crop, image_488_1_crop, image_488_2_crop, image_561_crop], axis=-1
@@ -197,13 +162,46 @@ def crop_image(
     image_save_path = pathlib.Path(image_save_path / file_name)
     if os.path.exists(image_save_path):
         sucessful_count = 1
-        return (ommited_count, sucessful_count, total_count)
+        return (omitted_count, successful_count, total_count)
     tiff.imwrite(image_save_path, image_merge)
-    sucessful_count = 1
-    return (ommited_count, sucessful_count, total_count)
+    successful_count = 1
+    return (omitted_count, successful_count, total_count)
 
 
-# In[6]:
+# ## Import paths
+
+# In[3]:
+
+
+# set the path to the data directory
+data_file_dir = pathlib.Path(
+    "../../../5.process_CP_features/data/4.normalized_data/profiles/normalized_profile.parquet"
+).resolve(strict=True)
+
+# read in the data
+cp_feature_data = pd.read_parquet(data_file_dir)
+# print the data
+print(cp_feature_data.shape)
+cp_feature_data.head()
+
+
+# In[4]:
+
+
+well_fov = cp_feature_data["Metadata_Well"] + "_F" + cp_feature_data["Metadata_FOV"]
+cp_feature_data.insert(0, "Metadata_Well_FOV", well_fov)
+# get columns that contain Metadata
+metadata_columns = [col for col in cp_feature_data.columns if "Metadata" in col]
+metadata_df = cp_feature_data[metadata_columns]
+# get columns that contain Features
+feature_df = cp_feature_data.drop(columns=metadata_columns)
+# show all columns
+metadata_df.head()
+
+
+# This cell is not run as it takes a long time to run...
+
+# In[ ]:
 
 
 image_path = pathlib.Path(
@@ -212,7 +210,7 @@ image_path = pathlib.Path(
 radius = 50
 
 
-# In[7]:
+# In[ ]:
 
 
 # set the number of processes to use
