@@ -24,7 +24,7 @@ scdino_features = pathlib.Path(
 ).resolve(strict=True)
 
 # set the output path
-output_path = pathlib.Path("../data/CP_scDINO_features/combined_data.parquet").resolve()
+output_path = pathlib.Path("../data/CP_scDINO_features/combined_CP_scDINO_data.parquet").resolve()
 
 # make the parent directory
 output_path.parent.mkdir(parents=True, exist_ok=True)
