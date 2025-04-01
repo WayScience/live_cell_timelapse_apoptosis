@@ -15,12 +15,12 @@ from pycytominer.cyto_utils import output
 
 # set path to normalized data
 normalized_data_path = pathlib.Path(
-    "../data/CP_scDINO_features/combined_norm_data.parquet"
+    "../data/CP_scDINO_features/combined_CP_scDINO_norm.parquet"
 ).resolve(strict=True)
 
 # set the outout file path
 feature_selected_output_file_path = pathlib.Path(
-    "../data/CP_scDINO_features/combined_norm_fs_data.parquet"
+    "../data/CP_scDINO_features/combined_CP_scDINO_norm_fs.parquet"
 ).resolve()
 
 # read in the normalized data

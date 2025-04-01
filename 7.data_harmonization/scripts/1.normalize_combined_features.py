@@ -16,12 +16,12 @@ from pycytominer.cyto_utils import output
 # set path to data
 
 combined_data_path = pathlib.Path(
-    "../data/CP_scDINO_features/combined_data.parquet"
+    "../data/CP_scDINO_features/combined_CP_scDINO_data.parquet"
 ).resolve(strict=True)
 
 # set output path
 normalized_data_output_path = pathlib.Path(
-    "../data/CP_scDINO_features/combined_norm_data.parquet"
+    "../data/CP_scDINO_features/combined_CP_scDINO_norm.parquet"
 ).resolve()
 
 # load data
@@ -42,7 +42,7 @@ metadata_features = combined_data.columns[
 feature_columns = combined_data.columns.difference(metadata_features).to_list()
 
 
-# In[5]:
+# In[4]:
 
 
 # Normalize the single cell data per time point
