@@ -139,9 +139,9 @@ rule extract_labels:
     resources:
         gpus = config['compute_cls_features']['num_gpus'],
         mem_mb = 4000,
-        cores = 4,
+        cores = 1,
     shell:
-        'python -m torch.distributed.launch --nproc_per_node {params.num_gpus} pyscripts/extract_image_labels.py --selected_channels {params.selected_channel_indices} --pretrained_weights {input.path_to_model} --parse_params """{params.script_params}"""'
+        'python pyscripts/extract_image_labels.py --selected_channels {params.selected_channel_indices} --pretrained_weights {input.path_to_model} --parse_params """{params.script_params}"""'
 
 rule compute_CLS_features:
     input:
@@ -158,4 +158,4 @@ rule compute_CLS_features:
         mem_mb = config['compute_cls_features']['num_workers']*4000,
         cores = config['compute_cls_features']['num_workers']
     shell:
-        'python -m torch.distributed.launch --nproc_per_node {params.num_gpus} pyscripts/compute_CLS_features.py --selected_channels {params.selected_channel_indices} --pretrained_weights {input.path_to_model} --norm_per_channel """{params.norm_per_channel}""" --parse_params """{params.script_params}"""'
+        'python pyscripts/compute_CLS_features.py --selected_channels {params.selected_channel_indices} --pretrained_weights {input.path_to_model} --norm_per_channel """{params.norm_per_channel}""" --parse_params """{params.script_params}"""'

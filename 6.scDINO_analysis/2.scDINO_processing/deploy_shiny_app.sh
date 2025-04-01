@@ -9,14 +9,14 @@ conda activate R_timelapse_env
 jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*.ipynb
 
 # move to the scripts directory
-cd scripts/
+cd scripts/ || exit
 
 # run the deployment script
 echo "Deploying the shiny app"
 Rscript 4.deploy_shiny_app.r
 
 # move back to the main directory
-cd ..
+cd .. || exit
 
 # deactivate the conda environment
 conda deactivate

@@ -27,6 +27,9 @@ shiny_output_path = pathlib.Path(
     "../temporal_shiny_app/CLS_features_annotated_umap.csv"
 ).resolve()
 
+output_path.parent.mkdir(parents=True, exist_ok=True)
+shiny_output_path.parent.mkdir(parents=True, exist_ok=True)
+
 
 # In[3]:
 
