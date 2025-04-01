@@ -75,6 +75,7 @@ data/processed_images/*
 3c.segment_cells/tmp_output/*
 !3c.segment_cells/figures/C-02_F0001_tracks.gif
 
+
 # cytomining results
 5.process_CP_features/data/
 5.process_CP_features/one_off_analysis_computational_requirments_for_fs/results_of_memory_profiling/*
