@@ -102,8 +102,9 @@ data/processed_images/**
 
 # Cluster files
 *alpine_std_out_std_err-*
-
 4.cell_tracking/results/*
+4.cell_tracking/figures/*
+6.scDINO_analysis/0.pre-process_images/data/*
 
 
 

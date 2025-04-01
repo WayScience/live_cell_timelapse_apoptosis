@@ -15,12 +15,12 @@ from pycytominer.cyto_utils import output
 
 # set path to normalized data
 normalized_data_path = pathlib.Path(
-    "../data/20231017ChromaLive_6hr_4ch_MaxIP_normalized_combined_data.parquet"
+    "../data/CP_scDINO_features/combined_CP_scDINO_norm.parquet"
 ).resolve(strict=True)
 
 # set the outout file path
 feature_selected_output_file_path = pathlib.Path(
-    "../data/20231017ChromaLive_6hr_4ch_MaxIP_normalized_combined_data_feature_selected.parquet"
+    "../data/CP_scDINO_features/combined_CP_scDINO_norm_fs.parquet"
 ).resolve()
 
 # read in the normalized data
@@ -54,12 +54,6 @@ feature_columns = normalized_data.columns.difference(metadata_features).to_list(
 
 
 manual_block_list = [
-    "Nuclei_TrackObjects_Displacement_50",
-    "Nuclei_TrackObjects_DistanceTraveled_50",
-    "Nuclei_TrackObjects_IntegratedDistance_50",
-    "Nuclei_TrackObjects_Label_50",
-    "Nuclei_TrackObjects_Linearity_50",
-    "Nuclei_TrackObjects_ParentObjectNumber_50",
     "Nuclei_AreaShape_BoundingBoxArea",
     "Nuclei_AreaShape_BoundingBoxMinimum_X",
     "Cells_AreaShape_BoundingBoxArea",
@@ -86,7 +80,7 @@ output(
     output_filename=feature_selected_output_file_path,
     output_type="parquet",
 )
-print(f"Features have been selected!")
+print("Features have been selected!")
 # check to see if the shape of the df has changed indicating feature selection occurred
 print(normalized_data.shape)
 print(feature_select_df.shape)
