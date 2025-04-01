@@ -158,6 +158,9 @@ normalized_df = normalize(
     features=feature_columns,
     meta_features=metadata_columns,
 )
+normalized_df = normalized_df.drop_duplicates()
+normalized_df = normalized_df.reset_index(drop=True)
+normalized_df.to_parquet(normalized_data_dir, index=False)
 
 
 # ## Feature selection
@@ -184,4 +187,8 @@ feature_select_df = feature_select(
 
 print(f"Number of features before feature selection: {normalized_df.shape[1]}")
 print(f"Number of features after feature selection: {feature_select_df.shape[1]}")
+feature_select_df.to_parquet(
+    feature_selected_data_dir,
+    index=False,
+)
 feature_select_df.head()
