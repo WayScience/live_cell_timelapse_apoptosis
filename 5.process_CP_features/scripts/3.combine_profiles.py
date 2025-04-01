@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Normalize annotated single cells using negative control
+# # Combine annotated tracked profiles into one parquet file
 
 # ## Import libraries
 
