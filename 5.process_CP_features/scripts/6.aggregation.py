@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Perform feature selection on normalized data
+# # Aggregate feature selected profiles
 
 # ## Import libraries
 
