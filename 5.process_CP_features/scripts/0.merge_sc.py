@@ -6,8 +6,8 @@
 # In[1]:
 
 
+import argparse
 import pathlib
-import pprint
 import sys
 
 import pandas as pd
@@ -17,6 +17,14 @@ sys.path.append("../../utils")
 import sc_extraction_utils as sc_utils
 from parsl.config import Config
 from parsl.executors import HighThroughputExecutor
+
+# check if in a jupyter notebook
+try:
+    cfg = get_ipython().config
+    in_notebook = True
+except NameError:
+    in_notebook = False
+
 
 # ## Set paths and variables
 #
@@ -29,10 +37,29 @@ from parsl.executors import HighThroughputExecutor
 dest_datatype = "parquet"
 
 # s1lite directory
-source_dir = pathlib.Path("../../4.cellprofiler_analysis/analysis_output")
+source_dir = pathlib.Path("../../4.cellprofiler_analysis/analysis_output/").resolve(
+    strict=True
+)
 # directory where parquet files are saved to
-output_dir = pathlib.Path("../data/converted_data")
+output_dir = pathlib.Path("../data/0.converted_data")
 output_dir.mkdir(exist_ok=True, parents=True)
+
+if not in_notebook:
+    print("Running as script")
+    # set up arg parser
+    parser = argparse.ArgumentParser(description="Single cell extraction")
+
+    parser.add_argument(
+        "--well_fov",
+        type=str,
+        help="Path to the input directory containing the tiff images",
+    )
+
+    args = parser.parse_args()
+    well_fov = args.well_fov
+else:
+    print("Running in a notebook")
+    well_fov = "E-05_F0003"
 
 
 # ## set config joins for each preset
@@ -42,21 +69,33 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 # preset configurations based on typical CellProfiler outputs
 preset = "cellprofiler_sqlite_pycytominer"
-# remove Image_Metadata_Plate from SELECT as this metadata was not extracted from file names
-# add Image_Metadata_Site as this is an important metadata when finding where single cells are located
-presets.config["cellprofiler_sqlite_pycytominer"][
-    "CONFIG_JOINS"
-    # create filtered list of image features to be extracted and used for merging tables
-    # with the list of image features, this will merge the objects together using the image number,
-    # and parent objects to create all single cells (all objects associated to one cell)
-] = """WITH Per_Image_Filtered AS (
+
+
+# In[4]:
+
+
+dict_of_inputs = {
+    "20231017ChromaLive_6hr_4ch_MaxIP": {
+        "source_path": pathlib.Path(
+            f"{source_dir}/timelapse/{well_fov}/timelapse_4ch_analysis.sqlite"
+        ).resolve(strict=True),
+        "dest_path": pathlib.Path(
+            f"{output_dir}/timelapse/{well_fov}.parquet"
+        ).resolve(),
+        "preset": """WITH Per_Image_Filtered AS (
                 SELECT
                     Metadata_ImageNumber,
                     Image_Metadata_Well,
                     Image_Metadata_FOV,
                     Image_Metadata_Time,
-                    Image_PathName_AnnexinV,
-                    Image_PathName_DNA
+                    Image_PathName_CL_488_1
+                    Image_PathName_CL_488_2,
+                    Image_PathName_CL_561,
+                    Image_FileName_CL_488_1,
+                    Image_FileName_CL_488_2,
+                    Image_FileName_CL_561,
+                    Image_FileName_DNA,
+
                 FROM
                     read_parquet('per_image.parquet')
                 )
@@ -72,58 +111,14 @@ presets.config["cellprofiler_sqlite_pycytominer"][
             LEFT JOIN read_parquet('per_nuclei.parquet') AS per_nuclei ON
                 per_nuclei.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
                 AND per_nuclei.Metadata_Nuclei_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Nuclei
-                """
-
-
-# In[4]:
-
-
-dict_of_inputs = {
-    # commented out for now - keeping for the full run though!
-    # "run_20231004ChromaLive_6hr_4ch_MaxIP": {
-    #     "source_path": pathlib.Path(
-    #         f"{source_dir}/20231017ChromaLive_6hr_4ch_MaxIP/timelapse_4ch_analysis.sqlite"
-    #     ).resolve(),
-    #     "dest_path": pathlib.Path(
-    #         f"{output_dir}/20231017ChromaLive_6hr_4ch_MaxIP.parquet"
-    #     ).resolve(),
-    #     "preset": """WITH Per_Image_Filtered AS (
-    #             SELECT
-    #                 Metadata_ImageNumber,
-    #                 Image_Metadata_Well,
-    #                 Image_Metadata_FOV,
-    #                 Image_Metadata_Time,
-    #                 Image_PathName_CL_488_1
-    #                 Image_PathName_CL_488_2,
-    #                 Image_PathName_CL_561,
-    #                 Image_PathName_mask,
-    #                 Image_FileName_CL_488_1,
-    #                 Image_FileName_CL_488_2,
-    #                 Image_FileName_CL_561,
-    #                 Image_FileName_DNA,
-    #             FROM
-    #                 read_parquet('per_image.parquet')
-    #             )
-    #         SELECT
-    #             *
-    #         FROM
-    #             Per_Image_Filtered AS per_image
-    #         LEFT JOIN read_parquet('per_cytoplasm.parquet') AS per_cytoplasm ON
-    #             per_cytoplasm.Metadata_ImageNumber = per_image.Metadata_ImageNumber
-    #         LEFT JOIN read_parquet('per_cells.parquet') AS per_cells ON
-    #             per_cells.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
-    #             AND per_cells.Metadata_Cells_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Cells
-    #         LEFT JOIN read_parquet('per_nuclei.parquet') AS per_nuclei ON
-    #             per_nuclei.Metadata_ImageNumber = per_cytoplasm.Metadata_ImageNumber
-    #             AND per_nuclei.Metadata_Nuclei_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Nuclei
-    #             """,
-    # },
-    "20231017ChromaLive_6hr_4ch_MaxIP_test_small": {
+                """,
+    },
+    "20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
         "source_path": pathlib.Path(
-            f"{source_dir}/20231017ChromaLive_6hr_4ch_MaxIP_test_small/timelapse_4ch_analysis.sqlite"
+            f"{source_dir}/endpoint/{well_fov}/timelapse_2ch_analysis.sqlite"
         ).resolve(),
         "dest_path": pathlib.Path(
-            f"{output_dir}/20231017ChromaLive_6hr_4ch_MaxIP.parquet"
+            f"{output_dir}/endpoint/{well_fov}.parquet"
         ).resolve(),
         "preset": """WITH Per_Image_Filtered AS (
                 SELECT
@@ -131,15 +126,10 @@ dict_of_inputs = {
                     Image_Metadata_Well,
                     Image_Metadata_FOV,
                     Image_Metadata_Time,
-                    Image_PathName_CL_488_1
-                    Image_PathName_CL_488_2,
-                    Image_PathName_CL_561,
-                    Image_PathName_mask,
-                    Image_FileName_CL_488_1,
-                    Image_FileName_CL_488_2,
-                    Image_FileName_CL_561,
-                    Image_FileName_DNA,
-
+                    Image_PathName_AnnexinV,
+                    Image_PathName_DNA,
+                    Image_FileName_AnnexinV,
+                    Image_FileName_DNA
 
 
                 FROM
@@ -159,12 +149,12 @@ dict_of_inputs = {
                 AND per_nuclei.Metadata_Nuclei_Number_Object_Number = per_cytoplasm.Metadata_Cytoplasm_Parent_Nuclei
                 """,
     },
-    "20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small": {
+    "20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_whole_image": {
         "source_path": pathlib.Path(
-            f"{source_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_test_small/timelapse_2ch_analysis.sqlite"
+            f"{source_dir}/endpoint/{well_fov}/timelapse_2ch_analysis.sqlite"
         ).resolve(),
         "dest_path": pathlib.Path(
-            f"{output_dir}/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP.parquet"
+            f"{output_dir}/endpoint/{well_fov}_whole_image.parquet"
         ).resolve(),
         "preset": """WITH Per_Image_Filtered AS (
                 SELECT
@@ -197,9 +187,6 @@ dict_of_inputs = {
     },
 }
 
-# view the dictionary to assess that all info is added correctly
-pprint.pprint(dict_of_inputs, indent=4)
-
 
 # ## Convert SQLite file and merge single cells into parquet file
 #
@@ -217,32 +204,34 @@ for sqlite_file, info in dict_of_inputs.items():
     print(f"Source path: {source_path}")
     print(f"Destination path: {dest_path}")
     # merge single cells and output as parquet file
-    convert(
-        source_path=source_path,
-        dest_path=dest_path,
-        dest_datatype=dest_datatype,
-        preset=preset,
-        parsl_config=Config(
-            executors=[HighThroughputExecutor()],
-        ),
-        chunk_size=10000,
-    )
-    print(f"Merged and converted {pathlib.Path(dest_path).name}!")
-    df = pd.read_parquet(dest_path)
-    print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
-    # add single cell count per well as metadata column to parquet file and save back to same path
-    sc_utils.add_sc_count_metadata_file(
-        data_path=dest_path,
-        well_column_name="Metadata_ImageNumber",
-        file_type="parquet",
-    )
-    # read the parquet file to check if metadata was added
-    df1 = pd.read_parquet(dest_path)
-    print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
-    print(f"Added single cell count as metadata to {pathlib.Path(dest_path).name}!")
+    try:
+        convert(
+            source_path=source_path,
+            dest_path=dest_path,
+            dest_datatype=dest_datatype,
+            preset=preset,
+            parsl_config=Config(
+                executors=[HighThroughputExecutor()],
+            ),
+            chunk_size=10000,
+        )
 
+        print(f"Merged and converted {pathlib.Path(dest_path).name}!")
+        df = pd.read_parquet(dest_path)
+        print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
+        # add single cell count per well as metadata column to parquet file and save back to same path
+        sc_utils.add_sc_count_metadata_file(
+            data_path=dest_path,
+            well_column_name="Metadata_ImageNumber",
+            file_type="parquet",
+        )
 
-# In[6]:
-
-
-df1.head()
+        # read the parquet file to check if metadata was added
+        df1 = pd.read_parquet(dest_path)
+        print(f"Shape of {pathlib.Path(dest_path).name}: {df.shape}")
+        print(f"Added single cell count as metadata to {pathlib.Path(dest_path).name}!")
+    except Exception as e:
+        print(f"Error in merging and converting {sqlite_file}!")
+        print("Probably due to no objects recorded in the sqlite file")
+        print(e)
+        continue
