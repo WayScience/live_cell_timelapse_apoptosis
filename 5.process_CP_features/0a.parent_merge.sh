@@ -10,9 +10,6 @@ module load miniforge
 conda init bash
 conda activate cellprofiler_timelapse_env
 
-
-
-
 well_fovs_dir="../4.cellprofiler_analysis/well_fov_loading/well_fov_dirs.csv"
 
 mapfile -t well_fovs < "$well_fovs_dir"

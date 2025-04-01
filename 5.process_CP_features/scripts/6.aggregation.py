@@ -40,30 +40,7 @@ paths_dict = {
 }
 
 
-# ## Perform feature selection
-
-# In[3]:
-
-
-# define operations to be performed on the data
-# list of operations for feature select function to use on input profile
-feature_select_ops = [
-    "variance_threshold",
-    "blocklist",
-    "drop_na_columns",
-    "correlation_threshold",
-]
-
-
-# In[4]:
-
-
-manual_block_list = [
-    "Nuclei_AreaShape_BoundingBoxArea",
-    "Nuclei_AreaShape_BoundingBoxMinimum_X",
-    "Cells_AreaShape_BoundingBoxArea",
-]
-
+# ## Perform aggregation
 
 # In[5]:
 

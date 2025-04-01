@@ -56,7 +56,7 @@ if not in_notebook:
     well_fov = args.well_fov
 else:
     print("Running in a notebook")
-    well_fov = "E-05_F0003"
+    well_fov = "C-02_F0003"
 
 
 # In[3]:
@@ -95,10 +95,7 @@ dict_of_inputs = {
 
 
 single_cell_df = pd.read_parquet(f"{data_dir}/timelapse/{well_fov}.parquet")
-single_cell_df
-
-
-# In[ ]:
+single_cell_df.head()
 
 
 # In[5]:
@@ -164,6 +161,3 @@ for data_run, info in dict_of_inputs.items():
     print(annotated_df.shape)
     annotated_df.head()
 del annotated_df
-
-
-# In[ ]:

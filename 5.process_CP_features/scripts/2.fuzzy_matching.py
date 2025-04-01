@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import argparse
@@ -29,7 +29,7 @@ except NameError:
 
 # ## Set paths and variables
 
-# In[ ]:
+# In[2]:
 
 
 # load in platemap file as a pandas dataframe
@@ -78,7 +78,6 @@ profiles = pathlib.Path(
 tracks = pd.read_parquet(tracks)
 profiles = pd.read_parquet(
     profiles,
-    # columns=["Metadata_Time", "Nuclei_AreaShape_Center_X", "Nuclei_AreaShape_Center_Y","Metadata_compound","Metadata_dose"]
 )
 # prepend Metadata_ to the tracks columns
 tracks.columns = ["Metadata_" + str(col) for col in tracks.columns]
@@ -91,7 +90,7 @@ profiles["Metadata_Time"] = profiles["Metadata_Time"].astype(float)
 profiles["Metadata_Time"] = profiles["Metadata_Time"] - 1
 
 
-# In[ ]:
+# In[4]:
 
 
 coordinate_column_left = "Metadata_coordinates"
@@ -105,7 +104,7 @@ total_annotated_cells = 0  # total number of cells that were annotated
 distances = []  # list to store the distances between the coordinates
 
 
-# In[ ]:
+# In[5]:
 
 
 for time in profiles["Metadata_Time"].unique():
@@ -161,7 +160,7 @@ merged_df.to_parquet(profiles_output_dir / f"{well_fov}_annotated_tracks.parquet
 merged_df.head()
 
 
-# In[ ]:
+# In[6]:
 
 
 # get the number of tracks for each track length
@@ -180,7 +179,7 @@ list_of_track_lengths_df.to_parquet(
 )
 
 
-# In[ ]:
+# In[7]:
 
 
 well_fov_stats_df = pd.DataFrame(

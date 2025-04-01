@@ -235,6 +235,3 @@ for sqlite_file, info in dict_of_inputs.items():
         print("Probably due to no objects recorded in the sqlite file")
         print(e)
         continue
-
-
-# In[ ]:
