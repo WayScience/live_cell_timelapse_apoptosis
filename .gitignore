@@ -67,7 +67,6 @@ data/processed_images/*
 3b.run_sam/sam2_processing_dir/*
 3b.run_sam/stardist_processing_dir/*
 
-
 4.cell_tracking/figures/*
 4.cell_tracking/results/*
 
@@ -86,6 +85,7 @@ data/processed_images/*
 6.scDINO_analysis/1.scDINO_run/.snakemake
 6.scDINO_analysis/1.scDINO_run/logs
 6.scDINO_analysis/0.pre-process_images/data/*
+
 # temporal shiny app
 6.scDINO_analysis/2.scDINO_processing/temporal_shiny_app
 6.scDINO_analysis/2.scDINO_processing/notebooks/4.deploy_shiny_app.ipynb
@@ -103,10 +103,12 @@ data/processed_images/**
 
 # Cluster files
 *alpine_std_out_std_err-*
+4.cell_tracking/results/*
+4.cell_tracking/figures/*
+6.scDINO_analysis/0.pre-process_images/data/*
 
 
 
-
-
-
-
+4.cell_tracking/figures/*
+# keep one example of the figures
+!4.cell_tracking/figures/C-02_F0003_tracks.gif
