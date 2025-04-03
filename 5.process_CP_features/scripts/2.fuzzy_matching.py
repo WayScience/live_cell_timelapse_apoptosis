@@ -65,7 +65,7 @@ else:
     well_fov = "C-02_F0001"
 
 
-# In[ ]:
+# In[3]:
 
 
 tracks = pathlib.Path(
@@ -107,13 +107,20 @@ distances = []  # list to store the distances between the coordinates
 # In[5]:
 
 
+tracked_cells_stats = {
+    "Metadata_time": [],
+    "total_CP_cells": [],
+    "total_annotated_cells": [],
+}
 for time in profiles["Metadata_Time"].unique():
     df_left = profiles.copy().loc[profiles["Metadata_Time"] == time]
     df_right = tracks.copy().loc[tracks["Metadata_t"] == time]
 
     total_CP_cells += df_left.shape[0]
+
     # loop through the rows in the subset_annotated_df and find the closest coordinate set in the location metadata
     for index1, row1 in df_left.iterrows():
+        tracked_cells_stats["total_CP_cells"].append(1)
         dist = np.inf
         for index2, row2 in df_right.iterrows():
             coord1 = row1[coordinate_column_left]
@@ -141,7 +148,12 @@ for time in profiles["Metadata_Time"].unique():
             )
             distances.append(dist)
             total_annotated_cells += temp_merged_df.shape[0]
+            tracked_cells_stats["Metadata_time"].append(time)
+            tracked_cells_stats["total_annotated_cells"].append(1)
             merged_df_list.append(temp_merged_df)
+        else:
+            tracked_cells_stats["Metadata_time"].append(time)
+            tracked_cells_stats["total_annotated_cells"].append(0)
 if len(merged_df_list) == 0:
     merged_df_list.append(pd.DataFrame())
 merged_df = pd.concat(merged_df_list)
@@ -182,14 +194,17 @@ list_of_track_lengths_df.to_parquet(
 # In[7]:
 
 
-well_fov_stats_df = pd.DataFrame(
-    {
-        "well_fov": [well_fov],
-        "total_CP_cells": [total_CP_cells],
-        "total_annotated_cells": [total_annotated_cells],
-        "percentage_annotated_cells": [total_annotated_cells / total_CP_cells * 100],
-    }
+tracked_cells_stats_df = pd.DataFrame(tracked_cells_stats)
+tracked_cells_stats_df["well_fov"] = well_fov
+tracked_cells_stats_df
+# get the number of cells for each time point
+tracked_cells_stats_df = (
+    tracked_cells_stats_df.groupby(["Metadata_time", "well_fov"]).sum().reset_index()
 )
-well_fov_stats_df
+
+
+# In[8]:
+
+
 # save the stats to a parquet file
-well_fov_stats_df.to_parquet(stats_output_dir / f"{well_fov}_stats.parquet")
+tracked_cells_stats_df.to_parquet(stats_output_dir / f"{well_fov}_stats.parquet")
