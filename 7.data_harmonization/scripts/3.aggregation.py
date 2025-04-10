@@ -8,7 +8,6 @@
 # In[1]:
 
 
-import gc
 import pathlib
 
 import pandas as pd
