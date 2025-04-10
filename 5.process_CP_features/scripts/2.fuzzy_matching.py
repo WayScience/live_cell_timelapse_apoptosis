@@ -196,7 +196,6 @@ list_of_track_lengths_df.to_parquet(
 
 tracked_cells_stats_df = pd.DataFrame(tracked_cells_stats)
 tracked_cells_stats_df["well_fov"] = well_fov
-tracked_cells_stats_df
 # get the number of cells for each time point
 tracked_cells_stats_df = (
     tracked_cells_stats_df.groupby(["Metadata_time", "well_fov"]).sum().reset_index()
