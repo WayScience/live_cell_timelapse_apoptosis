@@ -104,13 +104,13 @@ total_annotated_cells = 0  # total number of cells that were annotated
 distances = []  # list to store the distances between the coordinates
 
 
-# In[5]:
+# In[ ]:
 
 
 tracked_cells_stats = {
-    "Metadata_time": [],
-    "total_CP_cells": [],
-    "total_annotated_cells": [],
+    "Metadata_time": [],  # timepoint of the cell
+    "total_CP_cells": [],  # total number of cells segmented
+    "total_annotated_cells": [],  # total number of cells tracked
 }
 for time in profiles["Metadata_Time"].unique():
     df_left = profiles.copy().loc[profiles["Metadata_Time"] == time]
@@ -120,6 +120,8 @@ for time in profiles["Metadata_Time"].unique():
 
     # loop through the rows in the subset_annotated_df and find the closest coordinate set in the location metadata
     for index1, row1 in df_left.iterrows():
+        # appends 1 for the total number of cells segmented
+        # after the loop, the total number of cells segmented is the sum of all the 1s in the list
         tracked_cells_stats["total_CP_cells"].append(1)
         dist = np.inf
         for index2, row2 in df_right.iterrows():
@@ -149,10 +151,12 @@ for time in profiles["Metadata_Time"].unique():
             distances.append(dist)
             total_annotated_cells += temp_merged_df.shape[0]
             tracked_cells_stats["Metadata_time"].append(time)
+            # if the cell is tracked and annotated, append 1 to the total number of cells annotated
             tracked_cells_stats["total_annotated_cells"].append(1)
             merged_df_list.append(temp_merged_df)
         else:
             tracked_cells_stats["Metadata_time"].append(time)
+            # if the cell is not tracked and annotated, append 0 to the total number of cells annotated
             tracked_cells_stats["total_annotated_cells"].append(0)
 if len(merged_df_list) == 0:
     merged_df_list.append(pd.DataFrame())
@@ -191,9 +195,10 @@ list_of_track_lengths_df.to_parquet(
 )
 
 
-# In[7]:
+# In[ ]:
 
 
+# save the tracked cells stats to a parquet file
 tracked_cells_stats_df = pd.DataFrame(tracked_cells_stats)
 tracked_cells_stats_df["well_fov"] = well_fov
 # get the number of cells for each time point
