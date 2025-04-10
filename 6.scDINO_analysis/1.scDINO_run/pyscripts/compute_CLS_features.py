@@ -318,6 +318,12 @@ def extract_features(model, data_loader, use_cuda=True, multiscale=False):
 
 
 if __name__ == "__main__":
+
+    print("CUDA Available:", torch.cuda.is_available())
+    if torch.cuda.is_available():
+        print("Device Name:", torch.cuda.get_device_name(0))
+        print("CUDA Version:", torch.version.cuda)
+
     parser = argparse.ArgumentParser("Computation of CLS features")
     # computation settings
     parser.add_argument("--name_of_run", default="/recent_run", type=str)
@@ -358,6 +364,12 @@ if __name__ == "__main__":
         type=str,
         help="""url used to set up
         distributed training; see https://pytorch.org/docs/stable/distributed.html""",
+    )
+    parser.add_argument(
+        "--local-rank",
+        default=0,
+        type=int,
+        help="Please ignore and do not set this argument.",
     )
     parser.add_argument(
         "--local_rank",
@@ -492,6 +504,7 @@ if __name__ == "__main__":
     # save settings
     parser.add_argument("--output_dir", default=".", type=str)
     args = parser.parse_args()
+    print(torch.cuda.device_count())
 
     if args.parse_params:
         t_args = argparse.Namespace()

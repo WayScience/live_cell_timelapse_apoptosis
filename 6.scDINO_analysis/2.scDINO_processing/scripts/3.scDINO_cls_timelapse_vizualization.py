@@ -32,9 +32,9 @@ CLS_features_umap.head()
 # In[3]:
 
 
-# set the unique wells
-unique_doeses = CLS_features_umap["Metadata_dose"].unique()
-unique_doeses
+# sort the data by time
+CLS_features_umap = CLS_features_umap.sort_values(by="Metadata_Time")
+unique_doses = CLS_features_umap["Metadata_dose"].unique()
 
 
 # In[4]:
@@ -48,10 +48,14 @@ interval = 1000 / fps
 print(f"Interval: {interval}")
 
 
-# In[5]:
+# In[ ]:
 
 
-for dose in unique_doeses:
+# this loop will create a gif for each dose
+# and save it to the output path
+# the gifs will be named Staurosporine_XXXnM.gif
+# where XXX is the dose
+for dose in unique_doses:
     fig, ax = plt.subplots(figsize=(6, 6))
 
     tmp_df = CLS_features_umap[CLS_features_umap["Metadata_dose"] == dose]
@@ -96,6 +100,6 @@ for dose in unique_doeses:
 
 
 # Display the animations
-for dose in unique_doeses:
+for dose in unique_doses:
     with open(f"{output_path}/Staurosporine_{dose}nM.gif", "rb") as f:
         display(Image(f.read()))

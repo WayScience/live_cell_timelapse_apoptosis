@@ -3,8 +3,10 @@ name: scDINO_env
 channels:
   - defaults
   - conda-forge
+  - nvidia
+  - pytorch
 dependencies:
-  - python=3.8 # need to be 3.8 for scDINO
+  - python=3.8 # needs to be 3.8 for scDINO
   - pip
   - pyarrow
   - imageio
@@ -17,12 +19,16 @@ dependencies:
   - Pillow
   - pandas=1.5.0
   - PyYAML
-  - pytorch
   - scikit-image
   - scikit-learn
   - seaborn
   - torchvision
   - umap-learn
+  - nvidia/label/cuda-11.8.0::cuda-toolkit # needs to be 11.8 for pytorch 1.8.1
+  # - nvidia/label/cuda-11.8::cuda-nvcc
+  # - nvidia/label/cuda-11.8::libcufile
+  - pytorch-cuda=11.8
+
   - pip:
     - catalyst
     - topo
@@ -30,3 +36,5 @@ dependencies:
     - tifffile
     - snakemake==7.20.0
     - pulp<2.8
+    - torch --index-url https://download.pytorch.org/whl/cu118 #1.8.1
+    - torchvision== --index-url https://download.pytorch.org/whl/cu118 # 0.9.1

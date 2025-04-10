@@ -1,0 +1,32 @@
+name: cell_tracking_env
+
+channels:
+- conda-forge
+- anaconda
+- pytorch
+
+dependencies:
+- conda-forge::python=3.10
+- conda-forge::ipykernel
+- conda-forge::jupyterlab
+- conda-forge::nbconvert=6.4.4
+- conda-forge::pip
+- conda-forge::numpy
+- conda-forge::pyyaml
+- conda-forge::matplotlib
+- conda-forge::seaborn
+- conda-forge::pandas
+- conda-forge::scikit-image
+- conda-forge::scikit-learn
+- conda-forge::optuna
+- pytorch
+- conda-forge::optuna-dashboard
+- conda-forge::lancedb
+- cudatoolkit
+- conda-forge::plotly
+- pip:
+    - tensorflow
+    - fuzzymatcher
+    - ultrack
+    - napari
+

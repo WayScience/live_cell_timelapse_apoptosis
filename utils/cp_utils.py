@@ -87,7 +87,7 @@ def run_cellprofiler(
 
         # a log file is created for each plate or data set name that holds all outputs and errors
         with open(
-            pathlib.Path(f"logs/cellprofiler_output.log"),
+            pathlib.Path("logs/cellprofiler_output.log"),
             "w",
         ) as cellprofiler_output_file:
             # run CellProfiler pipeline
