@@ -93,7 +93,7 @@ RelateObjects:[module_num:5|svn_version:'Unknown'|variable_revision_number:5|sho
     Name the output object:RelateObjects
     Parent name:None
 
-IdentifyTertiaryObjects:[module_num:6|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['The parameters are the same as the analysis pipeline for 3 channels.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+IdentifyTertiaryObjects:[module_num:6|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['The parameters are the same as the analysis pipeline for 2 channels.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select the larger identified objects:Cells
     Select the smaller identified objects:Nuclei
     Name the tertiary objects to be identified:Cytoplasm

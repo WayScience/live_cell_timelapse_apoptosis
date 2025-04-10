@@ -19,3 +19,6 @@ Pop!_OS 22.04 LTS x86_64
 ```bash
 sbatch run_cellprofiler_parent_HPC.sh
 ```
+
+The HPC cluster is a SLURM scheduler. The script `run_cellprofiler_parent_HPC.sh` will submit the job to the queue and run the analysis pipeline on the cluster.
+The script submits a single job for each FOV to run in parallel.

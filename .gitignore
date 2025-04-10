@@ -94,7 +94,7 @@ data/processed_images/**
 4.cell_tracking/figures/*
 4.cell_tracking/results/*
 
-
+6.scDINO_analysis/0.pre-process_images/data/*
 
 
 
