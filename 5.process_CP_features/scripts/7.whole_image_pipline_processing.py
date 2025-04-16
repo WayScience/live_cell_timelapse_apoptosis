@@ -16,7 +16,7 @@ import seaborn as sns
 from cytotable import convert, presets
 from parsl.config import Config
 from parsl.executors import HighThroughputExecutor
-from pycytominer import annotate, feature_select, normalize
+from pycytominer import aggregate, annotate, feature_select, normalize
 from pycytominer.cyto_utils import output
 
 try:
@@ -54,6 +54,9 @@ normalized_data_dir = pathlib.Path(
 ).resolve()
 feature_selected_data_dir = pathlib.Path(
     output_dir, "feature_selected_whole_image.parquet"
+).resolve()
+aggregated_data_dir = pathlib.Path(
+    output_dir, "aggregated_whole_image.parquet"
 ).resolve()
 
 
@@ -192,3 +195,28 @@ feature_select_df.to_parquet(
     index=False,
 )
 feature_select_df.head()
+
+
+# ## Aggregation
+
+# In[11]:
+
+
+metadata_cols = feature_select_df.columns[
+    feature_select_df.columns.str.contains("Metadata")
+]
+feature_cols = feature_select_df.columns[
+    ~feature_select_df.columns.str.contains("Metadata")
+].to_list()
+
+aggregated_df = aggregate(
+    feature_select_df,
+    features=feature_cols,
+    strata=["Metadata_Well", "Metadata_Time", "Metadata_dose"],
+    operation="median",
+)
+
+print(aggregated_df.shape)
+aggregated_df.to_parquet(aggregated_data_dir)
+print(aggregated_df.shape)
+aggregated_df.head()
