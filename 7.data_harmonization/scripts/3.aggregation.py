@@ -5,7 +5,7 @@
 
 # ## Import libraries
 
-# In[ ]:
+# In[1]:
 
 
 import pathlib
@@ -39,9 +39,10 @@ feature_cols = fs_df.columns[~fs_df.columns.str.contains("Metadata")].to_list()
 aggregated_df = aggregate(
     fs_df,
     features=feature_cols,
-    strata=["Metadata_Well", "Metadata_Time"],
+    strata=["Metadata_Well", "Metadata_Time", "Metadata_dose"],
     operation="median",
 )
 
 print(aggregated_df.shape)
 aggregated_df.to_parquet(output_profile_dir)
+aggregated_df.head()
