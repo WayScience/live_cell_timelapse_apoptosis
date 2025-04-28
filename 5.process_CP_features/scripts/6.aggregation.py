@@ -42,14 +42,14 @@ paths_dict = {
 
 # ## Perform aggregation
 
-# In[5]:
+# In[3]:
 
 
 for data_set in paths_dict:
     paths_dict[data_set]["output_file_dir"].parent.mkdir(exist_ok=True, parents=True)
     # read in the annotated file
     fs_df = pd.read_parquet(paths_dict[data_set]["input_dir"])
-    metadata_cols = fs_df.columns[fs_df.columns.str.contains("Metadata")]
+    metadata_cols = fs_df.columns[fs_df.columns.str.contains("Metadata")].to_list()
     feature_cols = fs_df.columns[~fs_df.columns.str.contains("Metadata")].to_list()
     if data_set not in "endpoint_data":
         aggregated_df = aggregate(
@@ -58,6 +58,12 @@ for data_set in paths_dict:
             strata=["Metadata_Well", "Metadata_Time"],
             operation="median",
         )
+        aggregated_df = pd.merge(
+            aggregated_df,
+            fs_df[metadata_cols],
+            how="left",
+            on=["Metadata_Well", "Metadata_Time"],
+        )
     else:
         aggregated_df = aggregate(
             fs_df,
@@ -65,5 +71,17 @@ for data_set in paths_dict:
             strata=["Metadata_Well"],
             operation="median",
         )
+        aggregated_df = pd.merge(
+            aggregated_df,
+            fs_df[metadata_cols],
+            how="left",
+            on=["Metadata_Well"],
+        )
+
+    # rearrange the columns such that the metadata columns are first
+    for col in reversed(aggregated_df.columns):
+        if col.startswith("Metadata_"):
+            tmp_pop = aggregated_df.pop(col)
+            aggregated_df.insert(0, col, tmp_pop)
     print(aggregated_df.shape)
     aggregated_df.to_parquet(paths_dict[data_set]["output_file_dir"])

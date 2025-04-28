@@ -33,7 +33,7 @@ fs_df = pd.read_parquet(input_profile_dir)
 # In[3]:
 
 
-metadata_cols = fs_df.columns[fs_df.columns.str.contains("Metadata")]
+metadata_cols = fs_df.columns[fs_df.columns.str.contains("Metadata")].to_list()
 feature_cols = fs_df.columns[~fs_df.columns.str.contains("Metadata")].to_list()
 
 aggregated_df = aggregate(
@@ -42,6 +42,17 @@ aggregated_df = aggregate(
     strata=["Metadata_Well", "Metadata_Time", "Metadata_dose"],
     operation="median",
 )
+aggregated_df = pd.merge(
+    aggregated_df,
+    fs_df[metadata_cols],
+    how="left",
+    on=["Metadata_Well", "Metadata_Time"],
+)
+# rearrange the columns such that the metadata columns are first
+for col in reversed(aggregated_df.columns):
+    if col.startswith("Metadata_"):
+        tmp_pop = aggregated_df.pop(col)
+        aggregated_df.insert(0, col, tmp_pop)
 
 print(aggregated_df.shape)
 aggregated_df.to_parquet(output_profile_dir)
