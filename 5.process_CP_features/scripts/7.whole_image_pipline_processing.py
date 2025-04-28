@@ -1,23 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 import glob
 import pathlib
 import sqlite3
 
-import lancedb
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-import seaborn as sns
-from cytotable import convert, presets
-from parsl.config import Config
-from parsl.executors import HighThroughputExecutor
 from pycytominer import aggregate, annotate, feature_select, normalize
-from pycytominer.cyto_utils import output
 
 try:
     cfg = get_ipython().config
@@ -85,7 +77,7 @@ blacklist_keywords = [
 ]
 
 
-# In[6]:
+# In[ ]:
 
 
 list_of_dfs = []
@@ -100,9 +92,7 @@ for file in sqlite_files:
 
 df = pd.concat(list_of_dfs, ignore_index=True)
 df = df.drop_duplicates()
-# Save the DataFrame to a Parquet file
 
-# df.to_parquet(output_parquet_path, index=False)
 list_of_col_to_remove = []
 for col in df.columns:
     for keyword in blacklist_keywords:
@@ -113,6 +103,7 @@ df.drop(columns=list_of_col_to_remove, inplace=True)
 for col in df.columns:
     if col.startswith("Image_"):
         df.rename(columns={col: col.replace("Image_", "")}, inplace=True)
+print(df.shape)
 
 
 # ## Annotate
@@ -136,6 +127,7 @@ columns_to_drop = [
     "PathName_DNA",
 ]
 annotated_df.drop(columns=columns_to_drop, inplace=True)
+print(annotated_df.shape)
 annotated_df.head()
 
 
@@ -163,6 +155,7 @@ normalized_df = normalize(
 )
 normalized_df = normalized_df.drop_duplicates()
 normalized_df = normalized_df.reset_index(drop=True)
+print(normalized_df.shape)
 normalized_df.to_parquet(normalized_data_dir, index=False)
 
 
@@ -194,12 +187,13 @@ feature_select_df.to_parquet(
     feature_selected_data_dir,
     index=False,
 )
+print(feature_select_df.shape)
 feature_select_df.head()
 
 
 # ## Aggregation
 
-# In[11]:
+# In[ ]:
 
 
 metadata_cols = feature_select_df.columns[
@@ -212,7 +206,7 @@ feature_cols = feature_select_df.columns[
 aggregated_df = aggregate(
     feature_select_df,
     features=feature_cols,
-    strata=["Metadata_Well", "Metadata_Time", "Metadata_dose"],
+    strata=["Metadata_Well", "Metadata_dose"],
     operation="median",
 )
 
