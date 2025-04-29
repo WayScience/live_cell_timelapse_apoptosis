@@ -50,7 +50,7 @@ platemap <- (
     )
     + scale_fill_manual(values = colorgrad(10))
     # change legend title
-    + labs(fill = "Stuarosporine\nDose (uM)")
+    + labs(fill = "Stuarosporine\nDose (nM)")
     # change text size
     + theme(axis.text.x = element_text(size = 18))
     + theme(axis.text.y = element_text(size = 18))
