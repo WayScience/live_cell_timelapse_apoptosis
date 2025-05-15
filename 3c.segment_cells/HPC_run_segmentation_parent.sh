@@ -22,8 +22,8 @@ jupyter nbconvert --to script --output-dir=scripts/ notebooks/*.ipynb
 cd scripts/ || exit
 
 # get the list of dirs in path
-mapfile -t main_dirs < <(ls -d ../../2.cellprofiler_ic_processing/illum_directory/test_data/timelapse/*)
-mapfile -t terminal_dirs < <(ls -d ../../2.cellprofiler_ic_processing/illum_directory/test_data/endpoint/*)
+mapfile -t main_dirs < <(ls -d ../../2.cellprofiler_ic_processing/illum_directory/timelapse/*)
+mapfile -t terminal_dirs < <(ls -d ../../2.cellprofiler_ic_processing/illum_directory/endpoint/*)
 
 cd ../ || exit
 

@@ -1,0 +1,33 @@
+name: timelapse_segmentation_env
+
+channels:
+- conda-forge
+- pytorch
+- nvidia
+- defaults
+
+dependencies:
+  - conda-forge::python=3.10
+  - conda-forge::ipykernel
+  - conda-forge::jupyter
+  - conda-forge::nbconvert
+  - conda-forge::nb_conda_kernels
+  - conda-forge::pip
+  - conda-forge::numpy<2.0
+  - conda-forge::matplotlib
+  - conda-forge::pandas
+  - conda-forge::scipy
+  - conda-forge::scikit-learn
+  - conda-forge::scikit-image
+  - conda-forge::papermill
+  - conda-forge::opencv
+  - conda-forge::pytorch
+  - conda-forge::torchvision
+  - conda-forge::cudatoolkit
+  - conda-forge::cudnn
+  - conda-forge::tensorflow-gpu
+  - conda-forge::pyarrow
+  - pip:
+    - torch
+    - cellpose
+    - tifffile
