@@ -51,7 +51,7 @@ well_fov = final_timepoint_dir.name
 well_fov = well_fov.split("_")[4] + "_" + well_fov.split("_")[5]
 
 
-# In[3]:
+# In[ ]:
 
 
 final_timepoint_cell_mask_path = (
@@ -61,6 +61,5 @@ copied_cell_mask_path = (
     terminal_timepoint_dir / f"{well_fov}_T0014_Z0001_cell_mask.tiff"
 )
 
-print(f"Copying \n{final_timepoint_cell_mask_path} to \n{copied_cell_mask_path}")
 # copy the cell mask to the terminal timepoint directory
 shutil.copy(final_timepoint_cell_mask_path, copied_cell_mask_path)
