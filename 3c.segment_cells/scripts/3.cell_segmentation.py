@@ -9,11 +9,9 @@
 
 
 import argparse
-
-# set the gpu via OS environment variable
-import os
 import pathlib
 
+import cellpose
 import matplotlib.pyplot as plt
 
 # Import dependencies
@@ -21,14 +19,21 @@ import numpy as np
 import skimage
 import tifffile
 import torch
+from cellpose import core
 from cellpose import io as cellpose_io
 from cellpose import models
+
+cellpose_io.logger_setup()
+# set the gpu via OS environment variable
+import os
+
 from csbdeep.utils import normalize
 from PIL import Image
 from stardist.plot import render_label
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 # check if in a jupyter notebook
 try:
     cfg = get_ipython().config
@@ -100,6 +105,7 @@ print("Starting level of GPU RAM available (MB): ", starting_level_GPU_RAM)
 image_extensions = {".tif", ".tiff"}
 files = sorted(input_dir.glob("*"))
 files = [str(x) for x in files if x.suffix in image_extensions]
+print(len(files))
 
 
 # In[5]:
@@ -117,18 +123,16 @@ image_dict = {
 # In[6]:
 
 
-# split files by channel
-if not "Annexin" in input_dir.name:
-    for file in files:
-        if "C01" in file.split("/")[-1]:
-            image_dict["nuclei_file_paths"].append(file)
-            image_dict["nuclei"].append(tifffile.imread(file).astype(np.float32))
-        elif "C02" in file.split("/")[-1]:
-            image_dict["cytoplasm1"].append(tifffile.imread(file).astype(np.float32))
-        elif "C03" in file.split("/")[-1]:
-            image_dict["cytoplasm2"].append(tifffile.imread(file).astype(np.float32))
-        elif "C04" in file.split("/")[-1]:
-            image_dict["cytoplasm3"].append(tifffile.imread(file).astype(np.float32))
+for file in files:
+    if "C01" in file.split("/")[-1]:
+        image_dict["nuclei_file_paths"].append(file)
+        image_dict["nuclei"].append(tifffile.imread(file).astype(np.float32))
+    elif "C02" in file.split("/")[-1]:
+        image_dict["cytoplasm1"].append(tifffile.imread(file).astype(np.float32))
+    elif "C03" in file.split("/")[-1]:
+        image_dict["cytoplasm2"].append(tifffile.imread(file).astype(np.float32))
+    elif "C04" in file.split("/")[-1]:
+        image_dict["cytoplasm3"].append(tifffile.imread(file).astype(np.float32))
 
     cytoplasm_image_list = [
         np.max(
@@ -147,57 +151,9 @@ if not "Annexin" in input_dir.name:
             image_dict["cytoplasm3"],
         )
     ]
-else:
-    for file in files:
-        if "C01" in file.split("/")[-1]:
-            image_dict["nuclei_file_paths"].append(file)
-            image_dict["nuclei"].append(tifffile.imread(file).astype(np.float32))
-        elif "C05" in file.split("/")[-1]:
-            image_dict["cytoplasm1"].append(tifffile.imread(file).astype(np.float32))
-
-    cytoplasm_image_list = image_dict["cytoplasm1"]
-
-
-nuclei_image_list = [np.array(nuclei) for nuclei in image_dict["nuclei"]]
-
 cyto = np.array(cytoplasm_image_list).astype(np.int16)
-nuclei = np.array(nuclei_image_list).astype(np.int16)
 
-cyto = skimage.exposure.equalize_adapthist(cyto, clip_limit=clip_limit + 0.3)
-nuclei = skimage.exposure.equalize_adapthist(nuclei, clip_limit=clip_limit)
-
-
-print(cyto.shape, nuclei.shape)
-
-
-# In[7]:
-
-
-original_nuclei_image = nuclei.copy()
-original_cyto_image = cyto.copy()
-
-
-# In[8]:
-
-
-imgs = []
-# save each z-slice as an RGB png
-for z in range(cyto.shape[0]):
-
-    nuclei_tmp = nuclei[z, :, :]
-    cyto_tmp = cyto[z, :, :]
-    nuclei_tmp = (nuclei_tmp / nuclei_tmp.max() * 255).astype(np.uint8)
-    cyto_tmp = (cyto_tmp / cyto_tmp.max() * 255).astype(np.uint8)
-    # save the image as an RGB png with nuclei in blue and cytoplasm in red
-    RGB = np.stack([cyto_tmp, np.zeros_like(cyto_tmp), nuclei_tmp], axis=-1)
-
-    # change to 8-bit
-    RGB = (RGB / RGB.max() * 255).astype(np.uint8)
-
-    rgb_image_pil = Image.fromarray(RGB)
-
-    imgs.append(rgb_image_pil)
-imgs = np.array(imgs)
+cyto = skimage.exposure.equalize_adapthist(cyto, clip_limit=clip_limit)
 
 
 # ## Cellpose
@@ -205,56 +161,79 @@ imgs = np.array(imgs)
 # Weird errors occur when running this converted notebook in the command line.
 # This cell helps the python interpreter figure out where it is...somehow.
 
-# In[9]:
+# In[7]:
 
 
-test = imgs[0, :, :, :]
-print(test.shape)
-model_name = "cyto3"
+test = cyto[0]
+diameter = 50
 
-model = models.Cellpose(model_type=model_name, gpu=True)
+model = models.CellposeModel(gpu=True)
 
-channels = [[1, 3]]
+channels = [[1, 0]]
 
 # # get masks
 # for _ in range(1):
-masks, flows, styles, diams = model.eval(test, channels=channels, diameter=diameter)
+masks, flows, styles = model.eval(test, channels=channels, diameter=diameter)
 
 
-# In[10]:
+# In[8]:
 
 
 # model_type='cyto' or 'nuclei' or 'cyto2' or 'cyto3'
-model_name = "cyto3"
-model = models.Cellpose(model_type=model_name, gpu=True)
+model_name = "nuclei"
+use_GPU = core.use_gpu()
+print("GPU activated: ", use_GPU)
+model = models.CellposeModel(model_type=model_name, gpu=use_GPU)
 
-channels = [[1, 3]]
+channels = [[1, 0]]
 
 masks_all_dict = {"masks": [], "imgs": []}
 
+
+def get_masks(image, model, channels, diameter):
+    masks, flows, styles, _ = model.eval(
+        normalize(image), channels=channels, diameter=diameter
+    )
+    return masks
+
+
 # get masks for all the images
 # save to a dict for later use
-for img in imgs:
-    img = normalize(img)
-    masks, flows, styles, diams = model.eval(img, channels=channels, diameter=diameter)
+for img in range(cyto.shape[0]):
+    cyto[img, :, :] = normalize(cyto[img, :, :])
 
+results = [
+    (
+        img,
+        cyto[img, :, :].shape,
+        model.eval(cyto[img, :, :], channels=channels, diameter=diameter),
+    )
+    for img in range(cyto.shape[0])
+]
+
+# Print the results
+for img, shape, (masks, flows, styles) in results:
     masks_all_dict["masks"].append(masks)
     masks_all_dict["imgs"].append(img)
-print(len(masks_all_dict))
+
+
 masks_all = masks_all_dict["masks"]
 imgs = masks_all_dict["imgs"]
-
 masks_all = np.array(masks_all)
 imgs = np.array(imgs)
+print(masks_all.shape)
+print(imgs.shape)
 
 for frame_index, frame in enumerate(image_dict["nuclei_file_paths"]):
     tifffile.imwrite(
-        f"{input_dir}/{str(frame).split('/')[-1].split('_C01')[0]}_cell_mask.tiff",
+        pathlib.Path(
+            input_dir / f"{str(frame).split('/')[-1].split('_C01')[0]}_cell_mask.tiff"
+        ),
         masks_all[frame_index, :, :],
     )
 
 
-# In[11]:
+# In[9]:
 
 
 if in_notebook:
@@ -263,18 +242,18 @@ if in_notebook:
         plt.title(f"z: {z}")
         plt.axis("off")
         plt.subplot(1, 2, 1)
-        plt.imshow(imgs[z], cmap="gray")
-        plt.title("RGB: Red - Cytoplasm, Blue - Nuclei")
+        plt.imshow(cyto[z], cmap="gray")
+        plt.title("Nuclei")
         plt.axis("off")
 
         plt.subplot(122)
         plt.imshow(render_label(masks_all[z]))
-        plt.title("Cell masks")
+        plt.title("Nuclei masks")
         plt.axis("off")
         plt.show()
 
 
-# In[12]:
+# In[10]:
 
 
 # set up memory profiler for GPU

@@ -11,6 +11,7 @@
 # where 1 core = 3.75 GB
 
 module load anaconda
+module load cuda/11.8
 
 conda activate timelapse_segmentation_env
 

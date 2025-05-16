@@ -28,7 +28,7 @@ dependencies:
   - conda-forge::pyarrow
   - pip:
     - torch
-    - cellpose<4.0
     - tifffile
     - csbdeep
     - stardist
+    - cellpose<4.0

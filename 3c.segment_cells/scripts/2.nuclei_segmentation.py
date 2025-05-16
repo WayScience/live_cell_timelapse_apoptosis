@@ -147,13 +147,13 @@ test = nuclei_image_list[0]
 model_name = "nuclei"
 diameter = 50
 
-model = models.Cellpose(model_type=model_name, gpu=True)
+model = models.CellposeModel(model_type=model_name, gpu=True)
 
 channels = [[1, 0]]
 
 # # get masks
 # for _ in range(1):
-masks, flows, styles, diams = model.eval(test, channels=channels, diameter=diameter)
+masks, flows, styles = model.eval(test, channels=channels, diameter=diameter)
 
 
 # In[8]:
@@ -163,7 +163,7 @@ masks, flows, styles, diams = model.eval(test, channels=channels, diameter=diame
 model_name = "nuclei"
 use_GPU = core.use_gpu()
 print("GPU activated: ", use_GPU)
-model = models.Cellpose(model_type=model_name, gpu=use_GPU)
+model = models.CellposeModel(model_type=model_name, gpu=use_GPU)
 
 channels = [[1, 0]]
 
@@ -192,7 +192,7 @@ results = [
 ]
 
 # Print the results
-for img, shape, (masks, flows, styles, _) in results:
+for img, shape, (masks, flows, styles) in results:
     masks_all_dict["masks"].append(masks)
     masks_all_dict["imgs"].append(img)
 
