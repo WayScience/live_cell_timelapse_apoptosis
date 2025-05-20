@@ -51,7 +51,7 @@ well_fov = final_timepoint_dir.name
 well_fov = well_fov.split("_")[4] + "_" + well_fov.split("_")[5]
 
 
-# In[ ]:
+# In[3]:
 
 
 final_timepoint_cell_mask_path = (

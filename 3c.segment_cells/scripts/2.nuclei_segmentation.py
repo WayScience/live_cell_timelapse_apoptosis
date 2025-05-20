@@ -5,10 +5,13 @@
 # The end goals is to segment cell and extract morphology features from cellprofiler.
 # These masks must be imported into cellprofiler to extract features.
 
-# In[1]:
+# In[ ]:
 
 
 import argparse
+
+# set the gpu via OS environment variable
+import os
 import pathlib
 
 import cellpose
@@ -19,14 +22,7 @@ import numpy as np
 import skimage
 import tifffile
 import torch
-from cellpose import core
-from cellpose import io as cellpose_io
-from cellpose import models
-
-cellpose_io.logger_setup()
-# set the gpu via OS environment variable
-import os
-
+from cellpose import core, models
 from csbdeep.utils import normalize
 from PIL import Image
 from stardist.plot import render_label
