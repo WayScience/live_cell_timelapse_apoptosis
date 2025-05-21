@@ -54,14 +54,19 @@ if not in_notebook:
 
 else:
     final_timepoint_dir = pathlib.Path(
-        "../../2.cellprofiler_ic_processing/illum_directory/test_data/timelapse/20231017ChromaLive_6hr_4ch_MaxIP_C-02_F0001"
+        "../../2.cellprofiler_ic_processing/illum_directory/timelapse/20231017ChromaLive_6hr_4ch_MaxIP_C-06_F0001"
     ).resolve(strict=True)
     terminal_timepoint_dir = pathlib.Path(
-        "../../2.cellprofiler_ic_processing/illum_directory/test_data/endpoint/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_C-02_F0001"
+        "../../2.cellprofiler_ic_processing/illum_directory/endpoint/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_C-06_F0001"
     ).resolve(strict=True)
 
 well_fov = final_timepoint_dir.name
 well_fov = well_fov.split("_")[4] + "_" + well_fov.split("_")[5]
+print(f"Processing well_fov: {well_fov}")
+offset_file_path = pathlib.Path(
+    f"../results/{final_timepoint_dir.stem.split('MaxIP_')[1]}_offsets.parquet"
+).resolve()
+offset_file_path.parent.mkdir(parents=True, exist_ok=True)
 
 
 # In[3]:
@@ -141,6 +146,23 @@ aligned_terminal_timepoint_cell_mask = apply_alignment(
 # In[6]:
 
 
+# add offsets to the dataframe
+offsets_df = pd.DataFrame(
+    {
+        "well_fov": [well_fov],
+        "x_offset": [offsets[0]],
+        "y_offset": [offsets[1]],
+    }
+)
+offsets_df.to_parquet(
+    offset_file_path,
+    index=False,
+)
+
+
+# In[7]:
+
+
 # save the aligned images
 aligned_terminal_timepoint_dna_path = pathlib.Path(
     terminal_timepoint_dir / f"{well_fov}_T0014_Z0001_C01_illumcorrect_aligned.tiff"
@@ -169,7 +191,7 @@ io.imsave(
 )
 
 
-# In[7]:
+# In[8]:
 
 
 if in_notebook:
