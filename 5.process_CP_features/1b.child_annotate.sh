@@ -16,7 +16,7 @@ well_fov=$1
 
 cd scripts/ || exit
 
-python 0.annotate_sc.py --well_fov $well_fov
+python 1.annotate_sc.py --well_fov $well_fov
 
 cd ../ || exit
 
