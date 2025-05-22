@@ -25,7 +25,7 @@ compute_cls_features:
   use_cuda: True
   num_gpus: 1
   batch_size_per_gpu: 24
-  num_workers: 10
+  num_workers: 2
   # change the path to the location of the model
   pretrained_weights: "../../data/models" #dir_to_pretrained_weights
   read_model_arch_dynamically: False
