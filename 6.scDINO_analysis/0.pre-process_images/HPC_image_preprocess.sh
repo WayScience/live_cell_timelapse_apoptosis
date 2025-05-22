@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --nstasks=64
-#SBATCH --partition=al40
+#SBATCH --nstasks=128
+#SBATCH --partition=amilan128c
 #SBATCH --gres=gpu:1
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
@@ -21,7 +21,7 @@ cd scripts || exit
 
 # run the script
 time python 0.pre-process_images.py
-time python 1.calculate_mean_std_per_channel.py
+
 
 # revert to the original directory
 cd .. || exit
