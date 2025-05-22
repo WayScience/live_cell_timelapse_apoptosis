@@ -5,7 +5,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=24:00:00
-#SBATCH --output=child_featurize-%j.out
+#SBATCH --output=image_processing-%j.out
 
 module load miniforge
 conda init bash
