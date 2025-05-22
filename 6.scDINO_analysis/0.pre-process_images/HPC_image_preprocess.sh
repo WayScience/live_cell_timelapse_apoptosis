@@ -2,7 +2,6 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=128
 #SBATCH --partition=amilan128c
-#SBATCH --gres=gpu:1
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=24:00:00
