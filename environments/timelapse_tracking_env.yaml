@@ -20,7 +20,7 @@ dependencies:
 - conda-forge::scikit-learn
 - conda-forge::optuna
 - pytorch
-  - conda-forge::coincbc
+- conda-forge::coincbc
 - conda-forge::optuna-dashboard
 - conda-forge::lancedb
 - cudatoolkit

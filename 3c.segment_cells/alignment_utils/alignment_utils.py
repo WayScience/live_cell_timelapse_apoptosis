@@ -5,6 +5,7 @@ from centrosome.filter import stretch
 from scipy.fftpack import fft2, ifft2
 
 # Each of the following functions are copied from CellProfiler's source code: https://github.com/CellProfiler/CellProfiler/
+# https://github.com/CellProfiler/CellProfiler/blob/e3f62221be97f8135c91a0d6cf23decd9e1622b7/src/subpackages/core/cellprofiler_core/modules/align.py#L82
 
 
 def cumsum_quadrant(x, i_forwards, j_forwards):

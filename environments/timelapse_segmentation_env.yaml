@@ -2,8 +2,6 @@ name: timelapse_segmentation_env
 
 channels:
 - conda-forge
-- pytorch
-- nvidia
 - defaults
 
 dependencies:

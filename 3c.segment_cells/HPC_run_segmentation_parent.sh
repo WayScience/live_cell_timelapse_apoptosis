@@ -41,7 +41,7 @@ for i in "${!main_dirs[@]}"; do
     terminal_dir="${terminal_dirs[$i]}"
     echo "Processing main directory: $main_dir with terminal directory: $terminal_dir"
     number_of_jobs=$(squeue -u $USER | wc -l)
-    while [ $number_of_jobs -gt 990 ]; do
+    while [ $number_of_jobs -gt 990 ]; do # max jobs are 1000, 990 is a safe number
         sleep 1s
         number_of_jobs=$(squeue -u $USER | wc -l)
     done

@@ -19,8 +19,9 @@ terminal_dir="../../2.cellprofiler_ic_processing/illum_directory/test_data/endpo
 
 
 python 0.nuclei_segmentation_optimization.py --input_dir "$main_dir" --clip_limit 0.6
+python 0.nuclei_segmentation_optimization.py --input_dir "$terminal_dir" --clip_limit 0.6
+
 python 1.cell_segmentation_optimization.py --input_dir "$main_dir" --clip_limit 0.6
-# python 1.cell_segmentation_optimization.py --input_dir "$terminal_dir" --clip_limit 0.6
 
 cd ../ || exit
 
