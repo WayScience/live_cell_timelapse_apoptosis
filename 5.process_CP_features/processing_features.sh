@@ -8,15 +8,6 @@ echo "Conversion complete."
 
 conda activate cellprofiler_timelapse_env
 
-# check if the data is present in the data folder
-# if present then remove the directory
-if [ -d "data" ]; then
-    echo "Data folder exists. Removing the data folder..."
-    rm -r data
-    echo "Data folder removed."
-fi
-
-
 cd scripts/ || exit
 
 # get all fovs in the data folder
@@ -29,13 +20,16 @@ for well_fov in $fovs; do
     # check if the fov name is equal to the well_fov
         echo "Processing $well_fov..."
         # run the script for the fov
-        python 0.merge_sc.py --well_fov "$well_fov"
-        python 1.annotate_sc.py --well_fov "$well_fov"
-        python 2.fuzzy_matching.py --well_fov "$well_fov"
-        python 3.combine_profiles.py
-        python 4.normalize.py
-        python 5.feature_select_sc.py
+        # python 0.merge_sc.py --well_fov "$well_fov"
+        # python 1.annotate_sc.py --well_fov "$well_fov"
+        # python 2.fuzzy_matching.py --well_fov "$well_fov"
 done
+# python 3.combine_profiles.py
+# python 4.normalize.py
+# python 5.feature_select_sc.py
+# python 6.aggregation.py
+python 7.whole_image_pipeline_processing.py
+
 
 
 cd ../ || exit
