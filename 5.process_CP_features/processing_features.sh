@@ -20,14 +20,14 @@ for well_fov in $fovs; do
     # check if the fov name is equal to the well_fov
         echo "Processing $well_fov..."
         # run the script for the fov
-        # python 0.merge_sc.py --well_fov "$well_fov"
-        # python 1.annotate_sc.py --well_fov "$well_fov"
-        # python 2.fuzzy_matching.py --well_fov "$well_fov"
+        python 0.merge_sc.py --well_fov "$well_fov"
+        python 1.annotate_sc.py --well_fov "$well_fov"
+        python 2.fuzzy_matching.py --well_fov "$well_fov"
 done
-# python 3.combine_profiles.py
-# python 4.normalize.py
-# python 5.feature_select_sc.py
-# python 6.aggregation.py
+python 3.combine_profiles.py
+python 4.normalize.py
+python 5.feature_select_sc.py
+python 6.aggregation.py
 python 7.whole_image_pipeline_processing.py
 
 
