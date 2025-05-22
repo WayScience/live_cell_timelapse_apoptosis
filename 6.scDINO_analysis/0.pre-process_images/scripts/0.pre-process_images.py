@@ -136,7 +136,7 @@ def crop_image(
     # Where edge case is cells that are too close to the edge of the image to crop
     # This ensures that all crops are the same dimensions and can be used in the model
     if image_DNA_crop.shape[0] < radius * 2 or image_DNA_crop.shape[1] < radius * 2:
-        ommited_count = 1
+        omitted_count = 1
         return (omitted_count, successful_count, total_count)
     # merge the channels to a single image
     image_merge = np.stack(
@@ -161,7 +161,7 @@ def crop_image(
     )
     image_save_path = pathlib.Path(image_save_path / file_name)
     if os.path.exists(image_save_path):
-        sucessful_count = 1
+        successful_count = 1
         return (omitted_count, successful_count, total_count)
     tiff.imwrite(image_save_path, image_merge)
     successful_count = 1
