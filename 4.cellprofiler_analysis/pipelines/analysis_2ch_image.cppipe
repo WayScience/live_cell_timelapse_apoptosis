@@ -2,7 +2,7 @@ CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
 DateRevision:426
 GitHash:
-ModuleCount:9
+ModuleCount:7
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Images module is left blank since we are giving the path to the images in the CLI command']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -85,13 +85,7 @@ MeasureTexture:[module_num:6|svn_version:'Unknown'|variable_revision_number:7|sh
     Measure whole images or objects?:Images
     Texture scale to measure:3
 
-MeasureImageSkeleton:[module_num:7|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select an image to measure:DNA
-
-MeasureImageSkeleton:[module_num:8|svn_version:'Unknown'|variable_revision_number:1|show_window:False|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select an image to measure:AnnexinV
-
-ExportToDatabase:[module_num:9|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:['Output the morphology features into an SQLite database.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToDatabase:[module_num:7|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:['Output the morphology features into an SQLite database.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Database type:SQLite
     Database name:DefaultDB
     Add a prefix to table names?:No

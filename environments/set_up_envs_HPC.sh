@@ -17,8 +17,3 @@ for file in $(ls -1 *.yaml); do
     # create conda environment from .yaml file
     mamba env create -f $file
 done
-
-
-# set up plugins for cellprofiler
-/scratch/alpine/${USER}/CellProfiler-plugins/active_plugins
-

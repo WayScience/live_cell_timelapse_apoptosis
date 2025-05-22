@@ -2,7 +2,7 @@ CellProfiler Pipeline: http://www.cellprofiler.org
 Version:5
 DateRevision:426
 GitHash:
-ModuleCount:17
+ModuleCount:15
 HasImagePlaneDetails:False
 
 Images:[module_num:1|svn_version:'Unknown'|variable_revision_number:2|show_window:False|notes:['Module notes are provided by Jenna Tomkinson.', '', 'Images module is left blank since we are giving the path to the images in the CLI command.', '', '']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
@@ -52,25 +52,25 @@ NamesAndTypes:[module_num:3|svn_version:'Unknown'|variable_revision_number:8|sho
     Relative pixel spacing in X:1.0
     Relative pixel spacing in Y:1.0
     Relative pixel spacing in Z:1.0
-    Select the rule criteria:and (metadata does Channel "01")
+    Select the rule criteria:and (metadata does Channel "01") (file does contain "ali")
     Name to assign these images:DNA
     Name to assign these objects:Cell
     Select the image type:Grayscale image
     Set intensity range from:Image metadata
     Maximum intensity:255.0
-    Select the rule criteria:and (metadata does Channel "05")
+    Select the rule criteria:and (metadata does Channel "05") (file does contain "aligned")
     Name to assign these images:AnnexinV
     Name to assign these objects:Cell
     Select the image type:Grayscale image
     Set intensity range from:Image metadata
     Maximum intensity:255.0
-    Select the rule criteria:and (metadata does Channel "cell_mask")
+    Select the rule criteria:and (metadata does Channel "cell_mask") (file does contain "aligned")
     Name to assign these images:Cells
     Name to assign these objects:Cells
     Select the image type:Objects
     Set intensity range from:Image metadata
     Maximum intensity:255.0
-    Select the rule criteria:and (metadata does Channel "nuclei_mask")
+    Select the rule criteria:and (metadata does Channel "nuclei_mask") (file does contain "aligned")
     Name to assign these images:Cells
     Name to assign these objects:Nuclei
     Select the image type:Objects
@@ -125,14 +125,7 @@ MeasureObjectIntensity:[module_num:9|svn_version:'Unknown'|variable_revision_num
     Select images to measure:AnnexinV, DNA
     Select objects to measure:Cells, Cytoplasm, Nuclei
 
-MeasureImageIntensity:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:False|notes:['Measures whole image intensity not aggregated within objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Select images to measure:AnnexinV, DNA
-    Measure the intensity only from areas enclosed by objects?:No
-    Select input object sets:Cells, Cytoplasm, Nuclei
-    Calculate custom percentiles:No
-    Specify percentiles to measure:10,90
-
-MeasureObjectNeighbors:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure nuclei neighbors that are adjacent to each other.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectNeighbors:[module_num:10|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure nuclei neighbors that are adjacent to each other.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:Nuclei
     Select neighboring objects to measure:Nuclei
     Method to determine neighbors:Adjacent
@@ -145,7 +138,7 @@ MeasureObjectNeighbors:[module_num:11|svn_version:'Unknown'|variable_revision_nu
     Name the output image:PercentTouching
     Select colormap:Oranges
 
-MeasureObjectNeighbors:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure cell neighbors that are adjacent to each other.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectNeighbors:[module_num:11|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure cell neighbors that are adjacent to each other.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select objects to measure:Cells
     Select neighboring objects to measure:Cells
     Method to determine neighbors:Adjacent
@@ -158,7 +151,7 @@ MeasureObjectNeighbors:[module_num:12|svn_version:'Unknown'|variable_revision_nu
     Name the output image:PercentTouching
     Select colormap:Oranges
 
-MeasureObjectIntensityDistribution:[module_num:13|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Measure object intensity distributions witin objects using center x,y coords for each single object.', '', "We calculate Zernikes for magnitudes and phases as we are interested in seeing phase even if it doesn't help with classifying phenotypes."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectIntensityDistribution:[module_num:12|svn_version:'Unknown'|variable_revision_number:6|show_window:False|notes:['Measure object intensity distributions witin objects using center x,y coords for each single object.', '', "We calculate Zernikes for magnitudes and phases as we are interested in seeing phase even if it doesn't help with classifying phenotypes."]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:AnnexinV, DNA
     Hidden:3
     Hidden:1
@@ -178,12 +171,12 @@ MeasureObjectIntensityDistribution:[module_num:13|svn_version:'Unknown'|variable
     Number of bins:4
     Maximum radius:100
 
-MeasureObjectSizeShape:[module_num:14|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure object size and shape metrics (not related to any channels).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureObjectSizeShape:[module_num:13|svn_version:'Unknown'|variable_revision_number:3|show_window:False|notes:['Measure object size and shape metrics (not related to any channels).']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select object sets to measure:Cells, Cytoplasm, Nuclei
     Calculate the Zernike features?:Yes
     Calculate the advanced features?:No
 
-MeasureTexture:[module_num:15|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:['Measure texture within objects and the whole images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+MeasureTexture:[module_num:14|svn_version:'Unknown'|variable_revision_number:7|show_window:False|notes:['Measure texture within objects and the whole images.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Select images to measure:AnnexinV, DNA
     Select objects to measure:Cells, Cytoplasm, Nuclei
     Enter how many gray levels to measure the texture at:256
@@ -191,12 +184,7 @@ MeasureTexture:[module_num:15|svn_version:'Unknown'|variable_revision_number:7|s
     Measure whole images or objects?:Both
     Texture scale to measure:3
 
-MeasureImageAreaOccupied:[module_num:16|svn_version:'Unknown'|variable_revision_number:5|show_window:False|notes:['Measure the area occupied in each image by each object.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
-    Measure the area occupied by:Objects
-    Select binary images to measure:AnnexinV, DNA
-    Select object sets to measure:Cells, Cytoplasm, Nuclei
-
-ExportToDatabase:[module_num:17|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:['Output the morphology features into an SQLite database.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+ExportToDatabase:[module_num:15|svn_version:'Unknown'|variable_revision_number:28|show_window:False|notes:['Output the morphology features into an SQLite database.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
     Database type:SQLite
     Database name:DefaultDB
     Add a prefix to table names?:No
