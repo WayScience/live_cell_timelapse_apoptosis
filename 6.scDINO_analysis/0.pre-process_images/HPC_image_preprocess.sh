@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --nstasks=128
+#SBATCH --ntasks=128
 #SBATCH --partition=amilan128c
 #SBATCH --gres=gpu:1
 #SBATCH --qos=normal
