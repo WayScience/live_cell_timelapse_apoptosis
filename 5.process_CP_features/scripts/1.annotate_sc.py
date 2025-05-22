@@ -56,7 +56,7 @@ if not in_notebook:
     well_fov = args.well_fov
 else:
     print("Running in a notebook")
-    well_fov = "C-02_F0003"
+    well_fov = "D-03_F0002"
 
 
 # In[3]:
