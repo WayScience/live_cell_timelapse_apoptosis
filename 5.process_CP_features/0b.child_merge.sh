@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=16
+#SBATCH --ntasks=3
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
-#SBATCH --time=1:00:00
+#SBATCH --time=30:00
 #SBATCH --output=merge_child-%j.out
 
 module load miniforge

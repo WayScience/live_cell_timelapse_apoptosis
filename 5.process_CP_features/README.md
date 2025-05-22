@@ -14,3 +14,8 @@ Notbooks:
     - Feature selection for the single cell data across time
 - [notebooks/3.feature_select_sc_within_time.ipynb](notebooks/3.feature_select_sc_within_time.ipynb):
     - Feature selection for the single cell data within time
+
+## When running on HPC:
+- Seeing issues with running CytoTable in the same path across multiple nodes and cores :/.
+- Typically need to rerun the CytoTable parent script mulitple times to avoid key clashes.
+This is not ideal, but it is a workaround.
