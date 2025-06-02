@@ -7,6 +7,7 @@
 import argparse
 import os
 import pathlib
+import pprint
 import shutil
 
 import matplotlib.pyplot as plt
@@ -15,7 +16,6 @@ import pandas as pd
 import seaborn as sns
 import tifffile
 from PIL import Image
-from rich.pretty import pprint
 from ultrack import to_tracks_layer, track, tracks_to_zarr
 from ultrack.config import MainConfig
 from ultrack.tracks import close_tracks_gaps
@@ -57,8 +57,7 @@ clear_gpu_memory()
 import napari
 from napari.utils.notebook_display import nbscreenshot
 
-
-# In[2]:
+# In[15]:
 
 
 if not in_notebook:
@@ -67,19 +66,28 @@ if not in_notebook:
     parser = argparse.ArgumentParser(description="Segment the nuclei of a tiff image")
 
     parser.add_argument(
-        "--input_dir",
+        "--well_fov",
         type=str,
         help="Path to the input directory containing the tiff images",
     )
 
     args = parser.parse_args()
-    input_dir = pathlib.Path(args.input_dir).resolve(strict=True)
+    well_fov = args.well_fov
 
 else:
     print("Running in a notebook")
-    input_dir = pathlib.Path(
-        "../../2.cellprofiler_ic_processing/illum_directory/test_data/timelapse/20231017ChromaLive_6hr_4ch_MaxIP_C-02_F0001"
-    ).resolve(strict=True)
+    well_fov = "C-02_F0001"  # example well_fov
+
+
+input_dir = pathlib.Path(
+    f"../../2.cellprofiler_ic_processing/illum_directory/test_data/timelapse/20231017ChromaLive_6hr_4ch_MaxIP_{well_fov}"
+).resolve(strict=True)
+terminal_mask_file_dir = pathlib.Path(
+    f"../../2.cellprofiler_ic_processing/illum_directory/test_data/endpoint/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_{well_fov}/{well_fov}_T0014_Z0001_nuclei_mask_aligned.tiff"
+).resolve(strict=True)
+terminal_nuclei_file_dir = pathlib.Path(
+    f"../../2.cellprofiler_ic_processing/illum_directory/test_data/endpoint/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_{well_fov}/{well_fov}_T0014_Z0001_C01_illumcorrect_aligned.tiff"
+).resolve(strict=True)
 
 temporary_output_dir = pathlib.Path("../tmp_output").resolve()
 figures_output_dir = pathlib.Path("../figures").resolve()
@@ -89,13 +97,13 @@ figures_output_dir.mkdir(exist_ok=True)
 results_output_dir.mkdir(exist_ok=True)
 
 
-# In[3]:
+# In[16]:
 
 
 print(f"Input directory: {input_dir}")
 
 
-# In[4]:
+# In[17]:
 
 
 file_extensions = {".tif", ".tiff"}
@@ -111,7 +119,7 @@ print(f"Found {len(mask_files)} tiff files in the input directory")
 print(f"Found {len(nuclei_files)} nuclei files in the input directory")
 
 
-# In[5]:
+# In[21]:
 
 
 # read in the masks and create labels
@@ -119,36 +127,40 @@ masks = []
 for tiff_file in mask_files:
     img = tifffile.imread(tiff_file)
     masks.append(img)
+masks.append(tifffile.imread(terminal_mask_file_dir)[:, :, 0].astype(np.uint8))
+
 masks = np.array(masks)
 
 nuclei = []
 for tiff_file in nuclei_files:
     img = tifffile.imread(tiff_file)
     nuclei.append(img)
+nuclei.append(tifffile.imread(terminal_nuclei_file_dir)[:, :, 0].astype(np.uint8))
 nuclei = np.array(nuclei)
 
 
-# In[6]:
+# In[22]:
 
 
 image_dims = tifffile.imread(tiff_files[0]).shape
+timelapse_raw = np.zeros(
+    (len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16
+)
 
 
-# In[7]:
+# In[23]:
 
 
 detections = np.zeros((len(masks), image_dims[0], image_dims[1]), dtype=np.uint16)
 edges = np.zeros((len(masks), image_dims[0], image_dims[1]), dtype=np.uint16)
 for frame_index, frame in enumerate(masks):
-    detections[frame_index, :, :], edges[frame_index, :, :] = labels_to_contours(
-        frame
-    )  # gets the contours of the masks and the edges
+    detections[frame_index, :, :], edges[frame_index, :, :] = labels_to_contours(frame)
 print(detections.shape, edges.shape)
 
 clear_gpu_memory()
 
 
-# In[8]:
+# In[24]:
 
 
 params_df = estimate_parameters_from_labels(masks, is_timelapse=True)
@@ -156,25 +168,19 @@ if in_notebook:
     params_df["area"].plot(kind="hist", bins=100, title="Area histogram")
 
 
-# ## Optimize the tracking using ultrack
+# ## Optimize the tracking using optuna and ultrack
 
-# In[ ]:
-
-
-
-
-
-# In[9]:
+# In[25]:
 
 
 config = MainConfig()
 config.linking_config.max_distance = 50
 config.tracking_config.disappear_weight = -0.2
 
-pprint(config.dict())
+pprint.pprint(config.dict())
 
 
-# In[10]:
+# In[26]:
 
 
 track(
@@ -185,7 +191,7 @@ track(
 )
 
 
-# In[11]:
+# In[27]:
 
 
 tracks_df, graph = to_tracks_layer(config)
@@ -197,12 +203,10 @@ tracks_df = close_tracks_gaps(
 )
 
 
-# In[12]:
+# In[28]:
 
 
-labels = tracks_to_zarr(
-    config, tracks_df
-)  # incase needed for napari or other CZI-specific applications
+labels = tracks_to_zarr(config, tracks_df)
 tracks_df.to_parquet(
     f"{results_output_dir}/{str(input_dir).split('MaxIP_')[1]}_tracks.parquet"
 )
@@ -211,10 +215,12 @@ print(f"Found {tracks_df['track_id'].nunique()} unique tracks in the dataset.")
 tracks_df.head()
 
 
-# In[13]:
+# In[29]:
 
 
+# save the tracks as parquet
 tracks_df.reset_index(drop=True, inplace=True)
+tracks = np.zeros((len(tiff_files), image_dims[0], image_dims[1]), dtype=np.uint16)
 cum_tracks_df = tracks_df.copy()
 timepoints = tracks_df["t"].unique()
 
@@ -222,38 +228,39 @@ timepoints = tracks_df["t"].unique()
 cum_tracks_df = cum_tracks_df.loc[cum_tracks_df["t"] == -1]
 
 
-# In[14]:
+# In[30]:
 
 
-nuclei = nuclei * 4096
-for frame_index, _ in enumerate(nuclei):
-    tmp_df = tracks_df.loc[tracks_df["t"] == frame_index]
-    cum_tracks_df = pd.concat([cum_tracks_df, tmp_df])
-    plt.figure(figsize=(6, 3))
-    plt.subplot(1, 3, 1)
-    # rescale the intensity of the raw image
+if in_notebook:
+    for frame_index, _ in enumerate(nuclei):
+        tmp_df = tracks_df.loc[tracks_df["t"] == frame_index]
+        cum_tracks_df = pd.concat([cum_tracks_df, tmp_df])
+        plt.figure(figsize=(6, 3))
+        plt.subplot(1, 3, 1)
+        # rescale tbe intensity of the raw image
+        raw_image = timelapse_raw[frame_index, :, :]
+        raw_image = raw_image * 4096
+        plt.imshow(nuclei[frame_index, :, :], cmap="gray")
+        plt.title("Raw")
+        plt.axis("off")
 
-    plt.imshow(nuclei[frame_index, :, :], cmap="gray")
-    plt.title("Raw")
-    plt.axis("off")
+        plt.subplot(1, 3, 2)
+        plt.imshow(detections[frame_index, :, :], cmap="gray")
+        plt.title("Detections")
+        plt.axis("off")
 
-    plt.subplot(1, 3, 2)
-    plt.imshow(detections[frame_index, :, :], cmap="gray")
-    plt.title("Masks")
-    plt.axis("off")
+        plt.subplot(1, 3, 3)
+        sns.lineplot(data=cum_tracks_df, x="x", y="y", hue="track_id", legend=False)
+        plt.imshow(detections[frame_index, :, :], cmap="gray", alpha=0.5)
+        plt.title(f"Frame {frame_index}")
+        plt.axis("off")
 
-    plt.subplot(1, 3, 3)
-    sns.lineplot(data=cum_tracks_df, x="x", y="y", hue="track_id", legend=False)
-    plt.imshow(detections[frame_index, :, :], cmap="gray", alpha=0.5)
-    plt.title(f"Frame {frame_index}")
-    plt.axis("off")
-
-    plt.tight_layout()
-    plt.savefig(f"{temporary_output_dir}/tracks_{frame_index}.png")
-    plt.close()
+        plt.tight_layout()
+        plt.savefig(f"{temporary_output_dir}/tracks_{frame_index}.png")
+        plt.close()
 
 
-# In[15]:
+# In[31]:
 
 
 # load each image
@@ -267,7 +274,7 @@ fig_path = figures_output_dir / f"{str(input_dir).split('MaxIP_')[1]}_tracks.gif
 frames[0].save(fig_path, save_all=True, append_images=frames[1:], duration=100, loop=0)
 
 
-# In[16]:
+# In[32]:
 
 
 # clean up tracking files
@@ -282,13 +289,13 @@ if metadata_toml_path.exists():
     metadata_toml_path.unlink()
 
 
-# In[17]:
+# In[33]:
 
 
 clear_gpu_memory()
 
 
-# In[18]:
+# In[34]:
 
 
 if in_notebook:
@@ -303,4 +310,4 @@ if in_notebook:
     viewer.layers["masks"].visible = False
 
     nbscreenshot(viewer)
-
+    # viewer.close()

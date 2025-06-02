@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --time=2:00:00
+#SBATCH --time=1:00:00
 #SBATCH --partition=amilan
 #SBATCH --output=cell_tracking-%j.out
 
@@ -14,18 +14,21 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-well_fov_path="../../2.cellprofiler_ic_processing/illum_directory/timelapse/"
+well_fov_path="../../2.cellprofiler_ic_processing/illum_directory/timelapse"
 well_fovs=$(ls $well_fov_path)
 echo "${well_fovs[@]}"
 
-cd ../ || exit
 
-for well_fov in $well_fovs; do
-    echo "Processing well_fov: $well_fov"
-    # check python script exit code
-    full_path="${well_fov_path}${well_fov}"
-    sbatch HPC_child_cell_tracking_script.sh $full_path
+for file in "$well_fov_path"/*; do
+    filename=$(basename "$file")
+    well_fov="${filename#*MaxIP_}"
+    echo "Well FOV: $well_fov"
+
+    sbatch HPC_child_cell_tracking_script.sh $well_fov
+
 done
+
+cd ../ || exit
 
 conda deactivate
 
