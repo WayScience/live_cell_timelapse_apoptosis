@@ -5,7 +5,7 @@
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=1:00:00
-#SBATCH --output=ic_combine-%j.out
+#SBATCH --output=normalize-%j.out
 
 module load miniforge
 conda init bash
@@ -21,4 +21,4 @@ cd ../ || exit
 
 conda deactivate
 
-echo "All merging sc jobs submitted."
+echo "Normalize complete."

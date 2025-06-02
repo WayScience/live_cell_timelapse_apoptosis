@@ -104,7 +104,7 @@ total_annotated_cells = 0  # total number of cells that were annotated
 distances = []  # list to store the distances between the coordinates
 
 
-# In[ ]:
+# In[5]:
 
 
 tracked_cells_stats = {
@@ -195,7 +195,7 @@ list_of_track_lengths_df.to_parquet(
 )
 
 
-# In[ ]:
+# In[7]:
 
 
 # save the tracked cells stats to a parquet file

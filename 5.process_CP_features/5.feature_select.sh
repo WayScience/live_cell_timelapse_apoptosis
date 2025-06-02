@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --mem=260G
+#SBATCH --mem=90G
 #SBATCH --partition=amem
-#SBATCH --qos=normal
+#SBATCH --qos=mem
 #SBATCH --account=amc-general
 #SBATCH --time=5:00:00
-#SBATCH --output=ic_combine-%j.out
+#SBATCH --output=Feature_selection-%j.out
 
 module load miniforge
 conda init bash
@@ -21,4 +21,4 @@ cd ../ || exit
 
 conda deactivate
 
-echo "All merging sc jobs submitted."
+echo "Feature selection complete."
