@@ -57,7 +57,7 @@ clear_gpu_memory()
 import napari
 from napari.utils.notebook_display import nbscreenshot
 
-# In[15]:
+# In[ ]:
 
 
 if not in_notebook:
@@ -80,13 +80,13 @@ else:
 
 
 input_dir = pathlib.Path(
-    f"../../2.cellprofiler_ic_processing/illum_directory/test_data/timelapse/20231017ChromaLive_6hr_4ch_MaxIP_{well_fov}"
+    f"../../2.cellprofiler_ic_processing/illum_directory/timelapse/20231017ChromaLive_6hr_4ch_MaxIP_{well_fov}"
 ).resolve(strict=True)
 terminal_mask_file_dir = pathlib.Path(
-    f"../../2.cellprofiler_ic_processing/illum_directory/test_data/endpoint/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_{well_fov}/{well_fov}_T0014_Z0001_nuclei_mask_aligned.tiff"
+    f"../../2.cellprofiler_ic_processing/illum_directory/endpoint/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_{well_fov}/{well_fov}_T0014_Z0001_nuclei_mask_aligned.tiff"
 ).resolve(strict=True)
 terminal_nuclei_file_dir = pathlib.Path(
-    f"../../2.cellprofiler_ic_processing/illum_directory/test_data/endpoint/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_{well_fov}/{well_fov}_T0014_Z0001_C01_illumcorrect_aligned.tiff"
+    f"../../2.cellprofiler_ic_processing/illum_directory/endpoint/20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_{well_fov}/{well_fov}_T0014_Z0001_C01_illumcorrect_aligned.tiff"
 ).resolve(strict=True)
 
 temporary_output_dir = pathlib.Path("../tmp_output").resolve()
