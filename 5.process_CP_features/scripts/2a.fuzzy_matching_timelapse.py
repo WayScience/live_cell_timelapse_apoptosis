@@ -40,9 +40,11 @@ data_dir = pathlib.Path("../data/1.annotated_data").resolve()
 
 # directory where the annotated parquet files are saved to
 profiles_output_dir = pathlib.Path(
-    "../data/2.sc_tracks_annotated_data/profiles/"
+    "../data/2.sc_tracks_annotated_data/profiles/timelapse/"
 ).resolve()
-stats_output_dir = pathlib.Path("../data/2.sc_tracks_annotated_data/stats/").resolve()
+stats_output_dir = pathlib.Path(
+    "../data/2.sc_tracks_annotated_data/stats/timelapse"
+).resolve()
 
 profiles_output_dir.mkdir(exist_ok=True, parents=True)
 stats_output_dir.mkdir(exist_ok=True, parents=True)

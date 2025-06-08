@@ -16,8 +16,8 @@ import pandas as pd
 
 # define data paths for import
 # annotated features from cellprofiler including all time points
-cellprofiler_annotated_features_path = pathlib.Path(
-    "../../5.process_CP_features/data/3.combined_data/profiles/combined_data.parquet"
+cellprofiler_fs_features_path = pathlib.Path(
+    "../../5.process_CP_features/data/5.feature_select/profiles/features_selected_profile.parquet"
 ).resolve(strict=True)
 
 # scDINO features from the scDINO analysis including all time points
@@ -38,7 +38,7 @@ output_path.parent.mkdir(parents=True, exist_ok=True)
 
 
 # load in the data
-cellprofiler_data = pd.read_parquet(cellprofiler_annotated_features_path)
+cellprofiler_data = pd.read_parquet(cellprofiler_fs_features_path)
 scdino_data = pd.read_parquet(scdino_features)
 
 print(f"cellprofiler data shape: {cellprofiler_data.shape}")
@@ -46,6 +46,18 @@ print(f"scDINO data shape: {scdino_data.shape}")
 
 
 # In[4]:
+
+
+cellprofiler_data["Metadata_original_index"] = cellprofiler_data.index
+
+
+# In[5]:
+
+
+scdino_data.head(1)
+
+
+# In[6]:
 
 
 # append either CP or scDINO to the column names
@@ -59,7 +71,7 @@ for col in scdino_data.columns:
         scdino_data.rename(columns={col: f"{col}_scDINO"}, inplace=True)
 
 
-# In[5]:
+# In[7]:
 
 
 # make the Metadata Columns objects
@@ -73,25 +85,11 @@ cellprofiler_metadata_columns = [
     "Metadata_compound",
     "Metadata_dose",
     "Metadata_control",
+    "Metadata_original_index",
 ]
 
 
-# In[6]:
-
-
-# sort the data by Well, FOV, Time, ImageNumber, Nuclei_Number_Object_Number
-cellprofiler_data = cellprofiler_data.sort_values(
-    by=cellprofiler_metadata_columns,
-    ascending=True,
-).reset_index(drop=True)
-
-scdino_data = scdino_data.sort_values(
-    by=cellprofiler_metadata_columns,
-    ascending=True,
-).reset_index(drop=True)
-
-
-# In[7]:
+# In[8]:
 
 
 scdino_data.head()
@@ -101,7 +99,7 @@ scdino_data["Metadata_Time"] = scdino_data["Metadata_Time"] - 1
 scdino_data.head()
 
 
-# In[8]:
+# In[9]:
 
 
 for col in cellprofiler_metadata_columns:
@@ -113,7 +111,7 @@ for col in cellprofiler_metadata_columns:
     scdino_data[col] = scdino_data[col].astype(str)
 
 
-# In[9]:
+# In[10]:
 
 
 print(f"cellprofiler data shape after sorting: {cellprofiler_data.shape}")
@@ -121,7 +119,7 @@ print(f"scDINO data shape after sorting: {scdino_data.shape}")
 merged_df = pd.merge(
     cellprofiler_data,
     scdino_data,
-    how="right",
+    how="inner",
     on=cellprofiler_metadata_columns,
 )
 print(f"merged data shape: {merged_df.shape}")
@@ -133,9 +131,14 @@ merged_df = merged_df.drop_duplicates(
 print(f"merged data shape after dropping duplicates: {merged_df.shape}")
 
 
-# In[10]:
+# In[11]:
 
 
-merged_df.to_parquet(output_path)
+# merged_df.to_parquet(output_path)
+print(f"merged_df shape: {merged_df.shape}")
+# merged_df.head()
+# drop rows with NaN values
+merged_df = merged_df.dropna(how="any", axis=0)
+merged_df.to_parquet(output_path, index=False)
 print(f"merged_df shape: {merged_df.shape}")
 merged_df.head()

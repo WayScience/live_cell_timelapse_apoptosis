@@ -48,7 +48,7 @@ interval = 1000 / fps
 print(f"Interval: {interval}")
 
 
-# In[ ]:
+# In[5]:
 
 
 # this loop will create a gif for each dose
@@ -69,12 +69,11 @@ for dose in unique_doses:
         metadata_df = df[metadata_columns]
         features_df = df.drop(metadata_columns, axis=1)
         dfs[i] = features_df
-
     # plot the list of dfs and animate them
-    ax.set_xlim(-5, 10)
-    ax.set_ylim(-5, 15)
+    ax.set_xlim(-7, 7)
+    ax.set_ylim(-3, 5)
     scat = ax.scatter([], [], c="b", s=1)
-    text = ax.text(-4, -4, "", ha="left", va="top")
+    text = ax.text(-6, -2.5, "", ha="left", va="top")
     # add title
     ax.set_title(f"Staurosporine {dose} nM")
     # axis titles

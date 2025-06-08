@@ -22,14 +22,20 @@ for well_fov in $fovs; do
         # run the script for the fov
         # python 0.merge_sc.py --well_fov "$well_fov"
         # python 1.annotate_sc.py --well_fov "$well_fov"
-        python 2.fuzzy_matching.py --well_fov "$well_fov"
+        python 2a.fuzzy_matching_timelapse.py --well_fov "$well_fov"
+        python 2b.fuzzy_matching_endpoint.py --well_fov "$well_fov"
 done
+echo "Fuzzy matching complete."
 python 3.combine_profiles.py
+echo "Combining profiles complete."
 python 4.normalize.py
+echo "Normalization complete."
 python 5.feature_select_sc.py
+echo "Feature selection complete."
 python 6.aggregation.py
+echo "Aggregation complete."
 python 7.whole_image_pipeline_processing.py
-
+echo "Whole image pipeline processing complete."
 
 
 cd ../ || exit
