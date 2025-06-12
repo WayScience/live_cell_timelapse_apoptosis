@@ -13,16 +13,14 @@ data/raw_data/*
 data/preprocessed_data/*
 data/processed_images/*
 
-
+# Cluster files
+*alpine_std_out_std_err-*
 
 # logs
 **.log
 
 # cytomining logs
 **runinfo
-
-# ignore irrelevant SAM 2 outputsdata/objects_db
-############################################
 
 # IC logs
 2.cellprofiler_ic_processing/notebooks/logs/
@@ -31,17 +29,6 @@ data/processed_images/*
 2.cellprofiler_ic_processing/illum_directory_test_small
 2.cellprofiler_ic_processing/illum_directory_test
 
-
-# cellprofiler logs
-4.cellprofiler_analysis/scripts/logs
-4.cellprofiler_analysis/scripts/*.log
-4.cellprofiler_analysis/notebooks/logs
-4.cellprofiler_analysis/notebooks/*.logs
-# analysis results
-4.cellprofiler_analysis/analysis_output
-4.cellprofiler_analysis/pipelines/generated_pipelines
-
-
 3a.optimizing_CP_attempt_optional/CellProfiler_optuna_utils/__pycache__
 3a.optimizing_CP_attempt_optional/analysis_output/optimized_pipes
 3a.optimizing_CP_attempt_optional/analysis_output/study_dir/*
@@ -49,11 +36,9 @@ data/processed_images/*
 3a.optimizing_CP_attempt_optional/scripts/logs
 3a.optimizing_CP_attempt_optional/logs
 3a.optimizing_CP_attempt_optional/analysis_output/
-
 3a.optimizing_CP_attempt_optional/notebooks/runinfo
 3a.optimizing_CP_attempt_optional/notebooks/optuna_profiling_utils.log
 3a.optimizing_CP_attempt_optional/pipelines/generated_pipelines
-
 
 3b.run_sam/memory_snapshots/
 3b.run_sam/sam2_processing_dir/tiffs
@@ -67,49 +52,54 @@ data/processed_images/*
 3b.run_sam/sam2_processing_dir/*
 3b.run_sam/stardist_processing_dir/*
 
-4.cell_tracking/figures/*
-4.cell_tracking/results/*
-
 3c.segment_cells/results/*
 3c.segment_cells/figures/*
 3c.segment_cells/tmp_output/*
 !3c.segment_cells/figures/C-02_F0001_tracks.gif
 
+4.cell_tracking/figures/*
+4.cell_tracking/results/*
+
+# keep one example of the figures
+!4.cell_tracking/figures/C-02_F0003_tracks.gif
+
+# cellprofiler logs
+5.cellprofiler_analysis/scripts/logs
+5.cellprofiler_analysis/scripts/*.log
+5.cellprofiler_analysis/notebooks/logs
+5.cellprofiler_analysis/notebooks/*.logs
+5.cellprofiler_analysis/analysis_output
+5.cellprofiler_analysis/pipelines/generated_pipelines
 
 # cytomining results
-5.process_CP_features/data/
-5.process_CP_features/notebooks/cytotable_runinfo_*
-5.process_CP_features/scripts/cytotable_runinfo_*
-5.process_CP_features/one_off_analysis_computational_requirments_for_fs/results_of_memory_profiling/*
+6.process_CP_features/data/
+6.process_CP_features/notebooks/cytotable_runinfo_*
+6.process_CP_features/scripts/cytotable_runinfo_*
+6.process_CP_features/one_off_analysis_computational_requirments_for_fs/results_of_memory_profiling/*
+
 # scDINO outputs
-6.scDINO_analysis/1.scDINO_run/outputdir
+7.scDINO_analysis/1.scDINO_run/outputdir
 # scDINO logs
-6.scDINO_analysis/1.scDINO_run/.snakemake
-6.scDINO_analysis/1.scDINO_run/logs
-6.scDINO_analysis/0.pre-process_images/data/*
+7.scDINO_analysis/1.scDINO_run/.snakemake
+7.scDINO_analysis/1.scDINO_run/logs
+7.scDINO_analysis/0.pre-process_images/data/*
 
 # temporal shiny app
-6.scDINO_analysis/2.scDINO_processing/temporal_shiny_app
-6.scDINO_analysis/2.scDINO_processing/notebooks/4.deploy_shiny_app.ipynb
-6.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
-6.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
+7.scDINO_analysis/2.scDINO_processing/temporal_shiny_app
+7.scDINO_analysis/2.scDINO_processing/notebooks/4.deploy_shiny_app.ipynb
+7.scDINO_analysis/2.scDINO_processing/scripts/4.deploy_shiny_app.r
+7.scDINO_analysis/2.scDINO_processing/temporal_shiny_app/rsconnect
 
-3b.run_sam/stardist_processing_dir/*
 # data harmonization
-7.data_harmonization/data/
-
+8.data_harmonization/data/
 
 # data (processed)
 data/models/dino_deitsmall16_pretrain_full_checkpoint.pth
 data/processed_images/**
 
-# Cluster files
-*alpine_std_out_std_err-*
 
-4.cell_tracking/figures/*
-4.cell_tracking/results/*
-6.scDINO_analysis/0.pre-process_images/data/*
 
-4.cell_tracking/figures/*
-# keep one example of the figures
-!4.cell_tracking/figures/C-02_F0003_tracks.gif
+
+
+
+
