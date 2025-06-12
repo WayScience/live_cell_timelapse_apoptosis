@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=1
+#SBATCH --mem=20G
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --account=amc-general

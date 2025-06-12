@@ -20,13 +20,17 @@ import pandas as pd
 # set paths
 paths_dict = {
     "timelapse_profiles": {
-        "input_dir": pathlib.Path("../data/2.sc_tracks_annotated_data/profiles"),
+        "input_dir": pathlib.Path(
+            "../data/2.sc_tracks_annotated_data/profiles/timelapse"
+        ),
         "output_file_dir": pathlib.Path(
             "../data/3.combined_data/profiles/combined_data.parquet"
         ),
     },
     "endpoint_data": {
-        "input_dir": pathlib.Path("../data/1.annotated_data/endpoint"),
+        "input_dir": pathlib.Path(
+            "../data/2.sc_tracks_annotated_data/profiles/endpoint"
+        ),
         "output_file_dir": pathlib.Path(
             "../data/3.combined_data/endpoints/combined_data.parquet"
         ),

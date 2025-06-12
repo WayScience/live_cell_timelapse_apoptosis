@@ -1,12 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --nstasks=64
-#SBATCH --partition=al40
-#SBATCH --gres=gpu:1
+#SBATCH --ntasks=128
+#SBATCH --partition=amilan128c
 #SBATCH --qos=normal
 #SBATCH --account=amc-general
 #SBATCH --time=24:00:00
-#SBATCH --output=child_featurize-%j.out
+#SBATCH --output=image_processing-%j.out
 
 module load miniforge
 conda init bash
@@ -21,7 +20,7 @@ cd scripts || exit
 
 # run the script
 time python 0.pre-process_images.py
-time python 1.calculate_mean_std_per_channel.py
+
 
 # revert to the original directory
 cd .. || exit
