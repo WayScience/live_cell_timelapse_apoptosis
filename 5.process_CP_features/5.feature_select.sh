@@ -11,7 +11,7 @@ module load miniforge
 conda init bash
 conda activate cellprofiler_timelapse_env
 
-jupyter nbconvert --to python --output-dir=scripts/ notebooks/*.ipynb
+jupyter nbconvert --to script --output-dir=scripts/ notebooks/*.ipynb
 
 cd scripts/ || exit
 

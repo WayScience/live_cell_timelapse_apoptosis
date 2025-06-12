@@ -56,7 +56,7 @@ if not in_notebook:
     well_fov = args.well_fov
 else:
     print("Running in a notebook")
-    well_fov = "D-03_F0002"
+    well_fov = "C-02_F0001"
 
 
 # In[3]:
@@ -92,13 +92,6 @@ dict_of_inputs = {
 # ## Annotate merged single cells
 
 # In[4]:
-
-
-single_cell_df = pd.read_parquet(f"{data_dir}/timelapse/{well_fov}.parquet")
-single_cell_df.head()
-
-
-# In[5]:
 
 
 for data_run, info in dict_of_inputs.items():
@@ -148,16 +141,16 @@ for data_run, info in dict_of_inputs.items():
 
     info["output_file"].parent.mkdir(exist_ok=True, parents=True)
 
+    print(
+        f"Annotations have been added to {data_run} and saved to {info['output_file']}"
+    )
+    # check last annotated df to see if it has been annotated correctly
+    annotated_df.drop_duplicates(inplace=True)
     # save annotated df as parquet file
     output(
         df=annotated_df,
         output_filename=info["output_file"],
         output_type="parquet",
     )
-    print(
-        f"Annotations have been added to {data_run} and saved to {info['output_file']}"
-    )
-    # check last annotated df to see if it has been annotated correctly
     print(annotated_df.shape)
     annotated_df.head()
-del annotated_df

@@ -9,6 +9,7 @@
 import argparse
 import pathlib
 import sys
+import uuid
 
 import pandas as pd
 from cytotable import convert, presets
@@ -59,7 +60,7 @@ if not in_notebook:
     well_fov = args.well_fov
 else:
     print("Running in a notebook")
-    well_fov = "D-03_F0002"
+    well_fov = "E-03_F0002"
 
 
 # ## set config joins for each preset
@@ -71,7 +72,7 @@ else:
 preset = "cellprofiler_sqlite_pycytominer"
 
 
-# In[4]:
+# In[ ]:
 
 
 dict_of_inputs = {
@@ -200,6 +201,7 @@ for sqlite_file, info in dict_of_inputs.items():
     source_path = info["source_path"]
     dest_path = info["dest_path"]
     presets.config["cellprofiler_sqlite_pycytominer"]["CONFIG_JOINS"] = info["preset"]
+
     print(f"Performing merge single cells and conversion on {sqlite_file}!")
     print(f"Source path: {source_path}")
     print(f"Destination path: {dest_path}")
@@ -212,6 +214,7 @@ for sqlite_file, info in dict_of_inputs.items():
             preset=preset,
             parsl_config=Config(
                 executors=[HighThroughputExecutor()],
+                run_dir=f"cytotable_runinfo_{uuid.uuid4().hex}",
             ),
             chunk_size=10000,
         )
