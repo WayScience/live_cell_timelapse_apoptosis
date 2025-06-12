@@ -40,9 +40,11 @@ data_dir = pathlib.Path("../data/1.annotated_data").resolve()
 
 # directory where the annotated parquet files are saved to
 profiles_output_dir = pathlib.Path(
-    "../data/2.sc_tracks_annotated_data/profiles/"
+    "../data/2.sc_tracks_annotated_data/profiles/timelapse/"
 ).resolve()
-stats_output_dir = pathlib.Path("../data/2.sc_tracks_annotated_data/stats/").resolve()
+stats_output_dir = pathlib.Path(
+    "../data/2.sc_tracks_annotated_data/stats/timelapse"
+).resolve()
 
 profiles_output_dir.mkdir(exist_ok=True, parents=True)
 stats_output_dir.mkdir(exist_ok=True, parents=True)
@@ -104,7 +106,7 @@ total_annotated_cells = 0  # total number of cells that were annotated
 distances = []  # list to store the distances between the coordinates
 
 
-# In[ ]:
+# In[5]:
 
 
 tracked_cells_stats = {
@@ -195,7 +197,7 @@ list_of_track_lengths_df.to_parquet(
 )
 
 
-# In[ ]:
+# In[7]:
 
 
 # save the tracked cells stats to a parquet file

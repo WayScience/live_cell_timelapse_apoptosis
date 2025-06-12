@@ -26,6 +26,7 @@ output_profile_dir = pathlib.Path(
     "../data/CP_scDINO_features/combined_CP_scDINO_norm_fs_aggregated.parquet"
 ).resolve()
 fs_df = pd.read_parquet(input_profile_dir)
+fs_df.head()
 
 
 # ## Perform aggregation
@@ -46,7 +47,7 @@ aggregated_df = pd.merge(
     aggregated_df,
     fs_df[metadata_cols],
     how="left",
-    on=["Metadata_Well", "Metadata_Time"],
+    on=["Metadata_Well", "Metadata_Time", "Metadata_dose"],
 )
 # rearrange the columns such that the metadata columns are first
 for col in reversed(aggregated_df.columns):

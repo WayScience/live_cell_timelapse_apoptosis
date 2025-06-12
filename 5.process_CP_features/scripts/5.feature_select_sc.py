@@ -91,6 +91,8 @@ for data_set in paths_dict:
         output_filename=paths_dict[data_set]["output_file_dir"],
         output_type="parquet",
     )
+    # sort by Metadata_Well
+    feature_select_df = feature_select_df.sort_values(by=["Metadata_Well"])
     # check to see if the shape of the df has changed indicating feature selection occurred
     print(feature_select_df.shape)
     feature_select_df.head()

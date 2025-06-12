@@ -7,13 +7,16 @@ jupyter nbconvert --to=script --FilesWriter.build_directory=scripts/ notebooks/*
 
 cd scripts/ || exit
 
-well_fov_path="../../2.cellprofiler_ic_processing/illum_directory/timelapse/"
+well_fov_path="../../2.cellprofiler_ic_processing/illum_directory/timelapse"
 well_fovs=$(ls $well_fov_path)
 echo "${well_fovs[@]}"
 
-for well_fov in $well_fovs; do
-    echo "Processing well_fov: $well_fov"
-    python 0.nuclei_tracking.py --input_dir $well_fov_path$well_fov
+for file in "$well_fov_path"/*; do
+    filename=$(basename "$file")
+    well_fov="${filename#*MaxIP_}"
+    echo "Well FOV: $well_fov"
+
+    python 0.nuclei_tracking.py --well_fov $well_fov
 done
 
 cd ../ || exit

@@ -111,6 +111,17 @@ cls_df.head(1)
 # In[9]:
 
 
+pathlib.Path(cls_df["Metadata_image_path"][0]).name.split("cell_number_")[1].split(
+    "_crop"
+)[0].split("_index")[0]
+
+
+# In[ ]:
+
+
+# In[10]:
+
+
 # split column into multiple columns
 # Well, FOV, Time, Channel, Cell_id
 cls_df["Metadata_Well"] = cls_df["Metadata_image_path"].apply(
@@ -130,13 +141,22 @@ cls_df["Metadata_ImageNumber"] = cls_df["Metadata_image_path"].apply(
 )
 
 cls_df["Metadata_Nuclei_Number_Object_Number"] = cls_df["Metadata_image_path"].apply(
-    lambda x: pathlib.Path(x).name.split("cell_number_")[1].split("_crop")[0]
+    lambda x: pathlib.Path(x)
+    .name.split("cell_number_")[1]
+    .split("_crop")[0]
+    .split("_index")[0]
 )
 
+cls_df["Metadata_original_index"] = cls_df["Metadata_image_path"].apply(
+    lambda x: pathlib.Path(x)
+    .name.split("cell_number_")[1]
+    .split("_crop")[0]
+    .split("index_")[1]
+)
 cls_df.head()
 
 
-# In[10]:
+# In[11]:
 
 
 # drop the plate column
@@ -153,7 +173,7 @@ plate_map_df = plate_map_df.rename(
 plate_map_df.head()
 
 
-# In[11]:
+# In[12]:
 
 
 # merge cls_df with plate_map_df
@@ -167,7 +187,7 @@ print(cls_df.shape)
 cls_df.head()
 
 
-# In[12]:
+# In[13]:
 
 
 # remove the "F" from each value in the Metadata_FOV column
@@ -177,8 +197,21 @@ cls_df["Metadata_FOV"] = cls_df["Metadata_FOV"].str.replace("F", "")
 cls_df["Metadata_Time"] = cls_df["Metadata_Time"].str.replace("T", "")
 
 
-# In[13]:
+# In[14]:
 
 
 # save the data
 cls_df.to_parquet(output_path)
+
+
+# In[15]:
+
+
+cls_df.head()
+
+
+# In[16]:
+
+
+pd.set_option("display.max_columns", None)
+cls_df

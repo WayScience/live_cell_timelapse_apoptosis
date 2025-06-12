@@ -30,7 +30,6 @@ except NameError:
 # In[2]:
 
 
-
 # directory where images are located within folders
 images_dir = pathlib.Path("../../2.cellprofiler_ic_processing/illum_directory")
 experiment_prefix_timelapse = "20231017ChromaLive_6hr_4ch_MaxIP_"
@@ -61,13 +60,12 @@ if not in_notebook:
     )
 else:
     print("Running in a notebook")
-    well_fov = "E-07_F0001"
+    well_fov = "C-05_F0004"
     timelapse_dir = pathlib.Path(
         f"{images_dir}/timelapse/{experiment_prefix_timelapse}{well_fov}/"
     )
     endpoint_dir = pathlib.Path(
         f"{images_dir}/endpoint/{experiment_prefix_endpoint}{well_fov}/"
-
     )
 
 path_to_pipelines = pathlib.Path("../pipelines/").resolve(strict=True)
@@ -83,22 +81,20 @@ output_dir.mkdir(exist_ok=True, parents=True)
 
 
 dict_of_inputs = {
-    "20231017ChromaLive_6hr_4ch_MaxIP": {
-        "path_to_images": pathlib.Path(timelapse_dir).resolve(strict=True),
-
-        "path_to_output": pathlib.Path(f"{output_dir}/timelapse/{well_fov}").resolve(),
-        "path_to_pipeline": pathlib.Path(
-            f"{path_to_pipelines}/analysis_4ch.cppipe"
-        ).resolve(),
-    },
-    "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
-        "path_to_images": pathlib.Path(endpoint_dir).resolve(),
-
-        "path_to_output": pathlib.Path(f"{output_dir}/endpoint/{well_fov}").resolve(),
-        "path_to_pipeline": pathlib.Path(
-            f"{path_to_pipelines}/analysis_2ch.cppipe"
-        ).resolve(),
-    },
+    # "20231017ChromaLive_6hr_4ch_MaxIP": {
+    #     "path_to_images": pathlib.Path(timelapse_dir).resolve(strict=True),
+    #     "path_to_output": pathlib.Path(f"{output_dir}/timelapse/{well_fov}").resolve(),
+    #     "path_to_pipeline": pathlib.Path(
+    #         f"{path_to_pipelines}/analysis_4ch.cppipe"
+    #     ).resolve(),
+    # },
+    # "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP": {
+    #     "path_to_images": pathlib.Path(endpoint_dir).resolve(),
+    #     "path_to_output": pathlib.Path(f"{output_dir}/endpoint/{well_fov}").resolve(),
+    #     "path_to_pipeline": pathlib.Path(
+    #         f"{path_to_pipelines}/analysis_2ch.cppipe"
+    #     ).resolve(),
+    # },
     "run_20231017ChromaLive_endpoint_w_AnnexinV_2ch_MaxIP_whole_image": {
         "path_to_images": pathlib.Path(endpoint_dir).resolve(),
         "path_to_output": pathlib.Path(

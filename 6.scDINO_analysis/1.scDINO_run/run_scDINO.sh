@@ -1,6 +1,7 @@
 #!/bin/bash
 # this script runs the pre-processing and scDINO pipeline
 
+conda init
 conda activate scDINO_env
 
 echo "Starting the scDINO analysis..."
