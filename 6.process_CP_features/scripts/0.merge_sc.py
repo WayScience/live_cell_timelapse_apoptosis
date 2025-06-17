@@ -31,14 +31,14 @@ except NameError:
 #
 # All paths must be string but we use pathlib to show which variables are paths
 
-# In[2]:
+# In[ ]:
 
 
 # type of file output from CytoTable (currently only parquet)
 dest_datatype = "parquet"
 
 # s1lite directory
-source_dir = pathlib.Path("../../4.cellprofiler_analysis/analysis_output/").resolve(
+source_dir = pathlib.Path("../../5.cellprofiler_analysis/analysis_output/").resolve(
     strict=True
 )
 # directory where parquet files are saved to

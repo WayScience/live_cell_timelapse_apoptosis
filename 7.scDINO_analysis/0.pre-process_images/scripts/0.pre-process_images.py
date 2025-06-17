@@ -31,7 +31,7 @@ except NameError:
     in_notebook = False
 
 
-# In[ ]:
+# In[2]:
 
 
 def get_crop_counts(list_of_counts: List[Tuple[int, int, int]]) -> Tuple[int, int, int]:
@@ -60,6 +60,7 @@ def get_crop_counts(list_of_counts: List[Tuple[int, int, int]]) -> Tuple[int, in
 
 
 def crop_image(
+    metadata_df: pd.DataFrame,
     i: int,
     image_path: str,
     radius: int = 50,
@@ -157,7 +158,7 @@ def crop_image(
     image_save_path.mkdir(parents=True, exist_ok=True)
     file_name = image_information_df["Metadata_Image_FileName_DNA"].replace(
         ".tiff",
-        f'image_number_{image_information_df["Metadata_ImageNumber"]}_cell_number_{image_information_df["Metadata_Nuclei_Number_Object_Number"]}_crop.tiff',
+        f'image_number_{image_information_df["Metadata_ImageNumber"]}_cell_number_{image_information_df["Metadata_Nuclei_Number_Object_Number"]}_index_{i}_crop.tiff',
     )
     image_save_path = pathlib.Path(image_save_path / file_name)
     if os.path.exists(image_save_path):
@@ -170,18 +171,19 @@ def crop_image(
 
 # ## Import paths
 
-# In[3]:
+# In[ ]:
 
 
 # set the path to the data directory
 data_file_dir = pathlib.Path(
-    "../../../5.process_CP_features/data/4.normalized_data/profiles/normalized_profile.parquet"
+    "../../../6.process_CP_features/data/5.feature_select/profiles/features_selected_profile.parquet"
 ).resolve(strict=True)
 
 # read in the data
 cp_feature_data = pd.read_parquet(data_file_dir)
 # print the data
 print(cp_feature_data.shape)
+pd.set_option("display.max_columns", None)
 cp_feature_data.head()
 
 
@@ -201,7 +203,7 @@ metadata_df.head()
 
 # This cell is not run as it takes a long time to run...
 
-# In[ ]:
+# In[5]:
 
 
 image_path = pathlib.Path(
@@ -210,12 +212,12 @@ image_path = pathlib.Path(
 radius = 50
 
 
-# In[ ]:
+# In[6]:
 
 
 # set the number of processes to use
 if in_notebook:
-    num_processes = mp.cpu_count() - 4
+    num_processes = mp.cpu_count() - 8
 else:
     num_processes = mp.cpu_count()
 print(f"Number of processes: {num_processes}")
@@ -231,7 +233,8 @@ print(f"There are {len(process_list):,} processes to run")
 pool = mp.Pool(num_processes)
 # run the processes in the pool with multiple args
 results = pool.starmap_async(
-    crop_image, [(i, image_path, radius, False) for i in range(total_crops)]
+    crop_image,
+    [(metadata_df, i, image_path, radius, False) for i in range(total_crops)],
 )
 pool.close()
 pool.join()

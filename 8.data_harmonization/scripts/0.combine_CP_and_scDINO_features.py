@@ -11,18 +11,18 @@ import pathlib
 import numpy as np
 import pandas as pd
 
-# In[2]:
+# In[ ]:
 
 
 # define data paths for import
 # annotated features from cellprofiler including all time points
 cellprofiler_fs_features_path = pathlib.Path(
-    "../../5.process_CP_features/data/5.feature_select/profiles/features_selected_profile.parquet"
+    "../../6.process_CP_features/data/5.feature_select/profiles/features_selected_profile.parquet"
 ).resolve(strict=True)
 
 # scDINO features from the scDINO analysis including all time points
 scdino_features = pathlib.Path(
-    "../../6.scDINO_analysis/1.scDINO_run/outputdir/apoptosis_timelapse/CLS_features/CLS_features_annotated.parquet"
+    "../../7.scDINO_analysis/1.scDINO_run/outputdir/apoptosis_timelapse/CLS_features/CLS_features_annotated.parquet"
 ).resolve(strict=True)
 
 # set the output path
