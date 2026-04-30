@@ -45,15 +45,15 @@ else:
     print("GPU found")
 
 
-# tensorflow clear gpu memory
-def clear_gpu_memory():
-    from numba import cuda
+# # tensorflow clear gpu memory
+# def clear_gpu_memory():
+#     from numba import cuda
 
-    cuda.select_device(0)
-    cuda.close()
+#     cuda.select_device(0)
+#     cuda.close()
 
 
-clear_gpu_memory()
+# clear_gpu_memory()
 import napari
 from napari.utils.notebook_display import nbscreenshot
 
@@ -148,7 +148,7 @@ timelapse_raw = np.zeros(
 )
 
 
-# In[7]:
+# In[ ]:
 
 
 detections = np.zeros((len(masks), image_dims[0], image_dims[1]), dtype=np.uint16)
@@ -156,8 +156,7 @@ edges = np.zeros((len(masks), image_dims[0], image_dims[1]), dtype=np.uint16)
 for frame_index, frame in enumerate(masks):
     detections[frame_index, :, :], edges[frame_index, :, :] = labels_to_contours(frame)
 print(detections.shape, edges.shape)
-
-clear_gpu_memory()
+# clear_gpu_memory
 
 
 # In[8]:
@@ -264,14 +263,14 @@ if in_notebook:
 
 
 # load each image
-files = [f for f in temporary_output_dir.glob("*.png")]
-files = sorted(files, key=lambda x: int(x.stem.split("_")[1]))
-frames = [Image.open(f) for f in files]
-fig_path = figures_output_dir / f"{str(input_dir).split('MaxIP_')[1]}_tracks.gif"
-# plot the line of each track in matplotlib over a gif
-# get the tracks
-# save the frames as a gif
-frames[0].save(fig_path, save_all=True, append_images=frames[1:], duration=100, loop=0)
+# files = [f for f in temporary_output_dir.glob("*.png")]
+# files = sorted(files, key=lambda x: int(x.stem.split("_")[1]))
+# frames = [Image.open(f) for f in files]
+# fig_path = figures_output_dir / f"{str(input_dir).split('MaxIP_')[1]}_tracks.gif"
+# # plot the line of each track in matplotlib over a gif
+# # get the tracks
+# # save the frames as a gif
+# frames[0].save(fig_path, save_all=True, append_images=frames[1:], duration=100, loop=0)
 
 
 # In[16]:
@@ -292,10 +291,10 @@ if metadata_toml_path.exists():
 # In[17]:
 
 
-clear_gpu_memory()
+# clear_gpu_memory()
 
 
-# In[ ]:
+# In[18]:
 
 
 if in_notebook:

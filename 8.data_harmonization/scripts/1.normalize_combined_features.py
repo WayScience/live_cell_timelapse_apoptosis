@@ -42,7 +42,7 @@ metadata_features = combined_data.columns[
 feature_columns = combined_data.columns.difference(metadata_features).to_list()
 
 
-# In[4]:
+# In[ ]:
 
 
 # Normalize the single cell data per time point

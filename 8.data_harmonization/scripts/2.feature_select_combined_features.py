@@ -53,22 +53,20 @@ feature_columns = normalized_data.columns.difference(metadata_features).to_list(
 # In[4]:
 
 
-manual_block_list = [
-    "Nuclei_AreaShape_BoundingBoxArea",
-    "Nuclei_AreaShape_BoundingBoxMinimum_X",
-    "Cells_AreaShape_BoundingBoxArea",
-]
-
-
-# In[ ]:
-
-
 feature_select_df = feature_select(
     normalized_data,
     operation=feature_select_ops,
     features=feature_columns,
 )
 # add "Metadata_" to the beginning of each column name in the list
+manual_block_list = [
+    x
+    for x in normalized_data.columns
+    if "bounding" in x.lower()
+    or "Location_Center_Y" in x.lower()
+    or "Location_Center_X" in x.lower()
+]
+
 feature_select_df.columns = [
     "Metadata_" + column if column in manual_block_list else column
     for column in feature_select_df.columns

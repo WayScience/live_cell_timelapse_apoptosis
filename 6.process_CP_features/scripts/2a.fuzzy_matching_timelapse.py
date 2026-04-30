@@ -11,7 +11,6 @@
 import argparse
 import pathlib
 
-import lancedb
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -64,14 +63,14 @@ if not in_notebook:
     well_fov = args.well_fov
 else:
     print("Running in a notebook")
-    well_fov = "C-02_F0001"
+    well_fov = "C-02_F0003"
 
 
 # In[3]:
 
 
 tracks = pathlib.Path(
-    f"../../4.cell_tracking/results/{well_fov}_tracks.parquet"
+    f"../../5.cell_tracking/results/{well_fov}_tracks.parquet"
 ).resolve(strict=True)
 profiles = pathlib.Path(
     f"../data/1.annotated_data/timelapse/{well_fov}_sc.parquet"
@@ -215,3 +214,15 @@ tracked_cells_stats_df = (
 
 # save the stats to a parquet file
 tracked_cells_stats_df.to_parquet(stats_output_dir / f"{well_fov}_stats.parquet")
+
+
+# In[9]:
+
+
+tracked_cells_stats_df
+
+
+# In[10]:
+
+
+merged_df
