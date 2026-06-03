@@ -7,8 +7,6 @@ To Harmonize the morphology feature space run the command:
 source run_data_harmonization.sh
 ```
 
-
-
 Metdata column descriptions:
 | Metadata column name | Description |
 |----------------------|-------------|
