@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/777274310.svg)](https://doi.org/10.5281/zenodo.17419421)
 # Live cell timelapse apoptosis analysis
 
 The goal of this project is to develop a pipeline to analyze timelapse images of live cells undergoing apoptosis.
