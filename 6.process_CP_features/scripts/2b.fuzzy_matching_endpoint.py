@@ -11,7 +11,6 @@
 import argparse
 import pathlib
 
-import lancedb
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -64,14 +63,14 @@ if not in_notebook:
     well_fov = args.well_fov
 else:
     print("Running in a notebook")
-    well_fov = "C-02_F0001"
+    well_fov = "C-02_F0003"
 
 
 # In[3]:
 
 
 tracks = pathlib.Path(
-    f"../../4.cell_tracking/results/{well_fov}_tracks.parquet"
+    f"../../5.cell_tracking/results/{well_fov}_tracks.parquet"
 ).resolve(strict=True)
 profiles = pathlib.Path(
     f"../data/1.annotated_data/endpoint/{well_fov}_sc.parquet"
@@ -113,7 +112,7 @@ total_annotated_cells = 0  # total number of cells that were annotated
 distances = []  # list to store the distances between the coordinates
 
 
-# In[6]:
+# In[ ]:
 
 
 tracked_cells_stats = {
@@ -127,46 +126,127 @@ df_right = tracks.copy()
 
 total_CP_cells += df_left.shape[0]
 
-# loop through the rows in the subset_annotated_df and find the closest coordinate set in the location metadata
+# Keep matching one-to-one: each track row can be used at most once.
+used_track_indices = set()
+euclidean_cut_off = np.linalg.norm(
+    np.array([0, 0]) - np.array([pixel_cutt_off, pixel_cutt_off])
+)
+
+# loop through the rows in subset_annotated_df and find the closest unmatched coordinate
 for index1, row1 in df_left.iterrows():
-    # appends 1 for the total number of cells segmented
-    # after the loop, the total number of cells segmented is the sum of all the 1s in the list
     tracked_cells_stats["total_CP_cells"].append(1)
-    dist = np.inf
+
+    best_dist = np.inf
+    best_index = None
+    coord1 = row1[coordinate_column_left]
+
     for index2, row2 in df_right.iterrows():
-        coord1 = row1[coordinate_column_left]
+        if index2 in used_track_indices:
+            continue
+
         coord2 = row2[coordinate_column_right]
         try:
             temp_dist = np.linalg.norm(np.array(coord1) - np.array(coord2))
-        except:
+        except Exception:
             temp_dist = np.inf
-        if temp_dist <= dist:
-            dist = temp_dist
-            coord2_index = index2
 
-        # set cut off of 5,5 pixel in the euclidean distance
-        euclidean_cut_off = np.linalg.norm(
-            np.array([0, 0]) - np.array([pixel_cutt_off, pixel_cutt_off])
-        )
+        if temp_dist < best_dist:
+            best_dist = temp_dist
+            best_index = index2
 
-    if dist < euclidean_cut_off:
+    if best_index is not None and best_dist < euclidean_cut_off:
         temp_merged_df = pd.merge(
             df_left.loc[[index1]],
-            df_right.loc[[coord2_index]],
+            df_right.loc[[best_index]],
             how="inner",
             left_on=left_on,
             right_on=right_on,
         )
-        distances.append(dist)
-        total_annotated_cells += temp_merged_df.shape[0]
-        tracked_cells_stats["Metadata_time"].append(time)
-        # if the cell is tracked and annotated, append 1 to the total number of cells annotated
-        tracked_cells_stats["total_annotated_cells"].append(1)
-        merged_df_list.append(temp_merged_df)
+
+        if temp_merged_df.shape[0] > 0:
+            used_track_indices.add(best_index)
+            distances.append(best_dist)
+            total_annotated_cells += temp_merged_df.shape[0]
+            tracked_cells_stats["Metadata_time"].append(time)
+            # if the cell is tracked and annotated, append 1 to total annotated cells
+            tracked_cells_stats["total_annotated_cells"].append(1)
+            merged_df_list.append(temp_merged_df)
+        else:
+            tracked_cells_stats["Metadata_time"].append(time)
+            tracked_cells_stats["total_annotated_cells"].append(0)
     else:
         tracked_cells_stats["Metadata_time"].append(time)
-        # if the cell is not tracked and annotated, append 0 to the total number of cells annotated
+        # if the cell is not tracked and annotated, append 0 to total annotated cells
         tracked_cells_stats["total_annotated_cells"].append(0)
+
+if len(merged_df_list) == 0:
+    merged_df_list.append(pd.DataFrame())
+merged_df = pd.concat(merged_df_list)
+merged_df["Metadata_distance"] = distances
+tracked_cells_stats = {
+    "Metadata_time": [],  # timepoint of the cell
+    "total_CP_cells": [],  # total number of cells segmented
+    "total_annotated_cells": [],  # total number of cells tracked
+}
+time = profiles["Metadata_Time"].unique()[0]
+df_left = profiles.copy()
+df_right = tracks.copy()
+
+total_CP_cells += df_left.shape[0]
+
+# Keep matching one-to-one: each track row can be used at most once.
+used_track_indices = set()
+euclidean_cut_off = np.linalg.norm(
+    np.array([0, 0]) - np.array([pixel_cutt_off, pixel_cutt_off])
+)
+
+# loop through the rows in subset_annotated_df and find the closest unmatched coordinate
+for index1, row1 in df_left.iterrows():
+    tracked_cells_stats["total_CP_cells"].append(1)
+
+    best_dist = np.inf
+    best_index = None
+    coord1 = row1[coordinate_column_left]
+
+    for index2, row2 in df_right.iterrows():
+        if index2 in used_track_indices:
+            continue
+
+        coord2 = row2[coordinate_column_right]
+        try:
+            temp_dist = np.linalg.norm(np.array(coord1) - np.array(coord2))
+        except Exception:
+            temp_dist = np.inf
+
+        if temp_dist < best_dist:
+            best_dist = temp_dist
+            best_index = index2
+
+    if best_index is not None and best_dist < euclidean_cut_off:
+        temp_merged_df = pd.merge(
+            df_left.loc[[index1]],
+            df_right.loc[[best_index]],
+            how="inner",
+            left_on=left_on,
+            right_on=right_on,
+        )
+
+        if temp_merged_df.shape[0] > 0:
+            used_track_indices.add(best_index)
+            distances.append(best_dist)
+            total_annotated_cells += temp_merged_df.shape[0]
+            tracked_cells_stats["Metadata_time"].append(time)
+            # if the cell is tracked and annotated, append 1 to total annotated cells
+            tracked_cells_stats["total_annotated_cells"].append(1)
+            merged_df_list.append(temp_merged_df)
+        else:
+            tracked_cells_stats["Metadata_time"].append(time)
+            tracked_cells_stats["total_annotated_cells"].append(0)
+    else:
+        tracked_cells_stats["Metadata_time"].append(time)
+        # if the cell is not tracked and annotated, append 0 to total annotated cells
+        tracked_cells_stats["total_annotated_cells"].append(0)
+
 if len(merged_df_list) == 0:
     merged_df_list.append(pd.DataFrame())
 merged_df = pd.concat(merged_df_list)
@@ -183,9 +263,20 @@ print(f"Percentage of annotated cells: {total_annotated_cells/total_CP_cells*100
 print(merged_df.shape)
 merged_df.to_parquet(profiles_output_dir / f"{well_fov}_annotated_tracks.parquet")
 merged_df.head()
+# replace Metadata string in column names with Metadata (Non Morphology Features)
+merged_df.columns = [
+    x.replace("Metadata_", "Metadata_") if "Metadata_" in x else x
+    for x in merged_df.columns
+]
+
+print(f"Annotated cells: {total_annotated_cells} out of {total_CP_cells}")
+print(f"Percentage of annotated cells: {total_annotated_cells/total_CP_cells*100}%")
+print(merged_df.shape)
+merged_df.to_parquet(profiles_output_dir / f"{well_fov}_annotated_tracks.parquet")
+merged_df.head()
 
 
-# In[7]:
+# In[8]:
 
 
 # get the number of tracks for each track length
@@ -204,7 +295,7 @@ list_of_track_lengths_df.to_parquet(
 )
 
 
-# In[8]:
+# In[9]:
 
 
 # save the tracked cells stats to a parquet file
@@ -212,7 +303,7 @@ tracked_cells_stats_df = pd.DataFrame(tracked_cells_stats)
 tracked_cells_stats_df["well_fov"] = well_fov
 
 
-# In[9]:
+# In[10]:
 
 
 # get the number of cells for each time point
@@ -221,7 +312,7 @@ tracked_cells_stats_df = (
 )
 
 
-# In[10]:
+# In[11]:
 
 
 # save the stats to a parquet file

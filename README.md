@@ -72,7 +72,7 @@ The following analysis will be performed:
 3a. OPTIONAL: Run CellProfiler optimization of pipeline [Deprecated]
 3b. Run SAM2 to track objects over time
 4. Run CellProfiler to extract features
-5. Process the CellProfiler output
-6. Run scDINO extract Deep Learning features
-7. Harmonize the features from CellProfiler and scDINO
-
+5. Run cell tracking
+6. Process the CellProfiler output
+7. Run scDINO extract Deep Learning features
+8. Harmonize the features from CellProfiler and scDINO

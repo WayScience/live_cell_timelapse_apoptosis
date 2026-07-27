@@ -36,6 +36,16 @@ fs_df.head()
 
 metadata_cols = fs_df.columns[fs_df.columns.str.contains("Metadata")].to_list()
 feature_cols = fs_df.columns[~fs_df.columns.str.contains("Metadata")].to_list()
+selected_metadata_cols = [
+    "Metadata_Well",
+    "Metadata_plate",
+    "Metadata_compound",
+    "Metadata_dose",
+    "Metadata_control",
+    "Metadata_Time",
+]
+feature_cols = fs_df.columns[~fs_df.columns.str.contains("Metadata")].to_list()
+feature_cols = ["Metadata_number_of_singlecells"] + feature_cols
 
 aggregated_df = aggregate(
     fs_df,
@@ -45,10 +55,12 @@ aggregated_df = aggregate(
 )
 aggregated_df = pd.merge(
     aggregated_df,
-    fs_df[metadata_cols],
+    fs_df[selected_metadata_cols],
     how="left",
     on=["Metadata_Well", "Metadata_Time", "Metadata_dose"],
 )
+aggregated_df.drop_duplicates(inplace=True, ignore_index=True)
+
 # rearrange the columns such that the metadata columns are first
 for col in reversed(aggregated_df.columns):
     if col.startswith("Metadata_"):

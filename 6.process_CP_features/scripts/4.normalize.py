@@ -83,6 +83,30 @@ for data_set in paths_dict:
             meta_features=Metadatas,
         )
 
+    # keep only rows where (well, fov, track_id, time) occurs more than twice,
+    group_cols = [
+        "Metadata_Well",
+        "Metadata_FOV",
+        "Metadata_track_id",
+    ]
+    time_cols = group_cols + ["Metadata_Time"]
+
+    long_tracks_df = normalized_df[
+        normalized_df.groupby(group_cols)["Metadata_track_id"].transform("size") > 13
+    ]
+
+    dup_idx = long_tracks_df.groupby(time_cols).size().loc[lambda s: s > 1].index
+    long_tracks_df[long_tracks_df.set_index(time_cols).index.isin(dup_idx)]
+    # pick one of the duplicated rows to keep and drop the row from the original df
+    to_drop_idx = long_tracks_df[
+        long_tracks_df.set_index(time_cols).index.isin(dup_idx)
+    ].index
+    original_df_shape = normalized_df.shape
+    normalized_df = normalized_df.drop(index=to_drop_idx)
+    print(
+        f"Dropped {original_df_shape[0] - normalized_df.shape[0]} duplicated objects rows from the original df"
+    )
+
     output(
         normalized_df,
         output_filename=paths_dict[data_set]["outout_file_dir"],
@@ -91,3 +115,42 @@ for data_set in paths_dict:
     # check to see if the features have been normalized
     print(normalized_df.shape)
     normalized_df.head()
+
+
+# In[12]:
+
+
+group_cols = [
+    "Metadata_Well",
+    "Metadata_FOV",
+    "Metadata_track_id",
+]
+time_cols = group_cols + ["Metadata_Time"]
+
+long_tracks_df = normalized_df[
+    normalized_df.groupby(group_cols)["Metadata_track_id"].transform("size") > 1
+]
+long_tracks_df["Metadata_track_id"]
+
+
+# In[ ]:
+
+
+dup_idx = long_tracks_df.groupby(time_cols).size().loc[lambda s: s > 1].index
+long_tracks_df[long_tracks_df.set_index(time_cols).index.isin(dup_idx)]
+# pick one of the duplicated rows to keep and drop the row from the original df
+to_drop_idx = long_tracks_df[
+    long_tracks_df.set_index(time_cols).index.isin(dup_idx)
+].index
+original_df_shape = normalized_df.shape
+normalized_df = normalized_df.drop(index=to_drop_idx)
+nor
+
+
+# In[8]:
+
+
+normalized_df.groupby(["Metadata_Well", "Metadata_FOV", "Metadata_track_id"]).size() > 1
+
+
+# In[ ]:

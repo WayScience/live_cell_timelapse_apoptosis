@@ -11,13 +11,13 @@ import pathlib
 import numpy as np
 import pandas as pd
 
-# In[ ]:
+# In[2]:
 
 
 # define data paths for import
 # annotated features from cellprofiler including all time points
 cellprofiler_fs_features_path = pathlib.Path(
-    "../../6.process_CP_features/data/5.feature_select/profiles/features_selected_profile.parquet"
+    "../../6.process_CP_features/data/3.combined_data/profiles/combined_data.parquet"
 ).resolve(strict=True)
 
 # scDINO features from the scDINO analysis including all time points
@@ -85,7 +85,6 @@ cellprofiler_metadata_columns = [
     "Metadata_compound",
     "Metadata_dose",
     "Metadata_control",
-    "Metadata_original_index",
 ]
 
 
@@ -134,11 +133,8 @@ print(f"merged data shape after dropping duplicates: {merged_df.shape}")
 # In[11]:
 
 
-# merged_df.to_parquet(output_path)
 print(f"merged_df shape: {merged_df.shape}")
-# merged_df.head()
-# drop rows with NaN values
-merged_df = merged_df.dropna(how="any", axis=0)
+merged_df = merged_df.dropna(axis=0, how="all")
 merged_df.to_parquet(output_path, index=False)
 print(f"merged_df shape: {merged_df.shape}")
 merged_df.head()
